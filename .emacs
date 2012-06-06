@@ -9,6 +9,7 @@
  '(dired-listing-switches "-alh")
  '(initial-buffer-choice t)
  '(initial-scratch-message nil)
+ '(ls-lisp-ignore-case t)
  '(ls-lisp-verbosity nil))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
