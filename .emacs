@@ -8,10 +8,13 @@
   ;; If there is more than one, they won't work right.
  '(c-basic-offset 4)
  '(c-default-style (quote ((c-mode . "bsd") (c++-mode . "bsd") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
+ '(calendar-week-start-day 1)
+ '(default-input-method "russian-computer")
  '(dired-dwim-target t)
  '(dired-listing-switches "-alh")
  '(indent-tabs-mode nil)
  '(initial-buffer-choice t)
+ '(initial-major-mode (quote org-mode))
  '(initial-scratch-message nil)
  '(ls-lisp-ignore-case t)
  '(ls-lisp-verbosity nil)
@@ -23,6 +26,10 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  )
+
+;; global key bindings
+(global-set-key (kbd "C-x f") 'find-file)
+(global-set-key (kbd "C-x d") 'dired)
 
 ;; setup color theme
 ;; color-theme package should be at "$EMACS_PATH/site-lisp/color-theme-6.6.0"
@@ -38,6 +45,9 @@
   (function (lambda ()
               (whitespace-mode t))))
 (add-hook 'c-mode-hook
+  (function (lambda ()
+              (whitespace-mode t))))
+(add-hook 'emacs-lisp-mode-hook
   (function (lambda ()
               (whitespace-mode t))))
 
