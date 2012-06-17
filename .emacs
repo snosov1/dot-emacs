@@ -18,6 +18,7 @@
  '(initial-scratch-message nil)
  '(ls-lisp-ignore-case t)
  '(ls-lisp-verbosity nil)
+ '(org-agenda-files (quote ("c:/workspace/org/")))
  '(tab-width 4)
  '(whitespace-style (quote (lines-tail face tabs trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))))
 (custom-set-faces
@@ -27,12 +28,25 @@
   ;; If there is more than one, they won't work right.
  )
 
-;; global key bindings
+;; KEY BINDINGS
+;; global
 (global-set-key (kbd "C-x f") 'find-file)
-(global-set-key (kbd "C-x d") 'dired)
+(global-set-key (kbd "C-x C-d") 'dired)
+
+;; org-mode
+(require 'org)
+(add-hook 'org-mode-hook
+          '(lambda ()
+             (define-key org-mode-map "\C-\M-p"
+               'org-metaup)
+             (define-key org-mode-map "\C-\M-n"
+               'org-metadown)
+             (define-key org-mode-map "\C-\M-b"
+               'org-metaleft)
+             (define-key org-mode-map "\C-\M-f"
+               'org-metaright)))
 
 ;; setup color theme
-;; color-theme package should be at "$EMACS_PATH/site-lisp/color-theme-6.6.0"
 (require 'color-theme)
 (eval-after-load "color-theme"
   '(progn
