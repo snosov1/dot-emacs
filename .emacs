@@ -30,6 +30,9 @@
   ;; If there is more than one, they won't work right.
  )
 
+;; shut up the bell
+(setq ring-bell-function 'ignore)
+
 ;; KEY BINDINGS
 ;; global
 (global-set-key (kbd "C-x f") 'find-file)
