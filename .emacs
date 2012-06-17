@@ -12,6 +12,8 @@
  '(default-input-method "russian-computer")
  '(dired-dwim-target t)
  '(dired-listing-switches "-alh")
+ '(ido-enable-flex-matching t)
+ '(ido-mode (quote buffer) nil (ido))
  '(indent-tabs-mode nil)
  '(initial-buffer-choice t)
  '(initial-major-mode (quote org-mode))
@@ -62,6 +64,9 @@
   (function (lambda ()
               (whitespace-mode t))))
 (add-hook 'emacs-lisp-mode-hook
+  (function (lambda ()
+              (whitespace-mode t))))
+(add-hook 'python-mode-hook
   (function (lambda ()
               (whitespace-mode t))))
 
