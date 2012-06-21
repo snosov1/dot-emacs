@@ -13,6 +13,9 @@
  '(default-input-method "russian-computer")
  '(dired-dwim-target t)
  '(dired-listing-switches "-alh")
+ '(ediff-highlight-all-diffs t)
+ '(ediff-split-window-function (quote split-window-horizontally))
+ '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(ido-enable-flex-matching t)
  '(ido-mode (quote buffer) nil (ido))
  '(indent-tabs-mode nil)
@@ -30,10 +33,28 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(ediff-current-diff-A ((t (:background "white" :foreground "black"))))
+ '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))))
+ '(ediff-current-diff-B ((t (:background "white" :foreground "black"))))
+ '(ediff-current-diff-C ((t (:background "white" :foreground "black"))))
+ '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))))
+ '(ediff-even-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
+ '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))))
+ '(ediff-even-diff-C ((t (:background "antique white" :foreground "Black"))))
+ '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))))
+ '(ediff-fine-diff-Ancestor ((t (:background "gainsboro" :foreground "red"))))
+ '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))))
+ '(ediff-fine-diff-C ((t (:background "gainsboro" :foreground "purple"))))
+ '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))))
+ '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
+ '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))))
+ '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black")))))
 
 ;; shut up the bell
 (setq ring-bell-function 'ignore)
+
+;; ediff fine highlight by char, not words
+(setq ediff-forward-word-function 'forward-char)
 
 ;; KEY BINDINGS
 ;; global
@@ -44,6 +65,7 @@
 (require 'org)
 (add-hook 'org-mode-hook
           '(lambda ()
+             ;; meta arrows
              (define-key org-mode-map "\C-\M-p"
                'org-metaup)
              (define-key org-mode-map "\C-\M-n"
