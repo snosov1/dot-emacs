@@ -95,7 +95,9 @@
 (defun server-ensure-safe-dir (dir) "Noop" t) ; Suppress error "directory
                                               ; ~/.emacs.d/server is unsafe"
                                               ; on windows.
-(server-start)
+
+(unless (server-running-p) (server-start))
+;; (server-start)
 
 ;; disable 'confusing' functions disabling
 (put 'narrow-to-region 'disabled nil)
