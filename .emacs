@@ -14,6 +14,7 @@
  '(dired-dwim-target t)
  '(dired-listing-switches "-alh")
  '(ediff-highlight-all-diffs t)
+ '(ediff-quit-hook (quote (ediff-cleanup-mess exit-recursive-edit)))
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(ido-enable-flex-matching t)
@@ -53,18 +54,22 @@
 ;; shut up the bell
 (setq ring-bell-function 'ignore)
 
-;; ediff fine highlight by char, not words
+;; ediff: fine highlight by char, not words
 (setq ediff-forward-word-function 'forward-char)
 
 ;; KEY BINDINGS
 ;; global
 (global-set-key (kbd "C-x f") 'find-file)
 (global-set-key (kbd "C-x C-d") 'dired)
+(global-set-key [C-tab] 'ido-switch-buffer)
 
 ;; org-mode
 (require 'org)
 (add-hook 'org-mode-hook
           '(lambda ()
+             ;; don't redefine C-<TAB>
+             (define-key org-mode-map [C-tab]
+               nil)
              ;; meta arrows
              (define-key org-mode-map "\C-\M-p"
                'org-metaup)
@@ -97,7 +102,6 @@
                                               ; on windows.
 
 (unless (server-running-p) (server-start))
-;; (server-start)
 
 ;; disable 'confusing' functions disabling
 (put 'narrow-to-region 'disabled nil)
