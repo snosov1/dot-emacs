@@ -63,6 +63,7 @@
 (global-set-key (kbd "C-x f") 'find-file)
 (global-set-key (kbd "C-x C-d") 'dired)
 (global-set-key [C-tab] 'ido-switch-buffer)
+(global-set-key (kbd "C-x C-q") 'view-mode)
 
 ;; org-mode
 (require 'org)
@@ -80,6 +81,18 @@
                'org-metaleft)
              (define-key org-mode-map "\C-\M-f"
                'org-metaright)))
+
+;; view-mode - no C needed for navigation
+(add-hook 'view-mode-hook
+          '(lambda ()
+             (define-key view-mode-map "p"
+               'previous-line)
+             (define-key view-mode-map "n"
+               'next-line)
+             (define-key view-mode-map "f"
+               'forward-char)
+             (define-key view-mode-map "b"
+               'backward-char)))
 
 ;; enable whitespace mode for source editing modes
 (require 'whitespace)
