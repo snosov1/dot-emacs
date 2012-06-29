@@ -82,9 +82,17 @@
              (define-key org-mode-map "\C-\M-f"
                'org-metaright)))
 
-;; view-mode - no C needed for navigation
+;; dired-mode
+(add-hook 'dired-mode-hook
+          '(lambda()
+             ;; keep default behavior in dired
+             (define-key dired-mode-map (kbd "C-x C-q")
+               'dired-toggle-read-only)))
+
+;; view-mode
 (add-hook 'view-mode-hook
           '(lambda ()
+             ;; navigation
              (define-key view-mode-map "p"
                'previous-line)
              (define-key view-mode-map "n"
