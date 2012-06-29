@@ -25,7 +25,8 @@
  '(initial-scratch-message nil)
  '(ls-lisp-ignore-case t)
  '(ls-lisp-verbosity nil)
- '(org-agenda-files (quote ("c:/workspace/org/")))
+ '(org-agenda-files (quote ("c:/Users/snosov1/Dropbox/Private/org/" "c:/workspace/org/")))
+ '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
  '(scroll-error-top-bottom t)
  '(tab-width 4)
  '(whitespace-style (quote (lines-tail face tabs trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))))
@@ -34,21 +35,21 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ediff-current-diff-A ((t (:background "white" :foreground "black"))))
+ '(ediff-current-diff-A ((t (:background "white" :foreground "black"))) t)
  '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))))
- '(ediff-current-diff-B ((t (:background "white" :foreground "black"))))
+ '(ediff-current-diff-B ((t (:background "white" :foreground "black"))) t)
  '(ediff-current-diff-C ((t (:background "white" :foreground "black"))))
- '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))))
+ '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))) t)
  '(ediff-even-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
- '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))))
+ '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))) t)
  '(ediff-even-diff-C ((t (:background "antique white" :foreground "Black"))))
- '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))))
+ '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))) t)
  '(ediff-fine-diff-Ancestor ((t (:background "gainsboro" :foreground "red"))))
- '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))))
+ '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))) t)
  '(ediff-fine-diff-C ((t (:background "gainsboro" :foreground "purple"))))
- '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))))
+ '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))) t)
  '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
- '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))))
+ '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))) t)
  '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black")))))
 
 ;; shut up the bell
@@ -97,9 +98,10 @@
 
 ;; starting emacs server
 (require 'server)
-(defun server-ensure-safe-dir (dir) "Noop" t) ; Suppress error "directory
-                                              ; ~/.emacs.d/server is unsafe"
-                                              ; on windows.
+(when (equal window-system 'w32)
+  (defun server-ensure-safe-dir (dir) "Noop" t)) ; Suppress error "directory
+                                                 ; ~/.emacs.d/server is unsafe"
+                                                 ; on windows.
 
 (unless (server-running-p) (server-start))
 
