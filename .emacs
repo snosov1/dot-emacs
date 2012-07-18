@@ -25,7 +25,7 @@
  '(initial-scratch-message nil)
  '(ls-lisp-ignore-case t)
  '(ls-lisp-verbosity nil)
- '(org-agenda-files (quote ("c:/Users/snosov1/Dropbox/Private/org/" "c:/workspace/org/")))
+ '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
  '(scroll-error-top-bottom t)
  '(tab-width 4)
