@@ -64,6 +64,8 @@
 (global-set-key (kbd "C-x C-d") 'dired)
 (global-set-key [C-tab] 'ido-switch-buffer)
 (global-set-key (kbd "C-x C-q") 'view-mode)
+(global-set-key (kbd "C-M-p") 'previous-buffer)
+(global-set-key (kbd "C-M-n") 'next-buffer)
 
 ;; org-mode
 (require 'org)
@@ -71,23 +73,19 @@
           '(lambda ()
              ;; don't redefine C-<TAB>
              (define-key org-mode-map [C-tab]
-               nil)
-             ;; meta arrows
-             (define-key org-mode-map "\C-\M-p"
-               'org-metaup)
-             (define-key org-mode-map "\C-\M-n"
-               'org-metadown)
-             (define-key org-mode-map "\C-\M-b"
-               'org-metaleft)
-             (define-key org-mode-map "\C-\M-f"
-               'org-metaright)))
+               nil)))
 
 ;; dired-mode
 (add-hook 'dired-mode-hook
           '(lambda()
              ;; keep default behavior in dired
              (define-key dired-mode-map (kbd "C-x C-q")
-               'dired-toggle-read-only)))
+               'dired-toggle-read-only)
+             ;; use global key bindings intead
+             (define-key dired-mode-map (kbd "C-M-p")
+               nil)
+             (define-key dired-mode-map (kbd "C-M-n")
+               nil)))
 
 ;; view-mode
 (add-hook 'view-mode-hook
