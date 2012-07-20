@@ -102,6 +102,9 @@
              (define-key view-mode-map "b"
                'backward-char)))
 
+;; enable python execution in org-mode
+(require 'ob-python)
+
 ;; enable whitespace mode for source editing modes
 (require 'whitespace)
 (add-hook 'c++-mode-hook
