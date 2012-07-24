@@ -7,6 +7,9 @@
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
 
+;; dired-x
+(require 'dired-x)
+
 ;; lose tool bar
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 
