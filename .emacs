@@ -1,11 +1,20 @@
 ;; general configuration
 (add-to-list 'load-path "~/.emacs.d")
 
-;; DEPENDENCIES
+;; ------------------------------------------------------------
+;; EXTERNAL DEPENDENCIES:
+;; * auto-complete
+;; * ess (and hence R)
+
 ;; auto-complete mode
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(ac-config-default)
+(when (require 'auto-complete-config nil t)
+    (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+    (ac-config-default))
+
+;; for R statstics language
+(when (require 'ess-site nil t)
+  (setq ess-use-auto-complete t))
+;; ------------------------------------------------------------
 
 ;; dired-x
 (require 'dired-x)
@@ -88,6 +97,10 @@
              ;; don't redefine C-<TAB>
              (define-key org-mode-map [C-tab]
                nil)))
+;; enable python execution in org-mode
+(require 'ob-python)
+(require 'ob-R)
+
 
 ;; dired-mode
 (add-hook 'dired-mode-hook
@@ -113,9 +126,6 @@
                'forward-char)
              (define-key view-mode-map "b"
                'backward-char)))
-
-;; enable python execution in org-mode
-(require 'ob-python)
 
 ;; enable whitespace mode for source editing modes
 (require 'whitespace)
