@@ -47,6 +47,8 @@
  '(ls-lisp-ignore-case t)
  '(ls-lisp-verbosity nil)
  '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
+ '(org-capture-templates (quote (("e" "Capture expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|sveta-cafe|lunch|dance} | %^{cost} | %^{desc} |"))))
+ '(org-directory "~/Dropbox/Private/org")
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
@@ -89,6 +91,8 @@
 (global-set-key (kbd "C-x C-q") 'view-mode)
 (global-set-key (kbd "C-M-p") 'previous-buffer)
 (global-set-key (kbd "C-M-n") 'next-buffer)
+(global-set-key (kbd "\C-c c") 'org-capture)
+(global-set-key (kbd "\C-c a") 'org-agenda)
 
 ;; org-mode
 (require 'org)
@@ -96,11 +100,16 @@
           '(lambda ()
              ;; don't redefine C-<TAB>
              (define-key org-mode-map [C-tab]
-               nil)))
+               nil)
+             ;; swap active/inactive time-stamp bindings
+             (define-key org-mode-map (kbd "C-c .")
+               'org-time-stamp-inactive)
+             (define-key org-mode-map (kbd "C-c !")
+               'org-time-stamp)))
 ;; enable python execution in org-mode
 (require 'ob-python)
 (require 'ob-R)
-
+(setq org-default-notes-file (concat org-directory "/notes.org"))
 
 ;; dired-mode
 (add-hook 'dired-mode-hook
