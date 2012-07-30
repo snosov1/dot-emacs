@@ -14,6 +14,14 @@
 ;; for R statstics language
 (when (require 'ess-site nil t)
   (setq ess-use-auto-complete t))
+
+;; cmake-mode
+(when (require 'cmake-mode)
+  (setq auto-mode-alist
+        (append '(("CMakeLists\\.txt\\'" . cmake-mode)
+                  ("\\.cmake\\'" . cmake-mode))
+                auto-mode-alist)))
+
 ;; ------------------------------------------------------------
 
 ;; dired-x
@@ -48,6 +56,7 @@
  '(ls-lisp-verbosity nil)
  '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
  '(org-capture-templates (quote (("e" "Capture expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|sveta-cafe|lunch|dance} | %^{cost} | %^{desc} |"))))
+ '(org-confirm-babel-evaluate nil)
  '(org-directory "~/Dropbox/Private/org")
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
  '(read-buffer-completion-ignore-case t)
@@ -134,7 +143,9 @@
              (define-key view-mode-map "f"
                'forward-char)
              (define-key view-mode-map "b"
-               'backward-char)))
+               'backward-char)
+             (define-key view-mode-map "l"
+               'recenter-top-bottom)))
 
 ;; enable whitespace mode for source editing modes
 (require 'whitespace)
