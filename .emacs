@@ -16,7 +16,7 @@
   (setq ess-use-auto-complete t))
 
 ;; cmake-mode
-(when (require 'cmake-mode)
+(when (require 'cmake-mode nil t)
   (setq auto-mode-alist
         (append '(("CMakeLists\\.txt\\'" . cmake-mode)
                   ("\\.cmake\\'" . cmake-mode))
