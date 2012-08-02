@@ -64,6 +64,7 @@
  '(read-file-name-completion-ignore-case t)
  '(scroll-error-top-bottom t)
  '(tab-width 4)
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify))
  '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
