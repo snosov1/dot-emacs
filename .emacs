@@ -60,6 +60,7 @@
  '(org-confirm-babel-evaluate nil)
  '(org-directory "~/Dropbox/Private/org")
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
+ '(org-src-fontify-natively t)
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(scroll-error-top-bottom t)
@@ -71,21 +72,21 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ediff-current-diff-A ((t (:background "white" :foreground "black"))) t)
+ '(ediff-current-diff-A ((t (:background "white" :foreground "black"))))
  '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))))
- '(ediff-current-diff-B ((t (:background "white" :foreground "black"))) t)
+ '(ediff-current-diff-B ((t (:background "white" :foreground "black"))))
  '(ediff-current-diff-C ((t (:background "white" :foreground "black"))))
- '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))) t)
+ '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))))
  '(ediff-even-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
- '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))) t)
+ '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))))
  '(ediff-even-diff-C ((t (:background "antique white" :foreground "Black"))))
- '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))) t)
+ '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))))
  '(ediff-fine-diff-Ancestor ((t (:background "gainsboro" :foreground "red"))))
- '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))) t)
+ '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))))
  '(ediff-fine-diff-C ((t (:background "gainsboro" :foreground "purple"))))
- '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))) t)
+ '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))))
  '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
- '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))) t)
+ '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))))
  '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black")))))
 
 ;; shut up the bell
@@ -120,7 +121,6 @@
 ;; enable python execution in org-mode
 (require 'ob-python)
 (require 'ob-R)
-(setq org-default-notes-file (concat org-directory "/notes.org"))
 
 ;; dired-mode
 (add-hook 'dired-mode-hook
