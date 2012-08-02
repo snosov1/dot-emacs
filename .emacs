@@ -55,7 +55,8 @@
  '(ls-lisp-ignore-case t)
  '(ls-lisp-verbosity nil)
  '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
- '(org-capture-templates (quote (("e" "Capture expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|sveta-cafe|lunch|dance} | %^{cost} | %^{desc} |"))))
+ '(org-capture-templates (quote (("t" "Simple TODO" entry (file+headline "~/Dropbox/Private/org/notes.org" "Tasks") "* TODO %?
+  DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|sveta-cafe|lunch|dance} | %^{cost} | %^{desc} |"))))
  '(org-confirm-babel-evaluate nil)
  '(org-directory "~/Dropbox/Private/org")
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
