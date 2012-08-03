@@ -24,7 +24,7 @@
 
 ;; ------------------------------------------------------------
 
-;; dired-x
+;; enables key bindings from dired-x (like C-x C-j)
 (require 'dired-x)
 
 ;; lose tool bar
@@ -56,7 +56,7 @@
  '(ls-lisp-verbosity nil)
  '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
  '(org-capture-templates (quote (("t" "Simple TODO" entry (file+headline "~/Dropbox/Private/org/notes.org" "Tasks") "* TODO %?
-  DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|sveta-cafe|lunch|dance} | %^{cost} | %^{desc} |"))))
+  DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|sveta-cafe|lunch|dance|snack} | %^{cost} | %^{desc} |"))))
  '(org-confirm-babel-evaluate nil)
  '(org-directory "~/Dropbox/Private/org")
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
@@ -95,19 +95,42 @@
 ;; ediff: fine highlight by char, not words
 (setq ediff-forward-word-function 'forward-char)
 
+;; see description
+(defun smart-beginning-of-line ()
+  "Move point to first non-whitespace character or beginning-of-line.
+
+Move point to the first non-whitespace character on this line.
+If point was already at that position, move point to beginning of line."
+  (interactive)
+  (let ((oldpos (point)))
+    (back-to-indentation)
+    (and (= oldpos (point))
+         (beginning-of-line))))
+
+;; enable org-mode
+(require 'org)
+;; enable python execution in org-mode
+(require 'ob-python)
+(require 'ob-R)
+
+;; convinient binding for C-x C-s
+(add-hook 'org-src-mode-hook
+          '(lambda ()
+             (define-key org-src-mode-map (kbd "C-x C-s") 'org-edit-src-exit)))
+
 ;; KEY BINDINGS
 ;; global
-(global-set-key (kbd "C-x f") 'find-file)
+(global-set-key (kbd "C-x f")   'find-file)
 (global-set-key (kbd "C-x C-d") 'dired)
-(global-set-key [C-tab] 'ido-switch-buffer)
+(global-set-key [C-tab]         'ido-switch-buffer)
 (global-set-key (kbd "C-x C-q") 'view-mode)
-(global-set-key (kbd "C-M-p") 'previous-buffer)
-(global-set-key (kbd "C-M-n") 'next-buffer)
-(global-set-key (kbd "\C-c c") 'org-capture)
-(global-set-key (kbd "\C-c a") 'org-agenda)
+(global-set-key (kbd "C-M-p")   'previous-buffer)
+(global-set-key (kbd "C-M-n")   'next-buffer)
+(global-set-key (kbd "\C-c c")  'org-capture)
+(global-set-key (kbd "\C-c a")  'org-agenda)
+(global-set-key (kbd "\C-a")    'smart-beginning-of-line)
 
 ;; org-mode
-(require 'org)
 (add-hook 'org-mode-hook
           '(lambda ()
              ;; don't redefine C-<TAB>
@@ -118,10 +141,6 @@
                'org-time-stamp-inactive)
              (define-key org-mode-map (kbd "C-c !")
                'org-time-stamp)))
-;; enable python execution in org-mode
-(require 'ob-python)
-(require 'ob-R)
-
 ;; dired-mode
 (add-hook 'dired-mode-hook
           '(lambda()
@@ -147,7 +166,11 @@
              (define-key view-mode-map "b"
                'backward-char)
              (define-key view-mode-map "l"
-               'recenter-top-bottom)))
+               'recenter-top-bottom)
+             (define-key view-mode-map "e"
+               'move-end-of-line)
+             (define-key view-mode-map "a"
+               'smart-beginning-of-line)))
 
 ;; enable whitespace mode for source editing modes
 (require 'whitespace)
