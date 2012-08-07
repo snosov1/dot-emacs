@@ -107,6 +107,21 @@ If point was already at that position, move point to beginning of line."
     (and (= oldpos (point))
          (beginning-of-line))))
 
+;; KEY BINDINGS
+;; global
+(global-set-key (kbd "C-x f")     'find-file)
+(global-set-key (kbd "C-x C-d")   'dired)
+(global-set-key [C-tab]           'ido-switch-buffer)
+(global-set-key (kbd "C-x C-q")   'view-mode)
+(global-set-key (kbd "C-M-p")     'previous-buffer)
+(global-set-key (kbd "C-M-n")     'next-buffer)
+(global-set-key (kbd "\C-c c")    'org-capture)
+(global-set-key (kbd "\C-c a")    'org-agenda)
+(global-set-key (kbd "\C-a")      'smart-beginning-of-line)
+(global-set-key (kbd "\C-x \C-b") 'ibuffer)
+
+
+;; org-mode
 ;; enable org-mode
 (require 'org)
 ;; enable python execution in org-mode
@@ -118,19 +133,6 @@ If point was already at that position, move point to beginning of line."
           '(lambda ()
              (define-key org-src-mode-map (kbd "C-x C-s") 'org-edit-src-exit)))
 
-;; KEY BINDINGS
-;; global
-(global-set-key (kbd "C-x f")   'find-file)
-(global-set-key (kbd "C-x C-d") 'dired)
-(global-set-key [C-tab]         'ido-switch-buffer)
-(global-set-key (kbd "C-x C-q") 'view-mode)
-(global-set-key (kbd "C-M-p")   'previous-buffer)
-(global-set-key (kbd "C-M-n")   'next-buffer)
-(global-set-key (kbd "\C-c c")  'org-capture)
-(global-set-key (kbd "\C-c a")  'org-agenda)
-(global-set-key (kbd "\C-a")    'smart-beginning-of-line)
-
-;; org-mode
 (add-hook 'org-mode-hook
           '(lambda ()
              ;; don't redefine C-<TAB>
