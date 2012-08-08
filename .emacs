@@ -48,6 +48,12 @@ If point was already at that position, move point to beginning of line."
     (and (= oldpos (point))
          (beginning-of-line))))
 
+;; functions to save and restore window configuration for ediff-mode
+(defun ediff-save-window-configuration ()
+  (window-configuration-to-register ?E))
+(defun ediff-restore-window-configuration ()
+  (jump-to-register ?E))
+
 ;; ------------------------------------------------------------
 ;; MISCELLANEOUS CONFIGS
 
@@ -100,9 +106,11 @@ If point was already at that position, move point to beginning of line."
  '(default-input-method "russian-computer")
  '(dired-dwim-target t)
  '(dired-listing-switches "-alh")
+ '(ediff-before-setup-hook (quote (ediff-save-window-configuration)))
  '(ediff-highlight-all-diffs t)
- '(ediff-quit-hook (quote (ediff-cleanup-mess exit-recursive-edit)))
+ '(ediff-quit-hook (quote (ediff-cleanup-mess ediff-restore-window-configuration exit-recursive-edit)))
  '(ediff-split-window-function (quote split-window-horizontally))
+ '(ediff-suspend-hook (quote (ediff-default-suspend-function ediff-restore-window-configuration)))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(ido-enable-flex-matching t)
  '(ido-mode (quote buffer) nil (ido))
@@ -130,21 +138,21 @@ If point was already at that position, move point to beginning of line."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ediff-current-diff-A ((t (:background "white" :foreground "black"))) t)
+ '(ediff-current-diff-A ((t (:background "white" :foreground "black"))))
  '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))))
- '(ediff-current-diff-B ((t (:background "white" :foreground "black"))) t)
+ '(ediff-current-diff-B ((t (:background "white" :foreground "black"))))
  '(ediff-current-diff-C ((t (:background "white" :foreground "black"))))
- '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))) t)
+ '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))))
  '(ediff-even-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
- '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))) t)
+ '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))))
  '(ediff-even-diff-C ((t (:background "antique white" :foreground "Black"))))
- '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))) t)
+ '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))))
  '(ediff-fine-diff-Ancestor ((t (:background "gainsboro" :foreground "red"))))
- '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))) t)
+ '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))))
  '(ediff-fine-diff-C ((t (:background "gainsboro" :foreground "purple"))))
- '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))) t)
+ '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))))
  '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
- '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))) t)
+ '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))))
  '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black")))))
 
 ;; ------------------------------------------------------------
