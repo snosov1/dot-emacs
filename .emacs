@@ -1,5 +1,7 @@
 ;; paths
 (add-to-list 'load-path "~/.emacs.d")
+(let ((default-directory "~/Dropbox/emacs"))
+  (normal-top-level-add-subdirs-to-load-path))
 
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
@@ -10,8 +12,8 @@
     (ac-config-default))
 
 ;; for R statstics language
-(when (require 'ess-site nil t)
-  (setq ess-use-auto-complete t))
+;; (when (require 'ess-site nil t)
+;;   (setq ess-use-auto-complete t))
 
 ;; cmake-mode
 (when (require 'cmake-mode nil t)
