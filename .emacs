@@ -149,6 +149,7 @@ If point was already at that position, move point to beginning of line."
  '(initial-buffer-choice t)
  '(initial-major-mode (quote org-mode))
  '(initial-scratch-message nil)
+ '(ls-lisp-dirs-first t)
  '(ls-lisp-ignore-case t)
  '(ls-lisp-verbosity nil)
  '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
@@ -169,21 +170,21 @@ If point was already at that position, move point to beginning of line."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ediff-current-diff-A ((t (:background "white" :foreground "black"))))
+ '(ediff-current-diff-A ((t (:background "white" :foreground "black"))) t)
  '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))))
- '(ediff-current-diff-B ((t (:background "white" :foreground "black"))))
+ '(ediff-current-diff-B ((t (:background "white" :foreground "black"))) t)
  '(ediff-current-diff-C ((t (:background "white" :foreground "black"))))
- '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))))
+ '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))) t)
  '(ediff-even-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
- '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))))
+ '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))) t)
  '(ediff-even-diff-C ((t (:background "antique white" :foreground "Black"))))
- '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))))
+ '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))) t)
  '(ediff-fine-diff-Ancestor ((t (:background "gainsboro" :foreground "red"))))
- '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))))
+ '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))) t)
  '(ediff-fine-diff-C ((t (:background "gainsboro" :foreground "purple"))))
- '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))))
+ '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))) t)
  '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
- '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))))
+ '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))) t)
  '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black")))))
 
 ;; ------------------------------------------------------------
