@@ -65,13 +65,25 @@ If point was already at that position, move point to beginning of line."
   (jump-to-register ?E))
 
 (defun open-window-manager ()
+  "Open default system windows manager in current directory"
   (interactive)
   (when (equal window-system 'w32)
     (save-window-excursion (execute-kbd-macro (symbol-function 'open-explorer)))))
 (defun open-in-window-manager ()
+  "Open item under cursor in default system windows manager"
   (interactive)
   (when (equal window-system 'w32)
     (save-window-excursion (execute-kbd-macro (symbol-function 'open-in-explorer)))))
+
+(defun dired-goto-file-ido (file)
+  "Use ido-read-file-name in dired-goto-file"
+  (interactive
+   (prog1                          ; let push-mark display its message
+       (list (expand-file-name
+          (ido-read-file-name "Goto file: " ; use ido-read-file-name
+                  (dired-current-directory))))
+     (push-mark)))
+  (dired-goto-file file))
 
 ;; ------------------------------------------------------------
 ;; MISCELLANEOUS CONFIGS
@@ -219,7 +231,9 @@ If point was already at that position, move point to beginning of line."
              (define-key dired-mode-map (kbd "E")
                'open-window-manager)
              (define-key dired-mode-map [(shift return)]
-               'open-in-window-manager)))
+               'open-in-window-manager)
+             (define-key dired-mode-map (kbd "j")
+               'dired-goto-file-ido)))
 
 
 (add-hook 'view-mode-hook
