@@ -35,6 +35,16 @@
 ;; 'bad' whitespace highlighting
 (require 'whitespace)
 ;; ------------------------------------------------------------
+;; kbd DEFINITIONS
+
+;; open explorer in current directory
+(fset 'open-explorer
+   [?\M-& ?e ?x ?p ?l ?o ?r ?e ?r ?  ?. return])
+;; open current name in explorer
+(fset 'open-in-explorer
+   [?& ?e ?x ?p ?l ?o ?r ?e ?r return])
+
+;; ------------------------------------------------------------
 ;; DEFUNS
 
 (defun smart-beginning-of-line ()
@@ -53,6 +63,15 @@ If point was already at that position, move point to beginning of line."
   (window-configuration-to-register ?E))
 (defun ediff-restore-window-configuration ()
   (jump-to-register ?E))
+
+(defun open-window-manager ()
+  (interactive)
+  (when (equal window-system 'w32)
+    (save-window-excursion (execute-kbd-macro (symbol-function 'open-explorer)))))
+(defun open-in-window-manager ()
+  (interactive)
+  (when (equal window-system 'w32)
+    (save-window-excursion (execute-kbd-macro (symbol-function 'open-in-explorer)))))
 
 ;; ------------------------------------------------------------
 ;; MISCELLANEOUS CONFIGS
@@ -122,7 +141,7 @@ If point was already at that position, move point to beginning of line."
  '(ls-lisp-verbosity nil)
  '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
  '(org-capture-templates (quote (("t" "Simple TODO" entry (file+headline "~/Dropbox/Private/org/notes.org" "Tasks") "* TODO %?
-  DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|sveta-cafe|lunch|dance|snack} | %^{cost} | %^{desc} |"))))
+  DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|sveta-cafe|lunch|dance|snack|condoms} | %^{cost} | %^{desc} |"))))
  '(org-confirm-babel-evaluate nil)
  '(org-directory "~/Dropbox/Private/org")
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
@@ -195,7 +214,12 @@ If point was already at that position, move point to beginning of line."
              (define-key dired-mode-map (kbd "C-M-p")
                nil)
              (define-key dired-mode-map (kbd "C-M-n")
-               nil)))
+               nil)
+             ;; external window manager
+             (define-key dired-mode-map (kbd "E")
+               'open-window-manager)
+             (define-key dired-mode-map [(shift return)]
+               'open-in-window-manager)))
 
 
 (add-hook 'view-mode-hook
