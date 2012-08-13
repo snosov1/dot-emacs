@@ -20,6 +20,9 @@
                   ("\\.cmake\\'" . cmake-mode))
                 auto-mode-alist)))
 
+(eval-after-load "dired-aux"
+  '(require 'dired-async nil t))
+
 ;; ------------------------------------------------------------
 ;; DEPENDENCIES
 
@@ -170,6 +173,7 @@ If point was already at that position, move point to beginning of line."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(dired-async-in-process-face ((t (:background "cornflower blue"))))
  '(ediff-current-diff-A ((t (:background "white" :foreground "black"))) t)
  '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))))
  '(ediff-current-diff-B ((t (:background "white" :foreground "black"))) t)
