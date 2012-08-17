@@ -11,10 +11,6 @@
     (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
     (ac-config-default))
 
-;; for R statstics language
-;; (when (require 'ess-site nil t)
-;;   (setq ess-use-auto-complete t))
-
 ;; cmake-mode
 (when (require 'cmake-mode nil t)
   (setq auto-mode-alist
@@ -22,8 +18,20 @@
                   ("\\.cmake\\'" . cmake-mode))
                 auto-mode-alist)))
 
-(eval-after-load "dired-aux"
-  '(require 'dired-async nil t))
+;; magit
+(require 'magit nil t)
+
+;; ------------------------------------------------------------
+;; DROPPED DEPENDENCIES
+
+;; for R statstics language
+;; (when (require 'ess-site nil t)
+;;   (setq ess-use-auto-complete t))
+
+;; too bad this dired-async stuff is not working really well
+;; (particulary with renaming and deletions)
+;; (eval-after-load "dired-aux"
+;;   '(require 'dired-async nil t))
 
 ;; ------------------------------------------------------------
 ;; DEPENDENCIES
@@ -96,7 +104,7 @@ If point was already at that position, move point to beginning of line."
 ;; lose tool bar
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 
-;; starting emacs server
+;; start emacs server on first run
 (require 'server)
 (when (equal window-system 'w32)
   (defun server-ensure-safe-dir (dir) "Noop" t)) ; Suppress error "directory
