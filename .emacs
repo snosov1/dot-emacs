@@ -104,6 +104,19 @@ If point was already at that position, move point to beginning of line."
      (push-mark)))
   (dired-goto-file file))
 
+(defun swap-buffers-in-windows ()
+  "Put the buffer from the selected window in next window"
+  (interactive)
+  (let* ((this (selected-window))
+         (other (next-window))
+         (this-buffer (window-buffer this))
+         (other-buffer (window-buffer other)))
+    (set-window-buffer other this-buffer)
+    (set-window-buffer this other-buffer)
+    (select-window other)               ;; comment to stay in current window
+    )
+  )
+
 ;; ------------------------------------------------------------
 ;; MISCELLANEOUS CONFIGS
 
@@ -224,6 +237,8 @@ If point was already at that position, move point to beginning of line."
 (global-set-key (kbd "M-p")       'scroll-down-line)
 (global-set-key (kbd "M-n")       'scroll-up-line)
 (global-set-key (kbd "\C-c m")    'magit-status)
+(global-set-key (kbd "\C-c s")    'swap-buffers-in-windows)
+
 
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
