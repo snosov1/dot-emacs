@@ -18,6 +18,12 @@
                   ("\\.cmake\\'" . cmake-mode))
                 auto-mode-alist)))
 
+(when (require 'dos nil t)
+  (setq auto-mode-alist
+        (append '(("\\.cmd\\'" . dos-mode)
+                  ("\\.bat\\'" . dos-mode))
+                auto-mode-alist)))
+
 ;; magit
 (require 'magit nil t)
 
@@ -217,6 +223,7 @@ If point was already at that position, move point to beginning of line."
 (global-set-key (kbd "\C-x \C-b") 'ibuffer)
 (global-set-key (kbd "M-p")       'scroll-down-line)
 (global-set-key (kbd "M-n")       'scroll-up-line)
+(global-set-key (kbd "\C-c m")    'magit-status)
 
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
