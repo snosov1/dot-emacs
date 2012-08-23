@@ -134,6 +134,11 @@ If point was already at that position, move point to beginning of line."
   (message (buffer-file-name))
   (kill-new (buffer-file-name)))
 
+(defun open-line-indent ()
+  "Use newline-and-indent in open-line command"
+  (interactive)
+  (save-excursion (newline-and-indent)))
+
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
 
@@ -262,7 +267,7 @@ If point was already at that position, move point to beginning of line."
 (global-set-key (kbd "\C-c s")    'swap-buffers-in-windows)
 (global-set-key (kbd "M-\"")      'double-quote-word)
 (global-set-key (kbd "\C-c w")    'show-file-name)
-
+(global-set-key (kbd "\C-o")    'open-line-indent)
 
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
