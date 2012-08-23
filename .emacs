@@ -53,6 +53,7 @@
 
 ;; 'bad' whitespace highlighting
 (require 'whitespace)
+
 ;; ------------------------------------------------------------
 ;; kbd DEFINITIONS
 
@@ -117,42 +118,15 @@ If point was already at that position, move point to beginning of line."
     )
   )
 
-;; ------------------------------------------------------------
-;; MISCELLANEOUS CONFIGS
-
-;; lose tool bar
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-
-;; start emacs server on first run
-(require 'server)
-(when (equal window-system 'w32)
-  (defun server-ensure-safe-dir (dir) "Noop" t)) ; Suppress error "directory
-                                                 ; ~/.emacs.d/server is unsafe"
-                                                 ; on windows.
-(unless (server-running-p) (server-start))
-
-;; disable 'confusing' functions disabling
-(put 'narrow-to-region 'disabled nil)
-
-;; shut up the bell
-(setq ring-bell-function 'ignore)
-
-;; ediff: fine highlight by char, not words
-(setq ediff-forward-word-function 'forward-char)
-
-;; enable whitespace mode for source editing modes
-(add-hook 'c++-mode-hook
-  (function (lambda ()
-              (whitespace-mode t))))
-(add-hook 'c-mode-hook
-  (function (lambda ()
-              (whitespace-mode t))))
-(add-hook 'emacs-lisp-mode-hook
-  (function (lambda ()
-              (whitespace-mode t))))
-(add-hook 'python-mode-hook
-  (function (lambda ()
-              (whitespace-mode t))))
+(defun double-quote ()
+  "Put word at point in double quotes"
+  (interactive)
+  (setq boundaries (bounds-of-thing-at-point 'word))
+  (save-excursion
+    (goto-char (car boundaries))
+    (insert ?\")
+    (goto-char (+ 1 (cdr boundaries)))
+    (insert ?\")))
 
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
@@ -219,6 +193,47 @@ If point was already at that position, move point to beginning of line."
  '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
  '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))) t)
  '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black")))))
+
+;; ------------------------------------------------------------
+;; MISCELLANEOUS CONFIGS
+
+;; lose tool bar
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+
+;; start emacs server on first run
+(require 'server)
+(when (equal window-system 'w32)
+  (defun server-ensure-safe-dir (dir) "Noop" t)) ; Suppress error "directory
+                                                 ; ~/.emacs.d/server is unsafe"
+                                                 ; on windows.
+(unless (server-running-p) (server-start))
+
+;; make background a little darker
+(set-background-color "#1d1f21")
+
+;; disable 'confusing' functions disabling
+(put 'narrow-to-region 'disabled nil)
+
+;; shut up the bell
+(setq ring-bell-function 'ignore)
+
+;; ediff: fine highlight by char, not words
+(setq ediff-forward-word-function 'forward-char)
+
+;; enable whitespace mode for source editing modes
+(add-hook 'c++-mode-hook
+  (function (lambda ()
+              (whitespace-mode t))))
+(add-hook 'c-mode-hook
+  (function (lambda ()
+              (whitespace-mode t))))
+(add-hook 'emacs-lisp-mode-hook
+  (function (lambda ()
+              (whitespace-mode t))))
+(add-hook 'python-mode-hook
+  (function (lambda ()
+              (whitespace-mode t))))
+
 
 ;; ------------------------------------------------------------
 ;; KEY BINDINGS
