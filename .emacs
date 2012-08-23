@@ -128,6 +128,12 @@ If point was already at that position, move point to beginning of line."
     (goto-char (+ 1 (cdr boundaries)))
     (insert ?\")))
 
+(defun show-file-name ()
+  "Show the full path file name in the minibuffer and add it to kill ring"
+  (interactive)
+  (message (buffer-file-name))
+  (kill-new (buffer-file-name)))
+
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
 
@@ -255,6 +261,7 @@ If point was already at that position, move point to beginning of line."
 (global-set-key (kbd "\C-c m")    'magit-status)
 (global-set-key (kbd "\C-c s")    'swap-buffers-in-windows)
 (global-set-key (kbd "M-\"")      'double-quote-word)
+(global-set-key (kbd "\C-c w")    'show-file-name)
 
 
 ;; convinient binding for C-x C-s in org-src-mode
