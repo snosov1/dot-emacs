@@ -7,9 +7,16 @@
 ;; EXTERNAL DEPENDENCIES
 
 ;; auto-complete mode
+
+;; NOTE: this mode doesn't play well along with yasnippet, so I've
+;; commented out everything about it from ac sources
 (when (require 'auto-complete-config nil t)
-    (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-    (ac-config-default))
+  (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+  (ac-config-default))
+
+;; yasnippet
+(when (require 'yasnippet nil t)
+  (yas-global-mode 1))
 
 ;; cmake-mode
 (when (require 'cmake-mode nil t)
@@ -182,7 +189,8 @@ If point was already at that position, move point to beginning of line."
  '(scroll-error-top-bottom t)
  '(tab-width 4)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
- '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark))))
+ '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
+ '(yas-trigger-key "M-/"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
