@@ -142,9 +142,13 @@ If point was already at that position, move point to beginning of line."
   (kill-new (buffer-file-name)))
 
 (defun open-line-indent ()
-  "Use newline-and-indent in open-line command"
+  "Use newline-and-indent in open-line command if there are
+non-whitespace characters after the point"
   (interactive)
-  (save-excursion (newline-and-indent)))
+  (save-excursion
+    (if (looking-at-p "\\s-*$") ;; how in earth does this work?
+        (newline)
+      (newline-and-indent))))
 
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
@@ -275,7 +279,7 @@ If point was already at that position, move point to beginning of line."
 (global-set-key (kbd "\C-c s")    'swap-buffers-in-windows)
 (global-set-key (kbd "M-\"")      'double-quote-word)
 (global-set-key (kbd "\C-c w")    'show-file-name)
-(global-set-key (kbd "\C-o")    'open-line-indent)
+(global-set-key (kbd "\C-o")      'open-line-indent)
 
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
