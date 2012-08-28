@@ -58,8 +58,9 @@
 (require 'ob-python)
 (require 'ob-R)
 
-;; 'bad' whitespace highlighting
-(require 'whitespace)
+;; semantic
+(semantic-mode 1)
+(global-semantic-decoration-mode 1)
 
 ;; ------------------------------------------------------------
 ;; kbd DEFINITIONS
@@ -70,6 +71,19 @@
 ;; open current name in explorer
 (fset 'open-in-explorer
    [?& ?e ?x ?p ?l ?o ?r ?e ?r return])
+;; open nautilus in current directory
+(fset 'open-nautilus
+   [?\M-& ?n ?a ?u ?t ?i ?l ?u ?s ?  ?. return])
+;; open current name in nautilus
+(fset 'open-in-nautilus
+   [?& ?n ?a ?u ?t ?i ?l ?u ?s return])
+
+;; ------------------------------------------------------------
+;; PREDEFINED REGISTERS
+
+;; mirror address
+(set-register ?M
+              "//samba/nfs/inn/proj/ipp/mirror/")
 
 ;; ------------------------------------------------------------
 ;; DEFUNS
@@ -95,12 +109,17 @@ If point was already at that position, move point to beginning of line."
   "Open default system windows manager in current directory"
   (interactive)
   (when (equal window-system 'w32)
-    (save-window-excursion (execute-kbd-macro (symbol-function 'open-explorer)))))
+    (save-window-excursion (execute-kbd-macro (symbol-function 'open-explorer))))
+  (when (equal window-system 'x)
+    (save-window-excursion (execute-kbd-macro (symbol-function 'open-nautilus)))))
+
 (defun open-in-window-manager ()
   "Open item under cursor in default system windows manager"
   (interactive)
   (when (equal window-system 'w32)
-    (save-window-excursion (execute-kbd-macro (symbol-function 'open-in-explorer)))))
+    (save-window-excursion (execute-kbd-macro (symbol-function 'open-in-explorer))))
+  (when (equal window-system 'x)
+    (save-window-excursion (execute-kbd-macro (symbol-function 'open-in-nautilus)))))
 
 (defun dired-goto-file-ido (file)
   "Use ido-read-file-name in dired-goto-file"
@@ -244,20 +263,8 @@ non-whitespace characters after the point"
 ;; ediff: fine highlight by char, not words
 (setq ediff-forward-word-function 'forward-char)
 
-;; enable whitespace mode for source editing modes
-(add-hook 'c++-mode-hook
-  (function (lambda ()
-              (whitespace-mode t))))
-(add-hook 'c-mode-hook
-  (function (lambda ()
-              (whitespace-mode t))))
-(add-hook 'emacs-lisp-mode-hook
-  (function (lambda ()
-              (whitespace-mode t))))
-(add-hook 'python-mode-hook
-  (function (lambda ()
-              (whitespace-mode t))))
-
+;; delete trailing whitespace before save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; ------------------------------------------------------------
 ;; KEY BINDINGS
