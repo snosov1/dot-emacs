@@ -219,6 +219,11 @@ non-whitespace characters after the point"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(diff-added ((t (:foreground "green"))))
+ '(diff-file-header ((t (:background "black" :weight bold))))
+ '(diff-header ((t (:background "black"))))
+ '(diff-refine-change ((t (:background "dark slate gray"))))
+ '(diff-removed ((t (:foreground "yellow"))))
  '(dired-async-in-process-face ((t (:background "cornflower blue"))))
  '(ediff-current-diff-A ((t (:background "white" :foreground "black"))))
  '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))))
@@ -235,7 +240,8 @@ non-whitespace characters after the point"
  '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))))
  '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
  '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))))
- '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black")))))
+ '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black"))))
+ '(magit-item-highlight ((t (:background "black")))))
 
 ;; ------------------------------------------------------------
 ;; MISCELLANEOUS CONFIGS
