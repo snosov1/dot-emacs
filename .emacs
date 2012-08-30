@@ -200,7 +200,7 @@ non-whitespace characters after the point"
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(electric-pair-mode t)
  '(ido-enable-flex-matching t)
- '(ido-mode (quote buffer) nil (ido))
+ '(ido-mode (quote both) nil (ido))
  '(indent-tabs-mode nil)
  '(initial-buffer-choice t)
  '(initial-major-mode (quote org-mode))
