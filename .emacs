@@ -280,6 +280,9 @@ non-whitespace characters after the point"
 ;; delete trailing whitespace before save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+;; show matching parentheses
+(show-paren-mode 1)
+
 ;; ------------------------------------------------------------
 ;; KEY BINDINGS
 
