@@ -301,6 +301,8 @@ non-whitespace characters after the point"
 (global-set-key (kbd "M-\"")      'double-quote-word)
 (global-set-key (kbd "\C-c w")    'show-file-name)
 (global-set-key (kbd "\C-o")      'open-line-indent)
+(global-set-key (kbd "\C-x v a")  'vc-annotate)
+(global-set-key (kbd "\C-x v b")  'vc-annotate)
 
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
