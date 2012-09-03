@@ -58,18 +58,6 @@
 (require 'ob-python)
 (require 'ob-R)
 
-;; semantic
-(semantic-mode 1)
-(global-semantic-decoration-mode 1)
-(require 'semantic/bovine/c)
-;; OpenCV parsing
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_PROP_RW" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS_W_SIMPLE" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS_W" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS_W_MAP" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_INLINE" . ""))
-
 ;; ------------------------------------------------------------
 ;; kbd DEFINITIONS
 
