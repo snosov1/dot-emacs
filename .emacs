@@ -12,7 +12,15 @@
 ;; commented out everything about it from ac sources
 (when (require 'auto-complete-config nil t)
   (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-  (ac-config-default))
+  (ac-config-default)
+  ;; auto-complete-clang
+  (when (require 'auto-complete-clang nil t)
+    (add-hook 'c-mode-common-hook
+              '(lambda ()
+                 (define-key c-mode-base-map (kbd "\C-c TAB") 'ac-complete-clang))))
+  ;; auto-complete-python
+  (unless (equal window-system 'w32) ;; somehow ac-python hangs on windows
+    (require 'ac-python nil t)))
 
 ;; yasnippet
 (when (require 'yasnippet nil t)
