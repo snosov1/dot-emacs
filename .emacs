@@ -209,8 +209,10 @@ non-whitespace characters after the point"
   DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|sveta-cafe|lunch|dance|snack|condoms|phone} | %^{cost} | %^{desc} |"))))
  '(org-confirm-babel-evaluate nil)
  '(org-directory "~/Dropbox/Private/org")
+ '(org-hide-leading-stars t)
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
  '(org-src-fontify-natively t)
+ '(org-startup-indented t)
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(scroll-error-top-bottom t)
@@ -302,6 +304,7 @@ non-whitespace characters after the point"
 (global-set-key (kbd "\C-o")      'open-line-indent)
 (global-set-key (kbd "\C-x v a")  'vc-annotate)
 (global-set-key (kbd "\C-x v b")  'vc-annotate)
+(global-set-key (kbd "<f5>")      'revert-buffer)
 
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
