@@ -1,7 +1,17 @@
 ;; paths
 (add-to-list 'load-path "~/.emacs.d")
+
+;; this complicated 'let' places every subdir of Dropbox/emacs AT THE
+;; BEGINING of load-path, so custom versions of libraries are loaded
+;; before bundled (org-mode in particular)
 (let ((default-directory "~/Dropbox/emacs"))
-  (normal-top-level-add-subdirs-to-load-path))
+  (setq load-path
+        (append
+         (let ((load-path (copy-sequence load-path))) ;; Shadow
+           (append
+            (copy-sequence (normal-top-level-add-to-load-path '(".")))
+            (normal-top-level-add-subdirs-to-load-path)))
+         load-path)))
 
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
