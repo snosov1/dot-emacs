@@ -209,6 +209,20 @@ non-whitespace characters after the point"
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 
+(defun notify-send (title msg &optional icon)
+  "Show a popup; TITLE is the title of the message, MSG is the
+context. ICON is the optional filename or keyword.
+Portable keywords are: error, important, info."
+  (interactive)
+  (if (or (eq window-system 'x)
+          (eq window-system 'w32))
+      (save-window-excursion
+        (async-shell-command (concat "notify-send "
+                                     (if icon (concat "-i " icon) "-i important")
+                                     " \"" title "\" \"" msg "\"")))
+    ;; text only version
+    (message (concat title ": " msg))))
+
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
 
@@ -253,6 +267,7 @@ non-whitespace characters after the point"
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(scroll-error-top-bottom t)
+ '(show-paren-delay 0)
  '(tab-width 4)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
  '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
