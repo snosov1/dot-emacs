@@ -338,7 +338,8 @@ Portable keywords are: error, important, info."
 (setq
  appt-message-warning-time 15  ;; warn 15 min in advance
  appt-display-mode-line t      ;; show in the modeline
- appt-display-format 'window)  ;; use our func
+ appt-display-format 'window   ;; use our func
+ appt-display-interval 1)      ;; display notification every minute
 (appt-activate 1)              ;; active appt (appointment notification)
 (display-time)                 ;; time display is required for this...
 ;; update appt info
@@ -411,7 +412,6 @@ Portable keywords are: error, important, info."
              (define-key dired-mode-map (kbd "j")
                'dired-goto-file-ido)))
 
-
 (add-hook 'view-mode-hook
           '(lambda ()
              ;; navigation
@@ -429,3 +429,8 @@ Portable keywords are: error, important, info."
                'move-end-of-line)
              (define-key view-mode-map "a"
                'smart-beginning-of-line)))
+
+(add-hook 'c-mode-common-hook
+          '(lambda ()
+             (define-key c-mode-base-map "\C-c\C-c"
+               'compile)))
