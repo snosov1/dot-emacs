@@ -238,6 +238,8 @@ Portable keywords are: error, important, info."
  '(default-input-method "russian-computer")
  '(dired-dwim-target t)
  '(dired-listing-switches "-alh")
+ '(dired-recursive-copies (quote always))
+ '(dired-recursive-deletes (quote always))
  '(ediff-before-setup-hook (quote (ediff-save-window-configuration)))
  '(ediff-highlight-all-diffs t)
  '(ediff-quit-hook (quote (ediff-cleanup-mess ediff-restore-window-configuration exit-recursive-edit)))
@@ -339,7 +341,7 @@ Portable keywords are: error, important, info."
  appt-message-warning-time 15  ;; warn 15 min in advance
  appt-display-mode-line t      ;; show in the modeline
  appt-display-format 'window   ;; use our func
- appt-display-interval 1)      ;; display notification every minute
+ appt-display-interval 3)      ;; display notification every 3 minutes
 (appt-activate 1)              ;; active appt (appointment notification)
 (display-time)                 ;; time display is required for this...
 ;; update appt info
