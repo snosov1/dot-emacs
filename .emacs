@@ -43,6 +43,8 @@
                   ("\\.cmake\\'" . cmake-mode))
                 auto-mode-alist)))
 
+;; dos-mode
+;; for editing Windows .bat-files
 (when (require 'dos nil t)
   (setq auto-mode-alist
         (append '(("\\.cmd\\'" . dos-mode)
@@ -273,6 +275,7 @@ Portable keywords are: error, important, info."
  '(tab-width 4)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
  '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
+ '(yas-prompt-functions (quote (yas-dropdown-prompt yas-ido-prompt yas-completing-prompt yas-x-prompt yas-no-prompt)))
  '(yas-trigger-key "M-/"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
