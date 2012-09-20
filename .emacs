@@ -261,7 +261,7 @@ Portable keywords are: error, important, info."
  '(magit-diff-refine-hunk t)
  '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
  '(org-capture-templates (quote (("t" "Simple TODO" entry (file+headline "~/Dropbox/Private/org/notes.org" "Tasks") "* TODO %?
-  DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|cafe|lunch|dance|snack|condoms|phone} | %^{cost} | %^{desc} |"))))
+DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|cafe|lunch|dance|snack|condoms|phone} | %^{cost} | %^{desc} |"))))
  '(org-confirm-babel-evaluate nil)
  '(org-directory "~/Dropbox/Private/org")
  '(org-hide-leading-stars t)
