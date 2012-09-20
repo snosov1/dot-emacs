@@ -438,4 +438,14 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (add-hook 'c-mode-common-hook
           '(lambda ()
              (define-key c-mode-base-map "\C-c\C-c"
-               'compile)))
+               'compile)
+             (define-key c-mode-base-map "\C-c\C-o"
+               'ff-find-other-file)
+             (define-key c-mode-base-map "\C-c\C-p"
+               'beginning-of-defun)
+             (define-key c-mode-base-map "\C-c\C-n"
+               'end-of-defun)
+             ;; hs-mode
+             (hs-minor-mode t)
+             (define-key c-mode-base-map "\C-c\C-h"
+               'hs-toggle-hiding)))
