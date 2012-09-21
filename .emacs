@@ -375,6 +375,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-n")       'scroll-up-line)
 (global-set-key (kbd "\C-c m")    'magit-status)
 (global-set-key (kbd "\C-c s")    'swap-buffers-in-windows)
+(global-set-key (kbd "\C-c\C-s")  'swap-buffers-in-windows)
 (global-set-key (kbd "M-\"")      'double-quote-word)
 (global-set-key (kbd "\C-c w")    'show-file-name)
 (global-set-key (kbd "\C-o")      'open-line-indent)
@@ -382,6 +383,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-x v b")  'vc-annotate)
 (global-set-key (kbd "<f5>")      'revert-buffer)
 (global-set-key (kbd "\C-c f")    'toggle-window-split)
+(global-set-key (kbd "\C-c\C-f")  'toggle-window-split)
 
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
