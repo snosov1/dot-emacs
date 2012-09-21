@@ -437,6 +437,11 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              (define-key view-mode-map "a"
                'smart-beginning-of-line)))
 
+(add-hook 'cmake-mode-hook
+          '(lambda ()
+             (define-key cmake-mode-map "\C-c\C-c"
+               'compile)))
+
 (add-hook 'c-mode-common-hook
           '(lambda ()
              (define-key c-mode-base-map "\C-c\C-c"
