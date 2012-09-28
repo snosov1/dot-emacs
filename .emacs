@@ -72,6 +72,10 @@
 ;; enables key bindings from dired-x (like C-x C-j)
 (require 'dired-x)
 
+;; for git-grep command
+(require 'vc-git)
+(require 'grep)
+
 ;; enable org-mode
 (require 'org)
 ;; enable python execution in org-mode
@@ -225,6 +229,19 @@ Portable keywords are: error, important, info."
     ;; text only version
     (message (concat title ": " msg))))
 
+(defcustom git-grep-switches "--extended-regexp -I -n --ignore-case "
+  "Switches to pass to 'git grep'."
+  :type 'string)
+
+(defun git-grep (re)
+  (interactive
+   (list (read-from-minibuffer "git grep: " nil nil nil 'grep-history)))
+  (let ((grep-use-null-device nil))
+    (grep (format "git --no-pager grep %s -e %s -- %s"
+                  git-grep-switches
+                  re
+                  (vc-git-root default-directory)))))
+
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
 
@@ -361,29 +378,30 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 ;; KEY BINDINGS
 
 ;; global
-(global-set-key (kbd "C-x f")     'find-file)
-(global-set-key (kbd "C-x C-d")   'dired)
-(global-set-key [C-tab]           'ido-switch-buffer)
-(global-set-key (kbd "C-x C-q")   'view-mode)
-(global-set-key (kbd "C-M-p")     'previous-buffer)
-(global-set-key (kbd "C-M-n")     'next-buffer)
-(global-set-key (kbd "\C-c c")    'org-capture)
-(global-set-key (kbd "\C-c a")    'org-agenda)
-(global-set-key (kbd "\C-a")      'smart-beginning-of-line)
-(global-set-key (kbd "\C-x \C-b") 'ibuffer)
-(global-set-key (kbd "M-p")       'scroll-down-line)
-(global-set-key (kbd "M-n")       'scroll-up-line)
-(global-set-key (kbd "\C-c m")    'magit-status)
-(global-set-key (kbd "\C-c s")    'swap-buffers-in-windows)
-(global-set-key (kbd "\C-c\C-s")  'swap-buffers-in-windows)
-(global-set-key (kbd "M-\"")      'double-quote-word)
-(global-set-key (kbd "\C-c w")    'show-file-name)
-(global-set-key (kbd "\C-o")      'open-line-indent)
-(global-set-key (kbd "\C-x v a")  'vc-annotate)
-(global-set-key (kbd "\C-x v b")  'vc-annotate)
-(global-set-key (kbd "<f5>")      'revert-buffer)
-(global-set-key (kbd "\C-c f")    'toggle-window-split)
-(global-set-key (kbd "\C-c\C-f")  'toggle-window-split)
+(global-set-key (kbd "C-x f")       'find-file)
+(global-set-key (kbd "C-x C-d")     'dired)
+(global-set-key [C-tab]             'ido-switch-buffer)
+(global-set-key (kbd "C-x C-q")     'view-mode)
+(global-set-key (kbd "C-M-p")       'previous-buffer)
+(global-set-key (kbd "C-M-n")       'next-buffer)
+(global-set-key (kbd "\C-c c")      'org-capture)
+(global-set-key (kbd "\C-c a")      'org-agenda)
+(global-set-key (kbd "\C-a")        'smart-beginning-of-line)
+(global-set-key (kbd "\C-x \C-b")   'ibuffer)
+(global-set-key (kbd "M-p")         'scroll-down-line)
+(global-set-key (kbd "M-n")         'scroll-up-line)
+(global-set-key (kbd "\C-c m")      'magit-status)
+(global-set-key (kbd "\C-c s")      'swap-buffers-in-windows)
+(global-set-key (kbd "\C-c\C-s")    'swap-buffers-in-windows)
+(global-set-key (kbd "M-\"")        'double-quote-word)
+(global-set-key (kbd "\C-c w")      'show-file-name)
+(global-set-key (kbd "\C-o")        'open-line-indent)
+(global-set-key (kbd "\C-x v a")    'vc-annotate)
+(global-set-key (kbd "\C-x v b")    'vc-annotate)
+(global-set-key (kbd "<f5>")        'revert-buffer)
+(global-set-key (kbd "\C-c f")      'toggle-window-split)
+(global-set-key (kbd "\C-c\C-f")    'toggle-window-split)
+(global-set-key [(control shift f)] 'git-grep)
 
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
