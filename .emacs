@@ -54,6 +54,11 @@
 ;; magit
 (require 'magit nil t)
 
+;; expand-region
+(when (require 'expand-region nil t)
+  (global-set-key (kbd "C-=") 'er/expand-region)
+  (global-set-key (kbd "C--") 'er/contract-region))
+
 ;; ------------------------------------------------------------
 ;; DROPPED DEPENDENCIES
 
@@ -242,6 +247,52 @@ Portable keywords are: error, important, info."
                   re
                   (vc-git-root default-directory)))))
 
+(defun eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+
+;; move text
+(defun move-text-internal (arg)
+  (cond
+   ((and mark-active transient-mark-mode)
+    (if (> (point) (mark))
+        (exchange-point-and-mark))
+    (let ((column (current-column))
+          (text (delete-and-extract-region (point) (mark))))
+      (forward-line arg)
+      (move-to-column column t)
+      (set-mark (point))
+      (insert text)
+      (exchange-point-and-mark)
+      (setq deactivate-mark nil)))
+   (t
+    (let ((column (current-column)))
+      (beginning-of-line)
+      (when (or (> arg 0) (not (bobp)))
+        (forward-line)
+        (when (or (< arg 0) (not (eobp)))
+          (transpose-lines arg))
+        (forward-line -1))
+      (move-to-column column t)))))
+
+(defun move-text-down (arg)
+  "Move region (transient-mark-mode active) or current line
+  arg lines down."
+  (interactive "*p")
+  (move-text-internal arg))
+
+(defun move-text-up (arg)
+  "Move region (transient-mark-mode active) or current line
+  arg lines up."
+  (interactive "*p")
+  (move-text-internal (- arg)))
+
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
 
@@ -388,8 +439,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-c a")      'org-agenda)
 (global-set-key (kbd "\C-a")        'smart-beginning-of-line)
 (global-set-key (kbd "\C-x \C-b")   'ibuffer)
-(global-set-key (kbd "M-p")         'scroll-down-line)
-(global-set-key (kbd "M-n")         'scroll-up-line)
+(global-set-key (kbd "M-p")         'move-text-up)
+(global-set-key (kbd "M-n")         'move-text-down)
 (global-set-key (kbd "\C-c m")      'magit-status)
 (global-set-key (kbd "\C-c s")      'swap-buffers-in-windows)
 (global-set-key (kbd "\C-c\C-s")    'swap-buffers-in-windows)
@@ -402,6 +453,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-c f")      'toggle-window-split)
 (global-set-key (kbd "\C-c\C-f")    'toggle-window-split)
 (global-set-key [(control shift f)] 'git-grep)
+(global-set-key (kbd "\C-x\C-e")    'eval-and-replace)
 
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
