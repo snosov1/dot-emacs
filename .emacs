@@ -454,6 +454,9 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-c\C-f")    'toggle-window-split)
 (global-set-key [(control shift f)] 'git-grep)
 (global-set-key (kbd "\C-x\C-e")    'eval-and-replace)
+(global-set-key (kbd "M-<SPC>")     'fixup-whitespace)
+
+(define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
