@@ -57,7 +57,37 @@
 ;; expand-region
 (when (require 'expand-region nil t)
   (global-set-key (kbd "C-=") 'er/expand-region)
-  (global-set-key (kbd "C--") 'er/contract-region))
+  (global-set-key (kbd "C--") 'er/contract-region)
+
+  ;; expand to functions in C/C++
+  (add-hook 'c-mode-common-hook '(lambda ()
+                                   (make-variable-buffer-local 'er/try-expand-list)
+                                   (setq er/try-expand-list (append
+                                                             er/try-expand-list
+                                                             '(mark-defun))))))
+
+;; dired-details
+(when (require 'dired-details nil t)
+  (add-hook 'dired-mode-hook
+            '(lambda ()
+               (dired-details-install)
+               (setq dired-details-hidden-string "--- ")
+               (define-key dired-mode-map (kbd "h") 'dired-details-toggle))))
+
+;; multiple cursors
+(when (require 'multiple-cursors nil t)
+  (setq mc/list-file "~/Dropbox/Private/.mc-lists.el")
+
+  (global-set-key (kbd "C->")     'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+  (defun mc/dispatch-meta-space ()
+    (interactive)
+    (if (region-active-p)
+        (mc/edit-lines)
+      (set-rectangular-region-anchor)))
+  (global-set-key (kbd "M-<SPC>") 'mc/dispatch-meta-space))
 
 ;; ------------------------------------------------------------
 ;; DROPPED DEPENDENCIES
@@ -406,6 +436,20 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 ;; show matching parentheses
 (show-paren-mode 1)
 
+;; ibuffer groups
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("org"  (mode . org-mode))
+               ("dired" (mode . dired-mode))
+               ("C/C++" (or
+                         (mode . cc-mode)
+                         (mode . c-mode)
+                         (mode . c++-mode)))
+               ("emacs" (name . "^\\*Messages\\*$"))))))
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")))
+
 ;; org-agenda notifications
 ;; the appointment notification facility
 (setq
@@ -454,7 +498,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-c\C-f")    'toggle-window-split)
 (global-set-key [(control shift f)] 'git-grep)
 (global-set-key (kbd "\C-x\C-e")    'eval-and-replace)
-(global-set-key (kbd "M-<SPC>")     'fixup-whitespace)
+(global-set-key (kbd "S-<SPC>")     'fixup-whitespace)
+(global-set-key (kbd "C-M-h")       'backward-kill-word)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
@@ -521,11 +566,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                'compile)
              (define-key c-mode-base-map "\C-c\C-o"
                'ff-find-other-file)
-             (define-key c-mode-base-map "\C-c\C-p"
-               'beginning-of-defun)
-             (define-key c-mode-base-map "\C-c\C-n"
-               'end-of-defun)
              ;; hs-mode
              (hs-minor-mode t)
-             (define-key c-mode-base-map "\C-c\C-h"
+             (define-key c-mode-base-map "\C-ch"
                'hs-toggle-hiding)))
