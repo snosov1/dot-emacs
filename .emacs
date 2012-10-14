@@ -57,14 +57,7 @@
 ;; expand-region
 (when (require 'expand-region nil t)
   (global-set-key (kbd "C-=") 'er/expand-region)
-  (global-set-key (kbd "C--") 'er/contract-region)
-
-  ;; expand to functions in C/C++
-  (add-hook 'c-mode-common-hook '(lambda ()
-                                   (make-variable-buffer-local 'er/try-expand-list)
-                                   (setq er/try-expand-list (append
-                                                             er/try-expand-list
-                                                             '(mark-defun))))))
+  (global-set-key (kbd "C--") 'er/contract-region))
 
 ;; dired-details
 (when (require 'dired-details nil t)
@@ -77,17 +70,12 @@
 ;; multiple cursors
 (when (require 'multiple-cursors nil t)
   (setq mc/list-file "~/Dropbox/Private/.mc-lists.el")
+  (load mc/list-file t) ;; load, but no errors if it does not exist yet please
 
   (global-set-key (kbd "C->")     'mc/mark-next-like-this)
   (global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-  (defun mc/dispatch-meta-space ()
-    (interactive)
-    (if (region-active-p)
-        (mc/edit-lines)
-      (set-rectangular-region-anchor)))
-  (global-set-key (kbd "M-<SPC>") 'mc/dispatch-meta-space))
+  (global-set-key (kbd "M-<SPC>") 'mc/dwim))
 
 ;; ------------------------------------------------------------
 ;; DROPPED DEPENDENCIES
