@@ -263,7 +263,7 @@ Portable keywords are: error, important, info."
     (grep (format "git --no-pager grep %s -e %s -- %s"
                   git-grep-switches
                   re
-                  (vc-git-root default-directory)))))
+                  (expand-file-name (vc-git-root default-directory))))))
 
 (defun eval-and-replace ()
   "Replace the preceding sexp with its value."
