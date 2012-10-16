@@ -69,7 +69,7 @@
 
 ;; multiple cursors
 (when (require 'multiple-cursors nil t)
-  (setq mc/list-file "~/Dropbox/Private/.mc-lists.el")
+  (setq mc/list-file "~/Dropbox/dot-emacs/.mc-lists.el")
   (load mc/list-file t) ;; load, but no errors if it does not exist yet please
 
   (global-set-key (kbd "C->")     'mc/mark-next-like-this)
