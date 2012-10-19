@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        c-electric-backspace
         kill-region
         mc/dwim
         org-kill-line
