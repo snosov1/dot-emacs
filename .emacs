@@ -77,6 +77,15 @@
 
   (global-set-key (kbd "M-<SPC>") 'mc/dwim))
 
+;; markdown
+(when (require 'markdown-mode nil t)
+  (setq auto-mode-alist (cons '("\\.md" . markdown-mode) auto-mode-alist))
+  (setq markdown-command (concat "perl " (expand-file-name "~/Dropbox/bin/Markdown.pl"))))
+
+;; wrap region
+(when (require 'wrap-region nil t)
+  (wrap-region-global-mode t))
+
 ;; ------------------------------------------------------------
 ;; DROPPED DEPENDENCIES
 
@@ -423,6 +432,9 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 
 ;; show matching parentheses
 (show-paren-mode 1)
+
+;; replace selection with input or yank
+(delete-selection-mode 1)
 
 ;; ibuffer groups
 (setq ibuffer-saved-filter-groups
