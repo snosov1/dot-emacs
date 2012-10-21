@@ -334,7 +334,6 @@ Portable keywords are: error, important, info."
  '(custom-enabled-themes (quote (tango-dark)))
  '(default-input-method "russian-computer")
  '(dired-dwim-target t)
- '(dired-listing-switches "-alh")
  '(dired-recursive-copies (quote always))
  '(dired-recursive-deletes (quote always))
  '(ediff-before-setup-hook (quote (ediff-save-window-configuration)))
@@ -435,6 +434,11 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 
 ;; replace selection with input or yank
 (delete-selection-mode 1)
+
+;; dired listing switches
+(setq dired-listing-switches (concat "-alh"
+                                     (when (not (equal window-system 'w32))
+                                       " --group-directories-first")))
 
 ;; ibuffer groups
 (setq ibuffer-saved-filter-groups
