@@ -570,6 +570,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                'compile)
              (define-key c-mode-base-map "\C-c\C-o"
                'ff-find-other-file)
+             (define-key c-mode-base-map (kbd "C-M-h")
+               'backward-kill-word)
              ;; hs-mode
              (hs-minor-mode t)
              (define-key c-mode-base-map "\C-ch"
