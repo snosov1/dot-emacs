@@ -4,6 +4,8 @@
 (setq mc/cmds-to-run-for-all
       '(
         c-electric-backspace
+        c-electric-colon
+        c-electric-delete-forward
         c-electric-semi&comma
         kill-region
         mc/dwim
