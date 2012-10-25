@@ -23,11 +23,11 @@
 (when (require 'auto-complete-config nil t)
   (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
   (ac-config-default)
-  ;; auto-complete-clang
-  (when (require 'auto-complete-clang nil t)
-    (add-hook 'c-mode-common-hook
-              '(lambda ()
-                 (define-key c-mode-base-map (kbd "\C-c TAB") 'ac-complete-clang))))
+
+  ;; don't autostart ac
+  (setq ac-auto-start nil)
+  (define-key ac-mode-map (kbd "\C-c TAB") 'auto-complete)
+
   ;; auto-complete-python
   (unless (equal window-system 'w32) ;; somehow ac-python hangs on windows
     (require 'ac-python nil t)))
@@ -88,6 +88,14 @@
 
 ;; ------------------------------------------------------------
 ;; DROPPED DEPENDENCIES
+
+;; NOTE: hate to admit it, but it seems auto-complete feature is not
+;; that useful
+;; ;; auto-complete-clang
+;; (when (require 'auto-complete-clang nil t)
+;;   (add-hook 'c-mode-common-hook
+;;             '(lambda ()
+;;                (setq ac-sources (append 'ac-complete-clang ac-sources)))))
 
 ;; for R statstics language
 ;; (when (require 'ess-site nil t)
@@ -343,6 +351,7 @@ Portable keywords are: error, important, info."
  '(ediff-suspend-hook (quote (ediff-default-suspend-function ediff-restore-window-configuration)))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(electric-pair-mode t)
+ '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill)))
  '(ido-enable-flex-matching t)
  '(ido-mode (quote both) nil (ido))
  '(indent-tabs-mode nil)
@@ -504,6 +513,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-x\C-e")    'eval-and-replace)
 (global-set-key (kbd "S-<SPC>")     'fixup-whitespace)
 (global-set-key (kbd "C-M-h")       'backward-kill-word)
+(global-set-key (kbd "M-/")         'hippie-expand)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
