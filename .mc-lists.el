@@ -9,6 +9,8 @@
         c-electric-semi&comma
         kill-region
         mc/dwim
+        org-cycle
+        org-force-self-insert
         org-kill-line
         org-return-indent
         org-yank
