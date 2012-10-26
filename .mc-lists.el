@@ -15,6 +15,7 @@
         org-return-indent
         org-yank
         smart-beginning-of-line
+        wrap-region-trigger
         ))
 
 (setq mc/cmds-to-run-once
