@@ -9,10 +9,16 @@
         c-electric-semi&comma
         double-quote-word
         kill-region
+        org-backward-sentence
+        org-beginning-of-line
         org-cycle
+        org-delete-char
+        org-end-of-line
         org-force-self-insert
+        org-forward-sentence
         org-kill-line
         org-return-indent
+        org-self-insert-command
         org-yank
         smart-beginning-of-line
         wrap-region-trigger
@@ -21,6 +27,8 @@
 (setq mc/cmds-to-run-once
       '(
         end-of-buffer
+        ido-find-file
+        ido-switch-buffer
         mc/dwim
         wdired-finish-edit
         ))
