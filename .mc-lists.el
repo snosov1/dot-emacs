@@ -9,7 +9,6 @@
         c-electric-semi&comma
         double-quote-word
         kill-region
-        mc/dwim
         org-cycle
         org-force-self-insert
         org-kill-line
@@ -22,5 +21,6 @@
 (setq mc/cmds-to-run-once
       '(
         end-of-buffer
+        mc/dwim
         wdired-finish-edit
         ))
