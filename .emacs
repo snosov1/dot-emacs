@@ -116,6 +116,9 @@
 (require 'vc-git)
 (require 'grep)
 
+;; hippie-expand
+(require 'hippie-exp)
+
 ;; enable org-mode
 (require 'org)
 ;; enable python execution in org-mode
