@@ -7,6 +7,7 @@
         c-electric-colon
         c-electric-delete-forward
         c-electric-semi&comma
+        double-quote-word
         kill-region
         mc/dwim
         org-cycle
