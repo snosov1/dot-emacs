@@ -86,6 +86,10 @@
 (when (require 'wrap-region nil t)
   (wrap-region-global-mode t))
 
+;; browse kill ring
+(when (require 'browse-kill-ring nil t)
+  (global-set-key (kbd "C-x C-y") 'browse-kill-ring))
+
 ;; ------------------------------------------------------------
 ;; DROPPED DEPENDENCIES
 
