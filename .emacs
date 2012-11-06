@@ -26,7 +26,7 @@
 
   ;; don't autostart ac
   (setq ac-auto-start nil)
-  (define-key ac-mode-map (kbd "\C-c TAB") 'auto-complete)
+  (define-key ac-mode-map (kbd "C-.") 'auto-complete)
 
   ;; auto-complete-python
   (unless (equal window-system 'w32) ;; somehow ac-python hangs on windows
@@ -517,6 +517,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "S-<SPC>")     'fixup-whitespace)
 (global-set-key (kbd "C-M-h")       'backward-kill-word)
 (global-set-key (kbd "M-/")         'hippie-expand)
+(global-set-key (kbd "\C-x k")      'kill-this-buffer)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
