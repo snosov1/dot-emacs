@@ -34,7 +34,8 @@
 
 ;; yasnippet
 (when (require 'yasnippet nil t)
-  (yas-global-mode 1))
+  (yas-global-mode 1)
+  (define-key yas-minor-mode-map (kbd "M-/") 'yas-expand))
 
 ;; cmake-mode
 (when (require 'cmake-mode nil t)
@@ -385,8 +386,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
  '(tab-width 4)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
  '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
- '(yas-prompt-functions (quote (yas-dropdown-prompt yas-ido-prompt yas-completing-prompt yas-x-prompt yas-no-prompt)))
- '(yas-trigger-key "M-/"))
+ '(yas-prompt-functions (quote (yas-dropdown-prompt yas-ido-prompt yas-completing-prompt yas-x-prompt yas-no-prompt))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
