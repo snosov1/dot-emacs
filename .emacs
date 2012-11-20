@@ -87,9 +87,18 @@
 (when (require 'wrap-region nil t)
   (wrap-region-global-mode t))
 
-;; browse kill ring
+;; browse-kill-ring
 (when (require 'browse-kill-ring nil t)
   (global-set-key (kbd "C-x C-y") 'browse-kill-ring))
+
+;; python and ipython
+(when (require 'python nil t)
+  (setq
+   python-shell-interpreter "python"
+   python-shell-interpreter-args (concat "-i " (expand-file-name "~/Dropbox/projects/ipython/ipython.py"))
+   python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+   python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "))
+
 
 ;; ------------------------------------------------------------
 ;; DROPPED DEPENDENCIES
