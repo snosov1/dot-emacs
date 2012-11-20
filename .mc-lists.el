@@ -20,6 +20,7 @@
         org-return-indent
         org-self-insert-command
         org-yank
+        python-indent-dedent-line-backspace
         smart-beginning-of-line
         wrap-region-trigger
         ))
