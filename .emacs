@@ -171,8 +171,7 @@
            (member major-mode '(emacs-lisp-mode
                                 lisp-mode
                                 c-mode c++-mode objc-mode
-                                LaTeX-mode TeX-mode
-                                python-mode)))
+                                LaTeX-mode TeX-mode)))
       (indent-region (region-beginning) (region-end) nil)))
 
 ;; ------------------------------------------------------------
