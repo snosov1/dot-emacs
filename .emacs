@@ -163,6 +163,19 @@
               "//samba/nfs/inn/proj/ipp/mirror/")
 
 ;; ------------------------------------------------------------
+;; ADVICES
+
+(defadvice yank (after indent-region activate)
+  "Indent yanked region in certain modes, C-u prefix to disable"
+  (if (and (not current-prefix-arg)
+           (member major-mode '(emacs-lisp-mode
+                                lisp-mode
+                                c-mode c++-mode objc-mode
+                                LaTeX-mode TeX-mode
+                                python-mode)))
+      (indent-region (region-beginning) (region-end) nil)))
+
+;; ------------------------------------------------------------
 ;; DEFUNS
 
 (defun smart-beginning-of-line ()
