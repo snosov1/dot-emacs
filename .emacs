@@ -393,7 +393,7 @@ Portable keywords are: error, important, info."
  '(magit-diff-refine-hunk t)
  '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
  '(org-capture-templates (quote (("t" "Simple TODO" entry (file+headline "~/Dropbox/Private/org/notes.org" "Tasks") "* TODO %?
-DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|cafe|lunch|dance|snack|condoms|phone|house} | %^{cost} | %^{desc} |"))))
+DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|cafe|lunch|dance|snack|condoms|phone|house|bus|repo} | %^{cost} | %^{desc} |"))))
  '(org-confirm-babel-evaluate nil)
  '(org-directory "~/Dropbox/Private/org")
  '(org-hide-leading-stars t)
@@ -544,6 +544,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "C-M-h")       'backward-kill-word)
 (global-set-key (kbd "M-/")         'hippie-expand)
 (global-set-key (kbd "\C-x k")      'kill-this-buffer)
+(global-set-key (kbd "C-+")         'org-list-repair)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
