@@ -26,7 +26,7 @@
 
   ;; don't autostart ac
   (setq ac-auto-start nil)
-  (define-key ac-mode-map (kbd "C-.") 'auto-complete)
+  (define-key ac-mode-map (kbd "M-.") 'auto-complete)
 
   ;; auto-complete-python
   (unless (equal window-system 'w32) ;; somehow ac-python hangs on windows
@@ -34,8 +34,7 @@
 
 ;; yasnippet
 (when (require 'yasnippet nil t)
-  (yas-global-mode 1)
-  (define-key yas-minor-mode-map (kbd "M-/") 'yas-expand))
+  (yas-global-mode 1))
 
 ;; cmake-mode
 (when (require 'cmake-mode nil t)
