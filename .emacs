@@ -341,6 +341,13 @@ Portable keywords are: error, important, info."
       (capitalize-region (region-beginning) (region-end))
     (capitalize-word arg)))
 
+(defun eval-dispatch ()
+  "Evaluate previous sexp or region"
+  (interactive)
+  (if (region-active-p)
+      (eval-region (region-beginning) (region-end))
+    (eval-and-replace)))
+
 ;; move text
 (defun move-text-internal (arg)
   (cond
@@ -559,7 +566,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-c f")      'toggle-window-split)
 (global-set-key (kbd "\C-c\C-f")    'toggle-window-split)
 (global-set-key [(control shift f)] 'git-grep)
-(global-set-key (kbd "\C-x\C-e")    'eval-and-replace)
+(global-set-key (kbd "\C-x\C-e")    'eval-dispatch)
 (global-set-key (kbd "S-<SPC>")     'fixup-whitespace)
 (global-set-key (kbd "C-M-h")       'backward-kill-word)
 (global-set-key (kbd "M-/")         'hippie-expand)
@@ -568,6 +575,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-u")         'upcase-dispatch)
 (global-set-key (kbd "M-l")         'downcase-dispatch)
 (global-set-key (kbd "M-c")         'capitalize-dispatch)
+(global-set-key (kbd "C-.")         'find-tag)
+(global-set-key (kbd "C-*")         'pop-tag-mark)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
