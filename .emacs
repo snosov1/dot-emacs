@@ -524,6 +524,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-c a")      'org-agenda)
 (global-set-key (kbd "\C-a")        'smart-beginning-of-line)
 (global-set-key (kbd "\C-x \C-b")   'ibuffer)
+(global-set-key (kbd "\C-x b")      'ibuffer)
 (global-set-key (kbd "M-p")         'move-text-up)
 (global-set-key (kbd "M-n")         'move-text-down)
 (global-set-key (kbd "\C-c m")      'magit-status)
