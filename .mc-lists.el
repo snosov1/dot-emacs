@@ -8,6 +8,7 @@
         c-electric-delete-forward
         c-electric-semi&comma
         double-quote-word
+        fixup-whitespace
         kill-region
         org-backward-sentence
         org-beginning-of-line
