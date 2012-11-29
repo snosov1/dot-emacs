@@ -321,6 +321,27 @@ Portable keywords are: error, important, info."
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 
+(defun upcase-dispatch (arg)
+  "Use upcase word or region"
+  (interactive "P")
+  (if (region-active-p)
+      (upcase-region (region-beginning) (region-end))
+    (upcase-word arg)))
+
+(defun downcase-dispatch (arg)
+  "Use downcase word or region"
+  (interactive "P")
+  (if (region-active-p)
+      (downcase-region (region-beginning) (region-end))
+    (downcase-word arg)))
+
+(defun capitalize-dispatch (arg)
+  "Use capitalize word or region"
+  (interactive "P")
+  (if (region-active-p)
+      (capitalize-region (region-beginning) (region-end))
+    (capitalize-word arg)))
+
 ;; move text
 (defun move-text-internal (arg)
   (cond
@@ -545,6 +566,9 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-/")         'hippie-expand)
 (global-set-key (kbd "\C-x k")      'kill-this-buffer)
 (global-set-key (kbd "C-+")         'org-list-repair)
+(global-set-key (kbd "M-u")         'upcase-dispatch)
+(global-set-key (kbd "M-l")         'downcase-dispatch)
+(global-set-key (kbd "M-c")         'capitalize-dispatch)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
