@@ -567,7 +567,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-c\C-f")    'toggle-window-split)
 (global-set-key [(control shift f)] 'git-grep)
 (global-set-key (kbd "\C-x\C-e")    'eval-dispatch)
-(global-set-key (kbd "S-<SPC>")     'fixup-whitespace)
+(global-set-key (kbd "M-\\")        'fixup-whitespace)
 (global-set-key (kbd "C-M-h")       'backward-kill-word)
 (global-set-key (kbd "M-/")         'hippie-expand)
 (global-set-key (kbd "\C-x k")      'kill-this-buffer)
