@@ -105,27 +105,6 @@
    python-shell-prompt-regexp "In \\[[0-9]+\\]: "
    python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "))
 
-
-;; ------------------------------------------------------------
-;; DROPPED DEPENDENCIES
-
-;; NOTE: hate to admit it, but it seems auto-complete feature is not
-;; that useful
-;; ;; auto-complete-clang
-;; (when (require 'auto-complete-clang nil t)
-;;   (add-hook 'c-mode-common-hook
-;;             '(lambda ()
-;;                (setq ac-sources (append 'ac-complete-clang ac-sources)))))
-
-;; for R statstics language
-;; (when (require 'ess-site nil t)
-;;   (setq ess-use-auto-complete t))
-
-;; too bad this dired-async stuff is not working really well
-;; (particulary with renaming and deletions)
-;; (eval-after-load "dired-aux"
-;;   '(require 'dired-async nil t))
-
 ;; ------------------------------------------------------------
 ;; DEPENDENCIES
 
