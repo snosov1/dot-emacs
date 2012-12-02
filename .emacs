@@ -51,6 +51,13 @@
                   ("\\.bat\\'" . dos-mode))
                 auto-mode-alist)))
 
+;; d-mode
+;; for the D programming language
+(when (require 'd-mode nil t)
+  (setq auto-mode-alist
+        (append '(("\\.d\\'" . d-mode))
+                auto-mode-alist)))
+
 ;; magit
 (require 'magit nil t)
 
@@ -345,7 +352,7 @@ Portable keywords are: error, important, info."
   "Evaluate previous sexp or region"
   (interactive)
   (if (region-active-p)
-      (eval-region (region-beginning) (region-end))
+      (eval-region (region-beginning) (region-end) t)
     (eval-and-replace)))
 
 ;; move text
