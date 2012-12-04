@@ -32,5 +32,6 @@
         ido-find-file
         ido-switch-buffer
         mc/dwim
+        universal-argument-minus
         wdired-finish-edit
         ))
