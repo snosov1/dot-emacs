@@ -334,6 +334,16 @@ Portable keywords are: error, important, info."
       (eval-region (region-beginning) (region-end) t)
     (eval-and-replace)))
 
+(defun fill-paragraph-with-set (arg)
+  "Temporary sets fill-column to given prefix argument and calls
+fill-paragraph"
+  (interactive "P")
+  (setq cfc (current-fill-column))
+  (if arg
+      (set-fill-column arg))
+  (fill-paragraph 'nil 't)
+  (set-fill-column cfc))
+
 ;; move text
 (defun move-text-internal (arg)
   (cond
@@ -563,6 +573,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-c")         'capitalize-dispatch)
 (global-set-key (kbd "C-.")         'find-tag)
 (global-set-key (kbd "C-*")         'pop-tag-mark)
+(global-set-key (kbd "M-q")         'fill-paragraph-with-set)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
