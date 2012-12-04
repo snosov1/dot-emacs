@@ -311,21 +311,21 @@ Portable keywords are: error, important, info."
   (interactive "P")
   (if (region-active-p)
       (upcase-region (region-beginning) (region-end))
-    (upcase-word arg)))
+    (upcase-word (if arg arg 1))))
 
 (defun downcase-dispatch (arg)
   "Use downcase word or region"
   (interactive "P")
   (if (region-active-p)
       (downcase-region (region-beginning) (region-end))
-    (downcase-word arg)))
+    (downcase-word (if arg arg 1))))
 
 (defun capitalize-dispatch (arg)
   "Use capitalize word or region"
   (interactive "P")
   (if (region-active-p)
       (capitalize-region (region-beginning) (region-end))
-    (capitalize-word arg)))
+    (capitalize-word (if arg arg 1))))
 
 (defun eval-dispatch ()
   "Evaluate previous sexp or region"
