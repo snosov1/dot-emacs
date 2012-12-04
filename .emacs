@@ -514,6 +514,12 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
           (lambda ()
             (ibuffer-switch-to-saved-filter-groups "default")))
 
+;; those regexp are used by dmd compiler
+(setq compilation-error-regexp-alist
+      (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
+                ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
+              compilation-error-regexp-alist))
+
 ;; org-agenda notifications
 ;; the appointment notification facility
 (setq
