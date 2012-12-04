@@ -520,25 +520,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                 ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
               compilation-error-regexp-alist))
 
-;; org-agenda notifications
-;; the appointment notification facility
-(setq
- appt-message-warning-time 15  ;; warn 15 min in advance
- appt-display-mode-line t      ;; show in the modeline
- appt-display-format 'window   ;; use our func
- appt-display-interval 3)      ;; display notification every 3 minutes
-(appt-activate 1)              ;; active appt (appointment notification)
-(display-time)                 ;; time display is required for this...
-;; update appt info
-(add-hook 'before-save-hook ;; when saving org-mode file
-          '(lambda ()
-             (if (eq major-mode 'org-mode)
-                 'org-agenda-to-appt)))
-(add-hook 'org-agenda-finalize-hook 'org-agenda-to-appt) ;; when finalizing agenda
-(setq appt-disp-window-function
-      '(lambda (min-to-app new-time msg)
-         (notify-send (format "In %s minute(s)" min-to-app) msg)))
-
 ;; ------------------------------------------------------------
 ;; KEY BINDINGS
 
