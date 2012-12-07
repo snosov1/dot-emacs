@@ -167,7 +167,7 @@
   (if (and (not current-prefix-arg)
            (member major-mode '(emacs-lisp-mode
                                 lisp-mode
-                                c-mode c++-mode objc-mode
+                                c-mode c++-mode objc-mode d-mode
                                 LaTeX-mode TeX-mode)))
       (indent-region (region-beginning) (region-end) nil)))
 
@@ -406,7 +406,7 @@ fill-paragraph"
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(c-basic-offset 4)
- '(c-default-style (quote ((c-mode . "bsd") (c++-mode . "bsd") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
+ '(c-default-style (quote ((c-mode . "bsd") (c++-mode . "bsd") (d-mode . "bsd") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
  '(calendar-week-start-day 1)
  '(custom-enabled-themes (quote (tango-dark)))
  '(default-input-method "russian-computer")
