@@ -89,13 +89,19 @@
   (setq auto-mode-alist (cons '("\\.md" . markdown-mode) auto-mode-alist))
   (setq markdown-command (concat "perl " (expand-file-name "~/Dropbox/bin/Markdown.pl"))))
 
-;; wrap region
-(when (require 'wrap-region nil t)
-  (wrap-region-global-mode t))
-
 ;; browse-kill-ring
 (when (require 'browse-kill-ring nil t)
   (global-set-key (kbd "C-x C-y") 'browse-kill-ring))
+
+;; smartparens
+(when (require 'smartparens nil t)
+  (smartparens-global-mode 1)
+  (setq sp-highlight-pair-overlay nil)
+  (setq sp-autodelete-pair nil)
+  (setq sp-autodelete-closing-pair nil)
+  (setq sp-autodelete-opening-pair nil)
+  (global-set-key (kbd "C-S-d") 'sp-unwrap-sexp)
+  (global-set-key (kbd "C-S-h") 'sp-backward-unwrap-sexp))
 
 ;; python and ipython
 (when (require 'python nil t)
@@ -402,7 +408,6 @@ fill-paragraph"
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-suspend-hook (quote (ediff-default-suspend-function ediff-restore-window-configuration)))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
- '(electric-pair-mode t)
  '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill)))
  '(ido-enable-flex-matching t)
  '(ido-mode (quote both) nil (ido))
