@@ -295,7 +295,12 @@ Portable keywords are: error, important, info."
 
 (defun git-grep (re)
   (interactive
-   (list (read-from-minibuffer "git grep: " nil nil nil 'grep-history)))
+   (list (let ((gg-init-value
+                ;; if region is active - use its value as an init
+                (if (region-active-p)
+                    (buffer-substring-no-properties (region-beginning) (region-end))
+                  nil)))
+           (read-from-minibuffer "git grep: " gg-init-value nil nil 'grep-history))))
   (let ((grep-use-null-device nil))
     (grep (format "git --no-pager grep %s -e %s -- %s"
                   git-grep-switches
