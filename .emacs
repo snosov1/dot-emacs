@@ -100,6 +100,8 @@
   (setq sp-autodelete-pair nil)
   (setq sp-autodelete-closing-pair nil)
   (setq sp-autodelete-opening-pair nil)
+  (setq sp-autoinsert-if-followed-by-same 0)
+  (setq sp-autoinsert-if-followed-by-word t)
   (global-set-key (kbd "C-S-d") 'sp-unwrap-sexp)
   (global-set-key (kbd "C-S-h") 'sp-backward-unwrap-sexp))
 
