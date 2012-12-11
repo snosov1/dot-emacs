@@ -29,6 +29,7 @@
 (setq mc/cmds-to-run-once
       '(
         end-of-buffer
+        find-tag
         ido-find-file
         ido-switch-buffer
         ignore
