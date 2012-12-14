@@ -7,7 +7,9 @@
         c-electric-colon
         c-electric-delete-forward
         c-electric-semi&comma
+        capitalize-dispatch
         double-quote-word
+        downcase-dispatch
         fixup-whitespace
         kill-region
         org-backward-sentence
@@ -23,6 +25,7 @@
         org-yank
         python-indent-dedent-line-backspace
         smart-beginning-of-line
+        upcase-dispatch
         wrap-region-trigger
         ))
 
