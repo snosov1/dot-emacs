@@ -313,6 +313,17 @@ Portable keywords are: error, important, info."
                   re
                   (expand-file-name (vc-git-root default-directory))))))
 
+(defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
+(make-variable-buffer-local 'hs-hide-all-toggle-state)
+(defun hs-toggle-hideshow-all (arg) "Toggle hideshow all."
+  (interactive "P")
+  (if (not arg)
+      (setq arg 1))
+  (setq hs-hide-all-toggle-state (not hs-hide-all-toggle-state))
+  (if hs-hide-all-toggle-state
+      (hs-hide-level arg)
+    (hs-show-all)))
+
 (defun eval-and-replace ()
   "Replace the preceding sexp with its value."
   (interactive)
@@ -649,4 +660,4 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              ;; hs-mode
              (hs-minor-mode t)
              (define-key c-mode-base-map "\C-ch"
-               'hs-toggle-hiding)))
+               'hs-toggle-hideshow-all)))
