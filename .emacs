@@ -523,6 +523,9 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 ;; replace selection with input or yank
 (delete-selection-mode 1)
 
+;; RecognizeCamelCaseSubwording
+(global-subword-mode)
+
 ;; dired listing switches
 (setq dired-listing-switches (concat "-alh"
                                      (when (not (equal window-system 'w32))
