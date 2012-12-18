@@ -1,4 +1,11 @@
-;; paths
+;; lose UI early
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+;; no splash screen
+(setq inhibit-startup-message t)
+
+;; ------------------------------------------------------------
+;; PATHS
 (add-to-list 'load-path "~/.emacs.d")
 
 ;; this complicated 'let' places every subdir of Dropbox/emacs AT THE
@@ -491,8 +498,12 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 ;; ------------------------------------------------------------
 ;; MISCELLANEOUS CONFIGS
 
-;; lose tool bar
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+;; write backup files to own directory
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name
+                 (concat user-emacs-directory "backups")))))
+;; make backups of files, even when they're under version control
+(setq vc-make-backup-files t)
 
 ;; start emacs server on first run
 (require 'server)
