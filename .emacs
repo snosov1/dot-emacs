@@ -98,7 +98,8 @@
 
 ;; browse-kill-ring
 (when (require 'browse-kill-ring nil t)
-  (global-set-key (kbd "C-x C-y") 'browse-kill-ring))
+  (global-set-key (kbd "C-x C-y") 'browse-kill-ring)
+  (setq browse-kill-ring-quit-action 'save-and-restore))
 
 ;; wrap region
 (when (require 'wrap-region nil t)
