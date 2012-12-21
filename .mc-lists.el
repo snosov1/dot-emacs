@@ -6,6 +6,7 @@
         c-electric-backspace
         c-electric-colon
         c-electric-delete-forward
+        c-electric-lt-gt
         c-electric-semi&comma
         capitalize-dispatch
         double-quote-word
@@ -31,6 +32,7 @@
 
 (setq mc/cmds-to-run-once
       '(
+        describe-key
         end-of-buffer
         find-tag
         ido-find-file
