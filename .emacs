@@ -125,6 +125,13 @@
    python-shell-prompt-regexp "In \\[[0-9]+\\]: "
    python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "))
 
+(when (require 'wgrep nil t)
+  (setq wgrep-enable-key "\C-x\C-q")
+  (add-hook 'grep-mode-hook
+            '(lambda ()
+               (define-key grep-mode-map "\C-c\C-c"
+                 'wgrep-save-all-buffers))))
+
 ;; ------------------------------------------------------------
 ;; DEPENDENCIES
 
