@@ -225,6 +225,25 @@ If point was already at that position, move point to beginning of line."
      (push-mark)))
   (dired-goto-file file))
 
+(defun dired-jump-to-bottom ()
+  "Jumps to the last file"
+  (interactive)
+  (end-of-buffer)
+  (dired-previous-line 1))
+
+(defun dired-jump-to-top ()
+  "Jumps to the .. entry"
+  (interactive)
+  (beginning-of-buffer)
+  (dired-next-line 1)
+  ;; skip another line depending on hidden/shown state of dired-details
+  (when (or (not (boundp 'dired-details-state))
+            (equal dired-details-state 'shown))
+    (dired-next-line 1))
+  (if (looking-at "\\.") ;; top-level directories don't have a
+                         ;; .. entry
+      (dired-next-line 1)))
+
 (defun swap-buffers-in-windows ()
   "Put the buffer from the selected window in next window"
   (interactive)
@@ -623,6 +642,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              (define-key org-mode-map (kbd "C-c !")
                'org-time-stamp)))
 
+(define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-jump-to-top)
+(define-key dired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
 (add-hook 'dired-mode-hook
           '(lambda()
              ;; keep default behavior in dired
