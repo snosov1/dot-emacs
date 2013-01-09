@@ -685,7 +685,9 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              (define-key view-mode-map "e"
                'move-end-of-line)
              (define-key view-mode-map "a"
-               'smart-beginning-of-line)))
+               'smart-beginning-of-line)
+             (define-key view-mode-map "v"
+               'scroll-up-command)))
 
 (add-hook 'cmake-mode-hook
           '(lambda ()
