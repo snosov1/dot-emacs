@@ -589,6 +589,20 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                 ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
               compilation-error-regexp-alist))
 
+;; webjump configuration
+(require 'webjump)
+(add-to-list 'webjump-sites
+             '("Lingvo" .
+               [simple-query
+                "lingvopro.abbyyonline.com"
+                "http://lingvopro.abbyyonline.com/en/Translate/en-ru/"
+                ""]))
+(add-to-list 'webjump-sites
+             '("Urban Dictionary" .
+               [simple-query
+                "www.urbandictionary.com"
+                "http://www.urbandictionary.com/define.php?term="
+                ""]))
 ;; ------------------------------------------------------------
 ;; KEY BINDINGS
 
@@ -630,6 +644,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "C-.")         'find-tag)
 (global-set-key (kbd "C-*")         'pop-tag-mark)
 (global-set-key (kbd "M-q")         'fill-paragraph-with-set)
+(global-set-key (kbd "C-x w")       'webjump)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
