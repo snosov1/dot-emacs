@@ -3,6 +3,9 @@
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 ;; no splash screen
 (setq inhibit-startup-message t)
+;; set font
+(set-frame-font
+ (car (x-list-fonts "-*-DejaVu Sans Mono-normal-normal-normal-*-*-*-*-*-*-*-iso10646-1")))
 
 ;; ------------------------------------------------------------
 ;; PATHS
@@ -349,7 +352,8 @@ Portable keywords are: error, important, info."
 
 (defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
 (make-variable-buffer-local 'hs-hide-all-toggle-state)
-(defun hs-toggle-hideshow-all (arg) "Toggle hideshow all."
+(defun hs-toggle-hideshow-all (arg)
+  "Toggle hideshow all. Prefix arg is the level of hiding."
   (interactive "P")
   (if (not arg)
       (setq arg 1))
