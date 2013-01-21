@@ -185,8 +185,9 @@
   (if (and (not current-prefix-arg)
            (member major-mode '(emacs-lisp-mode
                                 lisp-mode
-                                c-mode c++-mode objc-mode d-mode
-                                LaTeX-mode TeX-mode)))
+                                c-mode c++-mode objc-mode d-mode java-mode
+                                LaTeX-mode TeX-mode
+                                xml-mode)))
       (indent-region (region-beginning) (region-end) nil)))
 
 ;; ------------------------------------------------------------
