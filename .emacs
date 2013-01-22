@@ -4,8 +4,9 @@
 ;; no splash screen
 (setq inhibit-startup-message t)
 ;; set font
-(set-frame-font
- (car (x-list-fonts "-*-DejaVu Sans Mono-normal-normal-normal-*-*-*-*-*-*-*-iso10646-1")))
+(ignore-errors
+  (set-frame-font
+   (car (x-list-fonts "-*-DejaVu Sans Mono-normal-normal-normal-*-*-*-*-*-*-*-iso10646-1"))))
 
 ;; ------------------------------------------------------------
 ;; PATHS
