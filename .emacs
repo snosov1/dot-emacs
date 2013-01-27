@@ -101,13 +101,9 @@
   (global-set-key (kbd "C-x C-y") 'browse-kill-ring)
   (setq browse-kill-ring-quit-action 'save-and-restore))
 
-;; wrap region
-(when (require 'wrap-region nil t)
-  (wrap-region-global-mode t))
-
 ;; smartparens
 (when (require 'smartparens nil t)
-  ;; (smartparens-global-mode 1)
+  (smartparens-global-mode 1)
   (setq sp-highlight-pair-overlay nil)
   (setq sp-autodelete-pair nil)
   (setq sp-autodelete-closing-pair nil)
@@ -466,7 +462,6 @@ fill-paragraph"
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-suspend-hook (quote (ediff-default-suspend-function ediff-restore-window-configuration)))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
- '(electric-pair-mode t)
  '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill)))
  '(ido-enable-flex-matching t)
  '(ido-mode (quote both) nil (ido))
