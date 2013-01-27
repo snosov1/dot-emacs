@@ -43,10 +43,6 @@
   (unless (equal window-system 'w32) ;; somehow ac-python hangs on windows
     (require 'ac-python nil t)))
 
-;; yasnippet
-(when (require 'yasnippet nil t)
-  (yas-global-mode 1))
-
 ;; cmake-mode
 (when (require 'cmake-mode nil t)
   (setq auto-mode-alist
