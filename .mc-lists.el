@@ -26,6 +26,7 @@
         org-yank
         python-indent-dedent-line-backspace
         smart-beginning-of-line
+        sp-self-insert-command
         upcase-dispatch
         wrap-region-trigger
         ))
