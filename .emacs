@@ -540,6 +540,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 
 ;; make background a little darker
 (set-background-color "#1d1f21")
+;; set better ansi-term colors
+(setq ansi-term-color-vector [unspecified "#1d1f21" "#cc6666" "#b5bd68" "#f0c674" "#81a2be" "#b294bb" "#81a2be" "#c5c8c6"])
 
 ;; disable 'confusing' functions disabling
 (put 'narrow-to-region 'disabled nil)
@@ -643,6 +645,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "C-*")         'pop-tag-mark)
 (global-set-key (kbd "M-q")         'fill-paragraph-with-set)
 (global-set-key (kbd "C-x w")       'webjump)
+(global-set-key (kbd "\C-x\C-r")    'rename-buffer)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
