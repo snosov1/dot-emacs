@@ -639,6 +639,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-q")         'fill-paragraph-with-set)
 (global-set-key (kbd "C-x w")       'webjump)
 (global-set-key (kbd "\C-x\C-r")    'rename-buffer)
+(global-set-key (kbd "\C-c\C-t")    'toggle-truncate-lines)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
