@@ -164,13 +164,6 @@
    [?& ?n ?a ?u ?t ?i ?l ?u ?s return])
 
 ;; ------------------------------------------------------------
-;; PREDEFINED REGISTERS
-
-;; mirror address
-(set-register ?M
-              "//samba/nfs/inn/proj/ipp/mirror/")
-
-;; ------------------------------------------------------------
 ;; ADVICES
 
 (defadvice yank (after indent-region activate)
