@@ -488,6 +488,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(scroll-error-top-bottom t)
+ '(sh-shell-file "/bin/zsh")
  '(show-paren-delay 0)
  '(tab-width 4)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
@@ -544,6 +545,9 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (set-background-color "#1d1f21")
 ;; set better ansi-term colors
 (setq ansi-term-color-vector [unspecified "#1d1f21" "#cc6666" "#b5bd68" "#f0c674" "#81a2be" "#b294bb" "cyan3" "#c5c8c6"])
+
+;; recognize .zsh extension
+(setq auto-mode-alist (cons '("\\.zsh" . sh-mode) auto-mode-alist))
 
 ;; disable 'confusing' functions disabling
 (put 'narrow-to-region 'disabled nil)
