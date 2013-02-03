@@ -103,6 +103,13 @@
 
 ;; smartparens
 (when (require 'smartparens nil t)
+  (defun sp-brace-post-handler (open action context)
+    "Provides electric brace behavior for smartparens mode"
+    (when (eq action 'wrap)
+      (indent-region (region-beginning) (region-end)))
+    (indent-for-tab-command))
+  (sp-pair "{" "}" :actions '(insert wrap) :post-handlers '(sp-brace-post-handler))
+
   (smartparens-global-mode 1)
   (setq sp-highlight-pair-overlay nil)
   (setq sp-autodelete-pair nil)
