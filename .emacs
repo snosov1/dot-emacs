@@ -183,6 +183,15 @@
                                 xml-mode)))
       (indent-region (region-beginning) (region-end) nil)))
 
+(defadvice ido-switch-buffer (after maintain-ansi-term activate)
+  "Indent yanked region in certain modes, C-u prefix to disable"
+  (when (member major-mode '(term-mode))
+      (term-line-mode)
+      (end-of-buffer)
+      (previous-line)
+      (end-of-line)
+      (term-char-mode)))
+
 ;; ------------------------------------------------------------
 ;; DEFUNS
 
