@@ -9,6 +9,7 @@
         c-electric-lt-gt
         c-electric-semi&comma
         capitalize-dispatch
+        delete-indentation
         double-quote-word
         downcase-dispatch
         fixup-whitespace
