@@ -451,6 +451,7 @@ fill-paragraph"
  '(c-basic-offset 4)
  '(c-default-style (quote ((c-mode . "bsd") (c++-mode . "bsd") (d-mode . "bsd") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
  '(calendar-week-start-day 1)
+ '(compilation-scroll-output (quote first-error))
  '(custom-enabled-themes (quote (tango-dark)))
  '(default-input-method "russian-computer")
  '(dired-dwim-target t)
