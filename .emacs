@@ -656,6 +656,12 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
+;; C-/ is not representable with an ASCII control code, so it cannot
+;; be sent to terminals, but it is a convenient keybinding for
+;; undo. So mapping it to "traditional" undo sequence C-_ workarounds
+;; this problem
+(define-key key-translation-map [?\C-/] [?\C-_]) ;; translate C-/ to C-_
+
 ;; convinient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
           '(lambda ()
