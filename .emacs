@@ -512,7 +512,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
  '(diff-file-header ((t (:background "black" :weight bold))))
  '(diff-header ((t (:background "black"))))
  '(diff-refine-change ((t (:background "dark slate gray"))))
- '(diff-removed ((t (:foreground "yellow"))))
+ '(diff-removed ((t (:foreground "tomato"))))
  '(dired-async-in-process-face ((t (:background "cornflower blue"))))
  '(ediff-current-diff-A ((t (:background "white" :foreground "black"))))
  '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))))
