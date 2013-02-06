@@ -499,6 +499,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
  '(scroll-error-top-bottom t)
  '(show-paren-delay 0)
  '(tab-width 4)
+ '(truncate-lines t)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
  '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
  '(yas-prompt-functions (quote (yas-dropdown-prompt yas-ido-prompt yas-completing-prompt yas-x-prompt yas-no-prompt))))
