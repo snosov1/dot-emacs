@@ -188,7 +188,7 @@
   (when (member major-mode '(term-mode))
       (term-line-mode)
       (end-of-buffer)
-      (previous-line)
+      (term-previous-prompt 0)
       (end-of-line)
       (term-char-mode)))
 
@@ -497,7 +497,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(scroll-error-top-bottom t)
- '(sh-shell-file "/bin/zsh")
  '(show-paren-delay 0)
  '(tab-width 4)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
@@ -603,6 +602,10 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
       (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
                 ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
               compilation-error-regexp-alist))
+
+;; set zsh as default shell
+(require 'term)
+(setq sh-shell-file "/bin/zsh")
 
 ;; webjump configuration
 (require 'webjump)
