@@ -13,6 +13,7 @@
         double-quote-word
         downcase-dispatch
         fixup-whitespace
+        join-following-line
         kill-region
         org-backward-sentence
         org-beginning-of-line
