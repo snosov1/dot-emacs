@@ -37,7 +37,7 @@
 
   ;; don't autostart ac
   (setq ac-auto-start nil)
-  (define-key ac-mode-map (kbd "M-.") 'auto-complete)
+  (define-key ac-mode-map (kbd "C-.") 'auto-complete)
 
   ;; auto-complete-python
   (unless (equal window-system 'w32) ;; somehow ac-python hangs on windows
@@ -665,8 +665,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-u")         'upcase-dispatch)
 (global-set-key (kbd "M-l")         'downcase-dispatch)
 (global-set-key (kbd "M-c")         'capitalize-dispatch)
-(global-set-key (kbd "C-.")         'find-tag)
-(global-set-key (kbd "C-*")         'pop-tag-mark)
 (global-set-key (kbd "M-q")         'fill-paragraph-with-set)
 (global-set-key (kbd "C-x w")       'webjump)
 (global-set-key (kbd "\C-x\C-r")    'rename-buffer)
