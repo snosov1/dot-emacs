@@ -750,6 +750,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                'ff-find-other-file)
              (define-key c-mode-base-map (kbd "C-M-h")
                'backward-kill-word)
+             (define-key c-mode-base-map (kbd "M-j")
+               'join-following-line)
              ;; hs-mode
              (hs-minor-mode t)
              (define-key c-mode-base-map "\C-ch"
