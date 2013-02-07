@@ -449,6 +449,11 @@ fill-paragraph"
   (interactive "*p")
   (move-text-internal (- arg)))
 
+(defun join-following-line ()
+  "Joins the following line"
+  (interactive)
+  (join-line -1))
+
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
 
@@ -666,6 +671,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "C-x w")       'webjump)
 (global-set-key (kbd "\C-x\C-r")    'rename-buffer)
 (global-set-key (kbd "\C-c\C-t")    'toggle-truncate-lines)
+(global-set-key (kbd "M-j")         'join-following-line)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
