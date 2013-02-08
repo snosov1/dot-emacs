@@ -554,6 +554,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                                                  ; ~/.emacs.d/server is unsafe"
                                                  ; on windows.
 (unless (server-running-p) (server-start))
+;; do not disturb with "buffer still has active clients" on buffer killing
+(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
 ;; make background a little darker
 (set-background-color "#1d1f21")
