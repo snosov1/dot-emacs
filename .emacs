@@ -89,7 +89,9 @@
   (global-set-key (kbd "C->")     'mc/mark-next-like-this)
   (global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
 
-  (global-set-key (kbd "S-<SPC>") 'mc/dwim))
+  (global-set-key (kbd "S-<SPC>") 'mc/edit-lines)
+
+  (global-set-key (kbd "M-#") 'mc/insert-numbers))
 
 ;; markdown
 (when (require 'markdown-mode nil t)
