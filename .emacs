@@ -104,7 +104,7 @@
   (setq browse-kill-ring-quit-action 'save-and-restore))
 
 ;; smartparens
-(when (require 'smartparens nil t)
+(when (require 'smartparens-config nil t)
   (defun sp-brace-post-handler (open action context)
     "Provides electric brace behavior for smartparens mode"
     (when (eq action 'wrap)
