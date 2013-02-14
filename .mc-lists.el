@@ -12,6 +12,7 @@
         delete-indentation
         double-quote-word
         downcase-dispatch
+        eval-dispatch
         fixup-whitespace
         join-following-line
         kill-region
@@ -28,6 +29,7 @@
         org-yank
         python-indent-dedent-line-backspace
         smart-beginning-of-line
+        sp--self-insert-command
         sp-self-insert-command
         upcase-dispatch
         wrap-region-trigger
