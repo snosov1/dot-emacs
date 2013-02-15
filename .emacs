@@ -759,4 +759,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              ;; hs-mode
              (hs-minor-mode t)
              (define-key c-mode-base-map "\C-ch"
-               'hs-toggle-hideshow-all)))
+               'hs-toggle-hideshow-all)
+             ;; set //-style comments for c-mode
+             (setq comment-start "//" comment-end "")))
