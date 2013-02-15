@@ -143,6 +143,9 @@
 ;; enables key bindings from dired-x (like C-x C-j)
 (require 'dired-x)
 
+;; for zap-up-to-char
+(require 'misc)
+
 ;; for git-grep command
 (require 'vc-git)
 (require 'grep)
