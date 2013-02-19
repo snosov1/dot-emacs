@@ -178,7 +178,7 @@
 ;; ------------------------------------------------------------
 ;; ADVICES
 
-(defadvice yank (after indent-region activate)
+(defadvice insert-for-yank-1 (after indent-region activate)
   "Indent yanked region in certain modes, C-u prefix to disable"
   (if (and (not current-prefix-arg)
            (member major-mode '(emacs-lisp-mode
