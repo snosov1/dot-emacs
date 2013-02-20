@@ -14,6 +14,7 @@
         downcase-dispatch
         eval-dispatch
         fixup-whitespace
+        indent-for-tab-command
         join-following-line
         kill-region
         org-backward-sentence
