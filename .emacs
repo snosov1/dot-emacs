@@ -643,8 +643,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "C-x C-d")     'dired)
 (global-set-key [C-tab]             'ido-switch-buffer)
 (global-set-key (kbd "C-x C-q")     'view-mode)
-(global-set-key (kbd "C-M-p")       'previous-buffer)
-(global-set-key (kbd "C-M-n")       'next-buffer)
+(global-set-key (kbd "C-M-p")       'backward-paragraph)
+(global-set-key (kbd "C-M-n")       'forward-paragraph)
 (global-set-key (kbd "\C-c c")      'org-capture)
 (global-set-key (kbd "\C-c a")      'org-agenda)
 (global-set-key (kbd "\C-a")        'smart-beginning-of-line)
@@ -679,6 +679,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-c\C-t")    'toggle-truncate-lines)
 (global-set-key (kbd "M-j")         'join-following-line)
 (global-set-key (kbd "M-Z")         'zap-up-to-char)
+(global-set-key (kbd "M-{")         'next-buffer)
+(global-set-key (kbd "M-}")         'previous-buffer)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
@@ -713,8 +715,12 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                'dired-toggle-read-only)
              ;; use global key bindings intead
              (define-key dired-mode-map (kbd "C-M-p")
-               nil)
+               'dired-prev-marked-file)
              (define-key dired-mode-map (kbd "C-M-n")
+               'dired-next-marked-file)
+             (define-key dired-mode-map (kbd "M-{")
+               nil)
+             (define-key dired-mode-map (kbd "M-}")
                nil)
              ;; external window manager
              (define-key dired-mode-map (kbd "E")
