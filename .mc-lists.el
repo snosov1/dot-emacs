@@ -32,6 +32,7 @@
         smart-beginning-of-line
         sp--self-insert-command
         sp-self-insert-command
+        sp-wrap-cancel
         upcase-dispatch
         wrap-region-trigger
         ))
