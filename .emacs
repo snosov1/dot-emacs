@@ -459,6 +459,17 @@ fill-paragraph"
   (interactive)
   (join-line -1))
 
+(defcustom pop-predefined-register ?}
+  "Register for saving window configuration before jump"
+  :type 'register)
+
+(defun jump-to-register-with-save (register &optional delete)
+  "Like jump-to-register, but saves current window configuration
+to predefined register"
+  (interactive "cJump to register: \nP")
+  (window-configuration-to-register pop-predefined-register)
+  (jump-to-register register delete))
+
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
 
@@ -683,6 +694,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-Z")         'zap-up-to-char)
 (global-set-key (kbd "M-{")         'next-buffer)
 (global-set-key (kbd "M-}")         'previous-buffer)
+(global-set-key (kbd "C-x r j")     'jump-to-register-with-save)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
