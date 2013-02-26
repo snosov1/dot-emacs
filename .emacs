@@ -137,6 +137,9 @@
                (define-key grep-mode-map "\C-c\C-c"
                  'wgrep-save-all-buffers))))
 
+;; cuda-mode
+(require 'cuda-mode nil t)
+
 ;; ------------------------------------------------------------
 ;; DEPENDENCIES
 
