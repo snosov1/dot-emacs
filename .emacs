@@ -112,6 +112,11 @@
     (indent-for-tab-command))
   (sp-pair "{" "}" :actions '(insert wrap) :post-handlers '(sp-brace-post-handler))
 
+  ;; add modes to ignore list
+  (setq sp-ignore-modes-list (append '(
+                  magit-key-mode
+                  ) sp-ignore-modes-list))
+
   (smartparens-global-mode 1)
   (setq sp-highlight-pair-overlay nil)
   (setq sp-autodelete-pair nil)
