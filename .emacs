@@ -25,6 +25,28 @@
          load-path)))
 
 ;; ------------------------------------------------------------
+;; DEPENDENCIES
+
+;; enables key bindings from dired-x (like C-x C-j)
+(require 'dired-x)
+
+;; for zap-up-to-char
+(require 'misc)
+
+;; for git-grep command
+(require 'vc-git)
+(require 'grep)
+
+;; hippie-expand
+(require 'hippie-exp)
+
+;; enable org-mode
+(require 'org)
+;; enable python execution in org-mode
+(require 'ob-python)
+(require 'ob-R)
+
+;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
 
 ;; auto-complete mode
@@ -144,28 +166,6 @@
 
 ;; cuda-mode
 (require 'cuda-mode nil t)
-
-;; ------------------------------------------------------------
-;; DEPENDENCIES
-
-;; enables key bindings from dired-x (like C-x C-j)
-(require 'dired-x)
-
-;; for zap-up-to-char
-(require 'misc)
-
-;; for git-grep command
-(require 'vc-git)
-(require 'grep)
-
-;; hippie-expand
-(require 'hippie-exp)
-
-;; enable org-mode
-(require 'org)
-;; enable python execution in org-mode
-(require 'ob-python)
-(require 'ob-R)
 
 ;; ------------------------------------------------------------
 ;; kbd DEFINITIONS
