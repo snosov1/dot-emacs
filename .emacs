@@ -778,6 +778,11 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              (define-key cmake-mode-map "\C-c\C-c"
                'compile)))
 
+(add-hook 'image-mode-hook
+          '(lambda ()
+             (define-key image-mode-map "\C-a"
+               'image-bol)))
+
 (add-hook 'c-mode-common-hook
           '(lambda ()
              (define-key c-mode-base-map "\C-c\C-c"
