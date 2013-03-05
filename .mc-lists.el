@@ -31,6 +31,7 @@
         python-indent-dedent-line-backspace
         smart-beginning-of-line
         sp--self-insert-command
+        sp-remove-active-pair-overlay
         sp-self-insert-command
         sp-wrap-cancel
         upcase-dispatch
