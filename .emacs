@@ -137,8 +137,8 @@ mc/mark-all-like-this otherwise"
   (global-set-key (kbd "C-x C-y") 'browse-kill-ring)
   (setq browse-kill-ring-quit-action 'save-and-restore))
 
-;; cleverparens
-(when (require 'cleverparens nil t))
+;; dummyparens
+(when (require 'dummyparens nil t))
 
 ;; paredit
 (when (require 'paredit nil t)
