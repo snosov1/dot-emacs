@@ -137,29 +137,12 @@ mc/mark-all-like-this otherwise"
   (global-set-key (kbd "C-x C-y") 'browse-kill-ring)
   (setq browse-kill-ring-quit-action 'save-and-restore))
 
-;; smartparens
-(when (require 'smartparens-config nil t)
-  (defun sp-brace-post-handler (open action context)
-    "Provides electric brace behavior for smartparens mode"
-    (when (eq action 'wrap)
-      (indent-region (region-beginning) (region-end)))
-    (indent-for-tab-command))
-  (sp-pair "{" "}" :actions '(insert wrap) :post-handlers '(sp-brace-post-handler))
+;; cleverparens
+(when (require 'cleverparens nil t))
 
-  ;; add modes to ignore list
-  (setq sp-ignore-modes-list (append '(
-                  magit-key-mode
-                  ) sp-ignore-modes-list))
-
-  (smartparens-global-mode 1)
-  (setq sp-highlight-pair-overlay nil)
-  (setq sp-autodelete-pair nil)
-  (setq sp-autodelete-closing-pair nil)
-  (setq sp-autodelete-opening-pair nil)
-  (setq sp-autoinsert-if-followed-by-same 0)
-  (setq sp-autoinsert-if-followed-by-word t)
-  (global-set-key (kbd "C-S-d") 'sp-unwrap-sexp)
-  (global-set-key (kbd "C-S-h") 'sp-backward-unwrap-sexp))
+;; paredit
+(when (require 'paredit nil t)
+  (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))
 
 ;; python and ipython
 (when (require 'python nil t)
