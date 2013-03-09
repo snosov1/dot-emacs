@@ -44,12 +44,15 @@
 (setq mc/cmds-to-run-once
       '(
         describe-key
+        edebug-next-mode
         end-of-buffer
         find-tag
         ido-find-file
         ido-switch-buffer
         ignore
+        keyboard-escape-quit
         mc/dwim
+        mc/mark-all-dispatch
         universal-argument-minus
         wdired-finish-edit
         ))
