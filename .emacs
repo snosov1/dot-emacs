@@ -696,8 +696,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-c\C-t")    'toggle-truncate-lines)
 (global-set-key (kbd "M-j")         'join-following-line)
 (global-set-key (kbd "M-Z")         'zap-up-to-char)
-(global-set-key (kbd "M-{")         'next-buffer)
-(global-set-key (kbd "M-}")         'previous-buffer)
 (global-set-key (kbd "C-x r j")     'jump-to-register-with-save)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
