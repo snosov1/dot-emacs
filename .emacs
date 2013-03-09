@@ -202,7 +202,6 @@
   (when (member major-mode '(term-mode))
       (term-line-mode)
       (end-of-buffer)
-      (term-previous-prompt 0)
       (end-of-line)
       (term-char-mode)))
 
@@ -533,6 +532,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
  '(tags-case-fold-search nil)
  '(truncate-lines t)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
+ '(wdired-allow-to-change-permissions t)
  '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
  '(yas-prompt-functions (quote (yas-dropdown-prompt yas-ido-prompt yas-completing-prompt yas-x-prompt yas-no-prompt))))
 (custom-set-faces
@@ -586,11 +586,10 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 
 ;; make background a little darker
 (set-background-color "#1d1f21")
+;; require term mode after theme is set
+(require 'term)
 ;; set better ansi-term colors
 (setq ansi-term-color-vector [unspecified "#1d1f21" "#cc6666" "firebrick" "#f0c674" "#81a2be" "#b294bb" "cyan3" "#c5c8c6"])
-
-;; recognize .zsh extension
-(setq auto-mode-alist (cons '("\\.zsh" . sh-mode) auto-mode-alist))
 
 ;; disable 'confusing' functions disabling
 (put 'narrow-to-region 'disabled nil)
@@ -638,10 +637,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
       (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
                 ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
               compilation-error-regexp-alist))
-
-;; set zsh as default shell
-(require 'term)
-(setq sh-shell-file "/bin/zsh")
 
 ;; webjump configuration
 (require 'webjump)
