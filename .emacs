@@ -106,13 +106,24 @@
 
 ;; multiple cursors
 (when (require 'multiple-cursors nil t)
+  (defun mc/mark-all-dispatch ()
+    "Calls mc/edit-lines if multiple lines are selected and
+mc/mark-all-like-this otherwise"
+    (interactive)
+    (cond
+     ((> (- (line-number-at-pos (region-end))
+            (line-number-at-pos (region-beginning))) 0)
+      (mc/edit-lines))
+     (t
+      (mc/mark-all-like-this))))
+
   (setq mc/list-file "~/Dropbox/dot-emacs/.mc-lists.el")
   (load mc/list-file t) ;; load, but no errors if it does not exist yet please
 
   (global-set-key (kbd "C->")     'mc/mark-next-like-this)
   (global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
 
-  (global-set-key (kbd "S-<SPC>") 'mc/edit-lines)
+  (global-set-key (kbd "M-<SPC>") 'mc/mark-all-dispatch)
 
   (global-set-key (kbd "M-#") 'mc/insert-numbers))
 
