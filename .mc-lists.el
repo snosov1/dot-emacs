@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        backward-sexp
         c-electric-backspace
         c-electric-colon
         c-electric-delete-forward
@@ -14,6 +15,7 @@
         downcase-dispatch
         eval-dispatch
         fixup-whitespace
+        forward-sexp
         indent-for-tab-command
         join-following-line
         kill-region
@@ -36,6 +38,7 @@
         sp-wrap-cancel
         upcase-dispatch
         wrap-region-trigger
+        zap-up-to-char
         ))
 
 (setq mc/cmds-to-run-once
