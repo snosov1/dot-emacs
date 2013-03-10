@@ -138,7 +138,8 @@ mc/mark-all-like-this otherwise"
   (setq browse-kill-ring-quit-action 'save-and-restore))
 
 ;; dummyparens
-(when (require 'dummyparens nil t))
+(when (require 'dummyparens nil t)
+  (dp-bind-trigger-keys))
 
 ;; paredit
 (when (require 'paredit nil t)
