@@ -140,7 +140,7 @@ mc/mark-all-like-this otherwise"
 
 ;; dummyparens
 (when (require 'dummyparens nil t)
-  (dp-bind-trigger-keys))
+  (global-dummyparens-mode))
 
 ;; paredit
 (when (require 'paredit nil t)
