@@ -586,6 +586,10 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (require 'term)
 ;; set better ansi-term colors
 (setq ansi-term-color-vector [unspecified "#1d1f21" "#cc6666" "firebrick" "#f0c674" "#81a2be" "#b294bb" "cyan3" "#c5c8c6"])
+(setq term-remote-hosts '(
+                          ("argus-cv" "ssh" "sergei@argus-cv.dnsalias.org" "-p7707")
+                          ("carma-1" "ssh" "ubuntu@192.168.0.106")
+                          ))
 
 ;; disable 'confusing' functions disabling
 (put 'narrow-to-region 'disabled nil)
