@@ -89,7 +89,8 @@
                 auto-mode-alist)))
 
 ;; magit
-(require 'magit nil t)
+(when (require 'magit nil t)
+  (setq magit-revert-item-confirm nil))
 
 ;; expand-region
 (when (require 'expand-region nil t)
