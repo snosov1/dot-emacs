@@ -181,6 +181,14 @@ mc/mark-all-like-this otherwise"
    [?& ?n ?a ?u ?t ?i ?l ?u ?s return])
 
 ;; ------------------------------------------------------------
+;; SKELETONS
+
+(define-skeleton printf-skeleton
+  "insert printf statement"
+  "value: "
+  "printf(\"" str " = %" _ "d\\n\", " str ");" \n)
+
+;; ------------------------------------------------------------
 ;; ADVICES
 
 (defadvice insert-for-yank-1 (after indent-region activate)
@@ -203,6 +211,17 @@ mc/mark-all-like-this otherwise"
 
 ;; ------------------------------------------------------------
 ;; DEFUNS
+
+(defun orgtbl-to-latex-matrix (table params)
+  "Convert the Orgtbl mode TABLE to a LaTeX Matrix."
+  (interactive)
+  (let* ((params2
+          (list
+           :tstart (concat "\\[\n\\begin{pmatrix}")
+           :tend "\\end{pmatrix}\n\\]"
+           :lstart "" :lend " \\\\" :sep " & "
+           :efmt "%s\\,(%s)" :hline "\\hline")))
+    (orgtbl-to-generic table (org-combine-plists params2 params))))
 
 (defun smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line.
@@ -782,6 +801,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                'compile)
              (define-key c-mode-base-map "\C-c\C-o"
                'ff-find-other-file)
+             (define-key c-mode-base-map "\C-c\C-p"
+               'printf-skeleton)
              (define-key c-mode-base-map (kbd "C-M-h")
                'backward-kill-word)
              (define-key c-mode-base-map (kbd "M-j")
