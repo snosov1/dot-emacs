@@ -9,10 +9,12 @@
         c-electric-delete-forward
         c-electric-lt-gt
         c-electric-semi&comma
+        c-electric-slash
         capitalize-dispatch
         delete-indentation
         double-quote-word
         downcase-dispatch
+        dp-self-insert-command
         eval-dispatch
         fixup-whitespace
         forward-sexp
@@ -31,6 +33,7 @@
         org-self-insert-command
         org-yank
         python-indent-dedent-line-backspace
+        python-indent-electric-colon
         smart-beginning-of-line
         sp--self-insert-command
         sp-remove-active-pair-overlay
