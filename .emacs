@@ -541,6 +541,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
  '(org-startup-indented t)
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
+ '(scroll-conservatively 10000)
  '(scroll-error-top-bottom t)
  '(show-paren-delay 0)
  '(tab-width 4)
