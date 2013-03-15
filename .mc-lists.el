@@ -54,8 +54,10 @@
         ido-switch-buffer
         ignore
         keyboard-escape-quit
+        kmacro-end-or-call-macro
         mc/dwim
         mc/mark-all-dispatch
+        python-shell-send-buffer
         universal-argument-minus
         wdired-finish-edit
         ))
