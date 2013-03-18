@@ -609,6 +609,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (setq term-remote-hosts '(
                           ("argus-cv" "ssh" "sergei@argus-cv.dnsalias.org" "-p7707")
                           ("carma-1" "ssh" "ubuntu@192.168.0.106")
+                          ("jetson-1" "ssh" "nvidia@192.168.0.147")
+                          ("jetson-2" "ssh" "nvidia@192.168.0.166")
                           ))
 
 ;; disable 'confusing' functions disabling
