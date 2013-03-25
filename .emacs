@@ -798,6 +798,11 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              (define-key image-mode-map "\C-a"
                'image-bol)))
 
+(add-hook 'doc-view-mode-hook
+          '(lambda ()
+             (define-key doc-view-mode-map "\C-a"
+               'image-bol)))
+
 (add-hook 'c-mode-common-hook
           '(lambda ()
              (define-key c-mode-base-map "\C-c\C-c"
