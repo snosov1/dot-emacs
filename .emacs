@@ -803,6 +803,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              (define-key doc-view-mode-map "\C-a"
                'image-bol)))
 
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-hook 'c-mode-common-hook
           '(lambda ()
              (define-key c-mode-base-map "\C-c\C-c"
