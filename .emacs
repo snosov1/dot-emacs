@@ -124,7 +124,7 @@ mc/mark-all-like-this otherwise"
   (global-set-key (kbd "C->")     'mc/mark-next-like-this)
   (global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
 
-  (global-set-key (kbd "M-<SPC>") 'mc/mark-all-dispatch)
+  (global-set-key (kbd "M-@") 'mc/mark-all-dispatch)
 
   (global-set-key (kbd "M-#") 'mc/insert-numbers))
 
