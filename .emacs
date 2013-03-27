@@ -634,8 +634,11 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 
 ;; RecognizeCamelCaseSubwording
 (global-subword-mode)
-;; don't remap transpose-words
+;; don't remap some commands
 (define-key subword-mode-map (vector 'remap 'transpose-words) nil)
+(define-key subword-mode-map (vector 'remap 'upcase-word) nil)
+(define-key subword-mode-map (vector 'remap 'downcase-word) nil)
+(define-key subword-mode-map (vector 'remap 'capitalize-word) nil)
 
 ;; dired listing switches
 (setq dired-listing-switches (concat "-alh"
@@ -689,7 +692,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "C-M-n")       'forward-paragraph)
 (global-set-key (kbd "\C-c c")      'org-capture)
 (global-set-key (kbd "\C-c a")      'org-agenda)
-(global-set-key (kbd "\C-a")        'smart-beginning-of-line)
 (global-set-key (kbd "\C-x \C-b")   'ibuffer)
 (global-set-key (kbd "\C-x b")      'ibuffer)
 (global-set-key (kbd "M-p")         'move-text-up)
@@ -712,16 +714,18 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-/")         'hippie-expand)
 (global-set-key (kbd "\C-x k")      'kill-this-buffer)
 (global-set-key (kbd "C-+")         'org-list-repair)
-(global-set-key (kbd "M-u")         'upcase-dispatch)
-(global-set-key (kbd "M-l")         'downcase-dispatch)
-(global-set-key (kbd "M-c")         'capitalize-dispatch)
 (global-set-key (kbd "M-q")         'fill-paragraph-with-set)
 (global-set-key (kbd "C-x w")       'webjump)
 (global-set-key (kbd "\C-x\C-r")    'rename-buffer)
-(global-set-key (kbd "\C-c\C-t")    'toggle-truncate-lines)
+(global-set-key (kbd "\C-x t")      'toggle-truncate-lines)
 (global-set-key (kbd "M-j")         'join-following-line)
 (global-set-key (kbd "M-Z")         'zap-up-to-char)
 (global-set-key (kbd "C-x r j")     'jump-to-register-with-save)
+
+(define-key global-map [remap move-beginning-of-line] 'smart-beginning-of-line)
+(define-key global-map [remap upcase-word]            'upcase-dispatch)
+(define-key global-map [remap downcase-word]          'downcase-dispatch)
+(define-key global-map [remap capitalize-word]        'capitalize-dispatch)
 
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
@@ -795,16 +799,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
           '(lambda ()
              (define-key cmake-mode-map "\C-c\C-c"
                'compile)))
-
-(add-hook 'image-mode-hook
-          '(lambda ()
-             (define-key image-mode-map "\C-a"
-               'image-bol)))
-
-(add-hook 'doc-view-mode-hook
-          '(lambda ()
-             (define-key doc-view-mode-map "\C-a"
-               'image-bol)))
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-hook 'c-mode-common-hook
