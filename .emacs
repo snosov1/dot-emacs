@@ -634,6 +634,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 
 ;; RecognizeCamelCaseSubwording
 (global-subword-mode)
+;; don't remap transpose-words
+(define-key subword-mode-map (vector 'remap 'transpose-words) nil)
 
 ;; dired listing switches
 (setq dired-listing-switches (concat "-alh"
