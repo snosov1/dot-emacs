@@ -20,17 +20,3 @@ if [ "$TERM" = "eterm-color" ]; then
     PROMPT_COMMAND=set-eterm-dir
 fi
 ######################################################################
-
-# the above may not work with zsh, try
-precmd() {
-    echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
-    echo -e "\033AnSiTc" "$(pwd)"
-    if [ $(uname) = "SunOS" ]; then
-	    # The -f option does something else on SunOS and is not needed anyway.
-       	hostname_options="";
-    else
-        hostname_options="-f";
-    fi
-    echo -e "\033AnSiTh" "$(hostname $hostname_options)" # Using the -f option can cause problems on some OSes.
-}
-######################################################################
