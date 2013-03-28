@@ -703,7 +703,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-c\C-s")    'swap-buffers-in-windows)
 (global-set-key (kbd "M-\"")        'double-quote-word)
 (global-set-key (kbd "\C-c w")      'show-file-name)
-(global-set-key (kbd "\C-o")        'open-line-indent)
 (global-set-key (kbd "\C-x v a")    'vc-annotate)
 (global-set-key (kbd "\C-x v b")    'vc-annotate)
 (global-set-key (kbd "<f5>")        'revert-buffer)
@@ -716,10 +715,9 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-/")         'hippie-expand)
 (global-set-key (kbd "\C-x k")      'kill-this-buffer)
 (global-set-key (kbd "C-+")         'org-list-repair)
-(global-set-key (kbd "M-q")         'fill-paragraph-with-set)
 (global-set-key (kbd "C-x w")       'webjump)
 (global-set-key (kbd "\C-x\C-r")    'rename-buffer)
-(global-set-key (kbd "\C-x t")      'toggle-truncate-lines)
+(global-set-key (kbd "C-x t")       'toggle-truncate-lines)
 (global-set-key (kbd "M-j")         'join-following-line)
 (global-set-key (kbd "M-Z")         'zap-up-to-char)
 
@@ -729,6 +727,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (define-key global-map [remap downcase-word]          'downcase-dispatch)
 (define-key global-map [remap capitalize-word]        'capitalize-dispatch)
 (define-key global-map [remap jump-to-register]       'jump-to-register-with-save)
+(define-key global-map [remap fill-paragraph]         'fill-paragraph-with-set)
+(define-key global-map [remap open-line]              'open-line-indent)
 
 ;; define translations
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
