@@ -762,16 +762,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              ;; keep default behavior in dired
              (define-key dired-mode-map (kbd "C-x C-q")
                'dired-toggle-read-only)
-             ;; use global key bindings intead
-             (define-key dired-mode-map (kbd "C-M-p")
-               'dired-prev-marked-file)
-             (define-key dired-mode-map (kbd "C-M-n")
-               'dired-next-marked-file)
-             (define-key dired-mode-map (kbd "M-{")
-               nil)
-             (define-key dired-mode-map (kbd "M-}")
-               nil)
-             ;; external window manager
              (define-key dired-mode-map (kbd "E")
                'open-window-manager)
              (define-key dired-mode-map [(shift return)]
