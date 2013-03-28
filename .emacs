@@ -490,7 +490,9 @@ fill-paragraph"
   "Like jump-to-register, but saves current window configuration
 to predefined register"
   (interactive "cJump to register: \nP")
-  (window-configuration-to-register pop-predefined-register)
+  ;; autosave current window configuration unless we're jumping back
+  (unless (equal register pop-predefined-register)
+    (window-configuration-to-register pop-predefined-register))
   (jump-to-register register delete))
 
 ;; ------------------------------------------------------------
@@ -720,19 +722,21 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-x t")      'toggle-truncate-lines)
 (global-set-key (kbd "M-j")         'join-following-line)
 (global-set-key (kbd "M-Z")         'zap-up-to-char)
-(global-set-key (kbd "C-x r j")     'jump-to-register-with-save)
 
+;; remap existing commands with "smarter" versions
 (define-key global-map [remap move-beginning-of-line] 'smart-beginning-of-line)
 (define-key global-map [remap upcase-word]            'upcase-dispatch)
 (define-key global-map [remap downcase-word]          'downcase-dispatch)
 (define-key global-map [remap capitalize-word]        'capitalize-dispatch)
+(define-key global-map [remap jump-to-register]       'jump-to-register-with-save)
 
+;; define translations
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
 ;; C-/ is not representable with an ASCII control code, so it cannot
 ;; be sent to terminals, but it is a convenient keybinding for
-;; undo. So mapping it to "traditional" undo sequence C-_ workarounds
-;; this problem
+;; undo. So mapping it to "traditional" undo sequence C-_ is a cute
+;; way around
 (define-key key-translation-map [?\C-/] [?\C-_]) ;; translate C-/ to C-_
 
 ;; convinient binding for C-x C-s in org-src-mode
@@ -777,7 +781,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 
 (add-hook 'view-mode-hook
           '(lambda ()
-             ;; navigation
+             ;; simpler navigation
              (define-key view-mode-map "p"
                'previous-line)
              (define-key view-mode-map "n"
