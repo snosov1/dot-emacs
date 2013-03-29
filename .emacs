@@ -813,3 +813,5 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                'hs-toggle-hideshow-all)
              ;; set //-style comments for c-mode
              (setq comment-start "//" comment-end "")))
+
+(add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
