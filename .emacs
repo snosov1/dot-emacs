@@ -223,6 +223,24 @@ mc/mark-all-like-this otherwise"
            :efmt "%s\\,(%s)" :hline "\\hline")))
     (orgtbl-to-generic table (org-combine-plists params2 params))))
 
+(defmacro smart-isearch (direction)
+  `(defun ,(intern (format "smart-isearch-%s" direction)) (&optional regexp-p no-recursive-edit)
+     "If region is active and non empty, use it for searching and
+make first jump. Otherwise, behave like original function."
+     (interactive "P\np")
+     (let ((smart-p (and (region-active-p) (< (region-beginning) (region-end)))))
+       (when smart-p
+         (kill-ring-save (region-beginning) (region-end)))
+
+       (,(intern (format "isearch-%s" direction)) regexp-p no-recursive-edit)
+
+       (when smart-p
+         (isearch-yank-kill)
+         (,(intern (format "isearch-repeat-%s" direction)))))))
+
+(smart-isearch forward)
+(smart-isearch backward)
+
 (defun smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line.
 
@@ -729,6 +747,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (define-key global-map [remap jump-to-register]       'jump-to-register-with-save)
 (define-key global-map [remap fill-paragraph]         'fill-paragraph-with-set)
 (define-key global-map [remap open-line]              'open-line-indent)
+(define-key global-map [remap isearch-forward]        'smart-isearch-forward)
+(define-key global-map [remap isearch-backward]       'smart-isearch-backward)
 
 ;; define translations
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
