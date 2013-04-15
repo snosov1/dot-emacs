@@ -202,7 +202,7 @@ mc/mark-all-like-this otherwise"
       (indent-region (region-beginning) (region-end) nil)))
 
 (defadvice ido-switch-buffer (after maintain-ansi-term activate)
-  "Indent yanked region in certain modes, C-u prefix to disable"
+  "Go to prompt when switched to ansi-term"
   (when (member major-mode '(term-mode))
       (term-line-mode)
       (end-of-buffer)
