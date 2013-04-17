@@ -633,6 +633,9 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                           ("jetson-2" "ssh" "nvidia@192.168.0.166")
                           ("sergei-ws" "ssh" "sergei@192.168.0.47")
                           ))
+(setq ange-ftp-dumb-unix-host-regexp (regexp-opt '(
+                                                   "files.itseez.com"
+                                                   )))
 
 ;; disable 'confusing' functions disabling
 (put 'narrow-to-region 'disabled nil)
