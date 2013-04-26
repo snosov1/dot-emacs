@@ -527,6 +527,7 @@ to predefined register"
  '(compilation-scroll-output (quote first-error))
  '(custom-enabled-themes (quote (tango-dark)))
  '(default-input-method "russian-computer")
+ '(diff-update-on-the-fly nil)
  '(dired-dwim-target t)
  '(dired-recursive-copies (quote always))
  '(dired-recursive-deletes (quote always))
