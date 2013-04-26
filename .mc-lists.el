@@ -10,6 +10,7 @@
         c-electric-lt-gt
         c-electric-semi&comma
         c-electric-slash
+        c-electric-star
         capitalize-dispatch
         delete-indentation
         double-quote-word
@@ -58,6 +59,8 @@
         mc/dwim
         mc/mark-all-dispatch
         python-shell-send-buffer
+        toggle-input-method
         universal-argument-minus
+        wdired-abort-changes
         wdired-finish-edit
         ))
