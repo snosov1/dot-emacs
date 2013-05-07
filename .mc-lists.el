@@ -33,6 +33,7 @@
         org-return-indent
         org-self-insert-command
         org-yank
+        paredit-splice-sexp
         python-indent-dedent-line-backspace
         python-indent-electric-colon
         smart-beginning-of-line
