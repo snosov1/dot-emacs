@@ -3,10 +3,6 @@
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 ;; no splash screen
 (setq inhibit-startup-message t)
-;; set font
-(ignore-errors
-  (set-frame-font
-   (car (x-list-fonts "-*-DejaVu Sans Mono-normal-normal-normal-*-*-*-*-*-*-*-iso10646-1"))))
 
 ;; ------------------------------------------------------------
 ;; PATHS
@@ -251,6 +247,20 @@ If point was already at that position, move point to beginning of line."
     (back-to-indentation)
     (and (= oldpos (point))
          (beginning-of-line))))
+
+(defun configure-theme ()
+  (load-theme 'tango-dark)
+  (enable-theme 'tango-dark)
+  ;; make background a little darker
+  (set-background-color "#1d1f21")
+  ;; require term mode after theme is set
+  (require 'term)
+  ;; set better ansi-term colors
+  (setq ansi-term-color-vector [unspecified "#1d1f21" "#cc6666" "firebrick" "#f0c674" "#81a2be" "#b294bb" "cyan3" "#c5c8c6"])
+  ;; set font
+  (ignore-errors
+    (set-frame-font
+     (car (x-list-fonts "-*-DejaVu Sans Mono-normal-normal-normal-*-*-*-*-*-*-*-iso10646-1")))))
 
 ;; functions to save and restore window configuration for ediff-mode
 (defun ediff-save-window-configuration ()
@@ -525,7 +535,6 @@ to predefined register"
  '(c-default-style (quote ((c-mode . "bsd") (c++-mode . "bsd") (d-mode . "bsd") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
  '(calendar-week-start-day 1)
  '(compilation-scroll-output (quote first-error))
- '(custom-enabled-themes (quote (tango-dark)))
  '(default-input-method "russian-computer")
  '(diff-update-on-the-fly nil)
  '(dired-dwim-target t)
@@ -621,12 +630,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 ;; do not disturb with "buffer still has active clients" on buffer killing
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
-;; make background a little darker
-(set-background-color "#1d1f21")
-;; require term mode after theme is set
-(require 'term)
-;; set better ansi-term colors
-(setq ansi-term-color-vector [unspecified "#1d1f21" "#cc6666" "firebrick" "#f0c674" "#81a2be" "#b294bb" "cyan3" "#c5c8c6"])
 (setq term-remote-hosts '(
                           ("argus-cv" "ssh" "sergei@argus-cv.dnsalias.org" "-p7707")
                           ("carma-1" "ssh" "ubuntu@192.168.0.106")
@@ -655,6 +658,9 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 
 ;; replace selection with input or yank
 (delete-selection-mode 1)
+
+;; make emacs look good
+(configure-theme)
 
 ;; RecognizeCamelCaseSubwording
 (global-subword-mode)
