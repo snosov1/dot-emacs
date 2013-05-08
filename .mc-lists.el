@@ -8,6 +8,7 @@
         c-electric-colon
         c-electric-delete-forward
         c-electric-lt-gt
+        c-electric-paren
         c-electric-semi&comma
         c-electric-slash
         c-electric-star
@@ -48,6 +49,7 @@
 
 (setq mc/cmds-to-run-once
       '(
+        compile
         describe-key
         edebug-next-mode
         end-of-buffer
