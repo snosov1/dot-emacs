@@ -162,10 +162,9 @@ mc/mark-all-like-this otherwise"
 
 ;; export org to s5
 (when (require 'ox-s5 nil t)
-  (defun org-s5-export-to-html-tango (&optional async subtreep visible-only body-only ext-plist)
-    "Wrap org-export-as-s5 to use tango theme colors for source
+  (defadvice org-s5-export-to-html (around org-s5-export-to-html-tango activate)
+    "Wrap around org-s5-export-to-html to use tango theme colors for source
 code fontification."
-    (interactive "P")
     (let (
           (old-builtin-foreground (face-attribute 'font-lock-builtin-face :foreground))
           (old-comment-foreground (face-attribute 'font-lock-comment-face :foreground))
@@ -185,7 +184,7 @@ code fontification."
       (set-face-foreground 'font-lock-type-face          "#204a87")
       (set-face-foreground 'font-lock-variable-name-face "#b35000")
 
-      (org-s5-export-to-html async subtreep visible-only body-only ext-plist)
+      ad-do-it
 
       (set-face-foreground 'font-lock-builtin-face        old-builtin-foreground)
       (set-face-foreground 'font-lock-comment-face        old-comment-foreground)
