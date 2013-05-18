@@ -255,6 +255,11 @@ code fontification."
            :efmt "%s\\,(%s)" :hline "\\hline")))
     (orgtbl-to-generic table (org-combine-plists params2 params))))
 
+(defun org-s5-init-dir ()
+  "Initialize directory for S5 presentation"
+  (interactive)
+  (start-process-shell-command "git" nil "git clone ~/Dropbox/emacs/org-s5/ ."))
+
 (defmacro smart-isearch (direction)
   `(defun ,(intern (format "smart-isearch-%s" direction)) (&optional regexp-p no-recursive-edit)
      "If region is active and non empty, use it for searching and
