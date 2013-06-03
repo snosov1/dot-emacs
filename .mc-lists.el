@@ -12,8 +12,10 @@
         c-electric-semi&comma
         c-electric-slash
         c-electric-star
+        c-indent-line-or-region
         capitalize-dispatch
         delete-indentation
+        dired-jump-to-top
         double-quote-word
         downcase-dispatch
         dp-self-insert-command
@@ -51,6 +53,7 @@
       '(
         compile
         describe-key
+        dired-toggle-read-only
         edebug-next-mode
         end-of-buffer
         find-tag
