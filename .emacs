@@ -10,7 +10,7 @@
 
 ;; this complicated 'let' places every subdir of Dropbox/emacs AT THE
 ;; BEGINING of load-path, so custom versions of libraries are loaded
-;; before bundled (org-mode in particular)
+;; before bundled ones (org and term in particular)
 (let ((default-directory "~/Dropbox/emacs"))
   (setq load-path
         (append
