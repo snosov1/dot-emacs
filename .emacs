@@ -196,6 +196,39 @@ code fontification."
       (set-face-foreground 'font-lock-variable-name-face  old-variable-foreground)
       )))
 
+(when (require 'image-mode nil t)
+  (defun next-image (arg)
+    "Visit the next arg'th image in the same directory of the
+same type."
+    (interactive "P")
+    (unless (and (buffer-file-name) (eq major-mode 'image-mode))
+      (error "Not visiting a file in image mode"))
+    (let* ((files   (directory-files
+                     (file-name-directory (buffer-file-name)) nil
+                     (file-name-extension (buffer-file-name)) ))
+           (len     (length files))
+           (this    (file-name-nondirectory (buffer-file-name)))
+           (idx     0))
+      (dolist (file files)
+        (if (not (string= this file))
+            (setq idx  (1+ idx))
+          (setq idx
+                (mod (+ idx (if arg arg 1)) len))
+          (kill-this-buffer) ;; we don't want to have a thousand image
+                             ;; buffers around
+          (find-file (elt files idx))))))
+
+  (defun previous-image (arg)
+    "Visit previous image. See `next-image'"
+    (interactive "P")
+    (next-image (if arg (- arg) -1)))
+
+  (add-hook 'image-mode-hook
+            '(lambda ()
+               (define-key image-mode-map "n" 'next-image)
+               (define-key image-mode-map "p" 'previous-image)
+               )))
+
 ;; ------------------------------------------------------------
 ;; kbd DEFINITIONS
 
@@ -866,6 +899,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                'compile)))
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
 (add-hook 'c-mode-common-hook
           '(lambda ()
              (define-key c-mode-base-map "\C-c\C-c"
