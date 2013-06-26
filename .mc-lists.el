@@ -23,6 +23,7 @@
         fixup-whitespace
         forward-sexp
         indent-for-tab-command
+        isearch-abort
         join-following-line
         kill-region
         org-backward-sentence
@@ -40,6 +41,7 @@
         python-indent-dedent-line-backspace
         python-indent-electric-colon
         smart-beginning-of-line
+        smart-isearch-forward
         sp--self-insert-command
         sp-remove-active-pair-overlay
         sp-self-insert-command
@@ -60,6 +62,7 @@
         ido-find-file
         ido-switch-buffer
         ignore
+        isearch-printing-char
         keyboard-escape-quit
         kmacro-end-or-call-macro
         mc/dwim
