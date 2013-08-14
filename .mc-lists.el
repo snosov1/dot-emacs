@@ -16,6 +16,7 @@
         capitalize-dispatch
         delete-indentation
         dired-jump-to-top
+        dired-next-line
         double-quote-word
         downcase-dispatch
         dp-self-insert-command
@@ -26,6 +27,7 @@
         isearch-abort
         join-following-line
         kill-region
+        open-line-indent
         org-backward-sentence
         org-beginning-of-line
         org-cycle
