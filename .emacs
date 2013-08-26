@@ -42,6 +42,20 @@
 (require 'ob-python)
 (require 'ob-R)
 
+;; webjump configuration
+(when (require 'webjump nil t)
+  (add-to-list 'webjump-sites
+               '("Lingvo" .
+                 [simple-query
+                  "lingvopro.abbyyonline.com"
+                  "http://lingvopro.abbyyonline.com/en/Translate/en-ru/"
+                  ""]))
+  (add-to-list 'webjump-sites
+               '("Urban Dictionary" .
+                 [simple-query
+                  "www.urbandictionary.com"
+                  "http://www.urbandictionary.com/define.php?term="
+                  ""])))
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
 
@@ -686,107 +700,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
  '(magit-item-highlight ((t (:background "black")))))
 
 ;; ------------------------------------------------------------
-;; MISCELLANEOUS CONFIGS
-
-;; write backup files to own directory
-(setq backup-directory-alist
-      `(("." . ,(expand-file-name
-                 (concat user-emacs-directory "backups")))))
-;; make backups of files, even when they're under version control
-(setq vc-make-backup-files t)
-
-;; start emacs server on first run
-(require 'server)
-(when (equal window-system 'w32)
-  (defun server-ensure-safe-dir (dir) "Noop" t)) ; Suppress error "directory
-                                                 ; ~/.emacs.d/server is unsafe"
-                                                 ; on windows.
-(unless (server-running-p) (server-start))
-;; do not disturb with "buffer still has active clients" on buffer killing
-(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
-
-(setq term-remote-hosts '(
-                          ("argus-cv" "ssh" "sergei@argus-cv.dnsalias.org" "-p7707")
-                          ("carma-1" "ssh" "ubuntu@192.168.0.106")
-                          ("jetson-1" "ssh" "nvidia@192.168.0.147")
-                          ("jetson-2" "ssh" "nvidia@192.168.0.166")
-                          ("sergei-ws" "ssh" "sergei@192.168.0.47")
-                          ("reports" "ssh" "snosov1@192.168.0.14") ;; masha without spec symbols
-                          ))
-(setq ange-ftp-dumb-unix-host-regexp (regexp-opt '(
-                                                   "files.itseez.com"
-                                                   )))
-
-;; disable 'confusing' functions disabling
-(put 'narrow-to-region 'disabled nil)
-
-;; shut up the bell
-(setq ring-bell-function 'ignore)
-
-;; ediff: fine highlight by char, not words
-(setq ediff-forward-word-function 'forward-char)
-
-;; delete trailing whitespace before save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; show matching parentheses
-(show-paren-mode 1)
-
-;; replace selection with input or yank
-(delete-selection-mode 1)
-
-;; make emacs look good
-(configure-theme)
-
-;; RecognizeCamelCaseSubwording
-(global-subword-mode)
-;; don't remap some commands
-(define-key subword-mode-map (vector 'remap 'transpose-words) nil)
-(define-key subword-mode-map (vector 'remap 'upcase-word) nil)
-(define-key subword-mode-map (vector 'remap 'downcase-word) nil)
-(define-key subword-mode-map (vector 'remap 'capitalize-word) nil)
-
-;; dired listing switches
-(setq dired-listing-switches (concat "-alh"
-                                     (when (not (equal window-system 'w32))
-                                       " --group-directories-first")))
-
-;; ibuffer groups
-(setq ibuffer-saved-filter-groups
-      (quote (("default"
-               ("org"  (mode . org-mode))
-               ("dired" (mode . dired-mode))
-               ("D" (mode . d-mode))
-               ("C/C++" (or
-                         (mode . cc-mode)
-                         (mode . c-mode)
-                         (mode . c++-mode)))
-               ("emacs" (name . "^\\*Messages\\*$"))))))
-(add-hook 'ibuffer-mode-hook
-          (lambda ()
-            (ibuffer-switch-to-saved-filter-groups "default")))
-
-;; those regexp are used by dmd compiler
-(setq compilation-error-regexp-alist
-      (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
-                ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
-              compilation-error-regexp-alist))
-
-;; webjump configuration
-(require 'webjump)
-(add-to-list 'webjump-sites
-             '("Lingvo" .
-               [simple-query
-                "lingvopro.abbyyonline.com"
-                "http://lingvopro.abbyyonline.com/en/Translate/en-ru/"
-                ""]))
-(add-to-list 'webjump-sites
-             '("Urban Dictionary" .
-               [simple-query
-                "www.urbandictionary.com"
-                "http://www.urbandictionary.com/define.php?term="
-                ""]))
-;; ------------------------------------------------------------
 ;; KEY BINDINGS
 
 ;; global
@@ -922,3 +835,91 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              (setq comment-start "//" comment-end "")))
 
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+
+;; ------------------------------------------------------------
+;; MISCELLANEOUS CONFIGS
+
+;; write backup files to own directory
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name
+                 (concat user-emacs-directory "backups")))))
+;; make backups of files, even when they're under version control
+(setq vc-make-backup-files t)
+
+(require 'server)
+(when (equal window-system 'w32)
+  ;; Suppress error "directory ~/.emacs.d/server is unsafe" on
+  ;; windows.
+  (defun server-ensure-safe-dir (dir) "Noop" t))
+
+;; start emacs server on first run
+(unless (server-running-p) (server-start))
+;; do not disturb with "buffer still has active clients" on buffer killing
+(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+
+(setq term-remote-hosts '(
+                          ("argus-cv" "ssh" "sergei@argus-cv.dnsalias.org" "-p7707")
+                          ("carma-1" "ssh" "ubuntu@192.168.0.106")
+                          ("jetson-1" "ssh" "nvidia@192.168.0.147")
+                          ("jetson-2" "ssh" "nvidia@192.168.0.166")
+                          ("sergei-ws" "ssh" "sergei@192.168.0.47")
+                          ("tegra-server" "ssh" "snosov1@192.168.0.14") ;; masha without spec symbols
+                          ))
+(setq ange-ftp-dumb-unix-host-regexp (regexp-opt '(
+                                                   "files.itseez.com"
+                                                   )))
+
+;; disable 'confusing' functions disabling
+(put 'narrow-to-region 'disabled nil)
+
+;; shut up the bell
+(setq ring-bell-function 'ignore)
+
+;; ediff: fine highlight by char, not words
+(setq ediff-forward-word-function 'forward-char)
+
+;; delete trailing whitespace before save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; show matching parentheses
+(show-paren-mode 1)
+
+;; replace selection with input or yank
+(delete-selection-mode 1)
+
+;; make emacs look good
+(configure-theme)
+
+;; RecognizeCamelCaseSubwording
+(global-subword-mode)
+;; don't remap some commands
+(define-key subword-mode-map (vector 'remap 'transpose-words) nil)
+(define-key subword-mode-map (vector 'remap 'upcase-word) nil)
+(define-key subword-mode-map (vector 'remap 'downcase-word) nil)
+(define-key subword-mode-map (vector 'remap 'capitalize-word) nil)
+
+;; dired listing switches
+(setq dired-listing-switches (concat "-alh"
+                                     (when (not (equal window-system 'w32))
+                                       " --group-directories-first")))
+
+;; ibuffer groups
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("org"  (mode . org-mode))
+               ("dired" (mode . dired-mode))
+               ("D" (mode . d-mode))
+               ("C/C++" (or
+                         (mode . cc-mode)
+                         (mode . c-mode)
+                         (mode . c++-mode)))
+               ("emacs" (name . "^\\*Messages\\*$"))))))
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")))
+
+;; those patterns are used by dmd compiler
+(setq compilation-error-regexp-alist
+      (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
+                ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
+              compilation-error-regexp-alist))
