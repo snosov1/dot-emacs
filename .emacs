@@ -862,7 +862,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                           ("carma-1" "ssh" "ubuntu@192.168.0.106")
                           ("jetson-1" "ssh" "nvidia@192.168.0.147")
                           ("jetson-2" "ssh" "nvidia@192.168.0.166")
-                          ("sergei-ws" "ssh" "sergei@192.168.0.47")
+                          ("sergei-ws" "ssh" "sergei@192.168.0.43")
                           ("tegra-server" "ssh" "snosov1@192.168.0.14") ;; masha without spec symbols
                           ))
 (setq ange-ftp-dumb-unix-host-regexp (regexp-opt '(
