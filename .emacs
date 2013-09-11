@@ -109,7 +109,18 @@
 
 ;; magit
 (when (require 'magit nil t)
-  (setq magit-revert-item-confirm nil))
+  (require 'gitignore-mode nil t)
+  (require 'gitconfig-mode nil t)
+  (require 'gitattributes-mode nil t)
+
+  (setq magit-revert-item-confirm nil)
+
+  ;; Add an extra newline to separate commit message from git commentary
+  (defun magit-commit-mode-init ()
+    (when (looking-at "\n")
+      (open-line 1)))
+  (add-hook 'git-commit-mode-hook 'magit-commit-mode-init))
+
 
 ;; expand-region
 (when (require 'expand-region nil t)
