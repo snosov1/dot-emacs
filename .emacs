@@ -683,7 +683,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
  '(org-startup-indented t)
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
- '(scroll-conservatively 10000)
+ '(scroll-conservatively 1)
  '(scroll-error-top-bottom t)
  '(show-paren-delay 0)
  '(tab-width 4)
@@ -936,6 +936,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                          (mode . cc-mode)
                          (mode . c-mode)
                          (mode . c++-mode)))
+               ("magit" (name . "^\\*magit"))
                ("emacs" (name . "^\\*Messages\\*$"))))))
 (add-hook 'ibuffer-mode-hook
           (lambda ()
