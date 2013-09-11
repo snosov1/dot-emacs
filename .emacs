@@ -263,6 +263,9 @@ same type."
                (define-key image-mode-map "p" 'previous-image)
                )))
 
+(when (require 'window-numbering nil t)
+  (window-numbering-mode 1))
+
 ;; ------------------------------------------------------------
 ;; kbd DEFINITIONS
 
