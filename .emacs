@@ -75,6 +75,15 @@
   (unless (equal window-system 'w32) ;; somehow ac-python hangs on windows
     (require 'ac-python nil t)))
 
+;; android-mode
+(when (require 'android-mode nil t)
+  (let (sdkdir (getenv "ANDROID_SDK"))
+    (if sdkdir
+        (setq android-mode-sdk-dir sdkdir)
+      (setq android-mode-sdk-dir "~/Development/android-sdk-linux"))
+    (setq android-mode-key-prefix "\C-c \C-a"))
+  (android-mode 1))
+
 ;; cmake-mode
 (when (require 'cmake-mode nil t)
   (setq auto-mode-alist
