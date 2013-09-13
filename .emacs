@@ -300,7 +300,7 @@ same type."
                                 lisp-mode
                                 c-mode c++-mode objc-mode d-mode java-mode cuda-mode
                                 LaTeX-mode TeX-mode
-                                xml-mode)))
+                                xml-mode html-mode css-mode)))
       (indent-region (region-beginning) (region-end) nil)))
 
 (defadvice ido-switch-buffer (after maintain-ansi-term activate)
