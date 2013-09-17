@@ -836,6 +836,11 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              (define-key cmake-mode-map "\C-c\C-c"
                'compile)))
 
+(add-hook 'sh-mode-hook
+          '(lambda ()
+             (define-key sh-mode-map "\C-c\C-c"
+               'compile)))
+
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
 (add-hook 'c-mode-common-hook
