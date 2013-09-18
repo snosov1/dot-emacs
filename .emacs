@@ -991,6 +991,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
           (lambda ()
             (ibuffer-switch-to-saved-filter-groups "default")))
 
+;; compile customization
+(make-variable-buffer-local 'compile-command)
 ;; those patterns are used by dmd compiler
 (setq compilation-error-regexp-alist
       (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
