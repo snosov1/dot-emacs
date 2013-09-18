@@ -21,7 +21,7 @@
          load-path)))
 
 ;; ------------------------------------------------------------
-;; DEPENDENCIES
+;; BUILT-IN DEPENDENCIES
 
 ;; enables key bindings from dired-x (like C-x C-j)
 (require 'dired-x)
@@ -42,7 +42,7 @@
 (require 'ob-python)
 (require 'ob-R)
 
-;; webjump configuration
+;; webjump
 (when (require 'webjump nil t)
   (add-to-list 'webjump-sites
                '("Lingvo" .
@@ -56,32 +56,65 @@
                   "www.urbandictionary.com"
                   "http://www.urbandictionary.com/define.php?term="
                   ""])))
+
+;; ------------------------------------------------------------
+;; EXTERNAL PACKAGES
+
+;; initialization
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ))
+
+(package-initialize)
+
+;; check if the required packages are installed; suggest installing if not
+(mapc
+ (lambda (package)
+   (or (package-installed-p package)
+       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
+           (package-install package))))
+ '(auto-complete smex))
+
+;; auto-complete
+(eval-after-load "auto-complete-autoloads"
+  '(progn
+     (if (require 'auto-complete-config nil t)
+         (progn
+           (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+           (ac-config-default)
+
+           ;; don't autostart ac
+           (setq ac-auto-start nil)
+           (define-key ac-mode-map (kbd "C-.") 'auto-complete)
+
+           ;; auto-complete-python
+           (unless (equal window-system 'w32) ;; somehow ac-python hangs on windows
+             (require 'ac-python nil t)))
+       (warn "auto-complete is not found."))))
+
+;; smex
+(eval-after-load "smex-autoloads"
+  '(progn
+     (if (require 'smex nil t)
+         (progn
+           (smex-initialize)
+           (global-set-key (kbd "M-x") 'smex))
+       (warn "smex is not found."))))
+
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
 
-;; auto-complete mode
-
-;; NOTE: this mode doesn't play well along with yasnippet, so I've
-;; commented out everything about it from ac sources
-(when (require 'auto-complete-config nil t)
-  (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-  (ac-config-default)
-
-  ;; don't autostart ac
-  (setq ac-auto-start nil)
-  (define-key ac-mode-map (kbd "C-.") 'auto-complete)
-
-  ;; auto-complete-python
-  (unless (equal window-system 'w32) ;; somehow ac-python hangs on windows
-    (require 'ac-python nil t)))
+;; NOTE: these dependencies should be eventually migrated to use
+;; package.el
 
 ;; android-mode
 (when (require 'android-mode nil t)
   (let (sdkdir (getenv "ANDROID_SDK"))
     (if sdkdir
         (setq android-mode-sdk-dir sdkdir)
-      (setq android-mode-sdk-dir "~/Development/android-sdk-linux"))
-    (setq android-mode-key-prefix "\C-c \C-a"))
+      (setq android-mode-sdk-dir "~/Development/android-sdk-linux")))
+  (setq android-mode-key-prefix "\C-c \C-a")
   (android-mode 1))
 
 ;; cmake-mode
