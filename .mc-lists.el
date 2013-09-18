@@ -42,6 +42,7 @@
         paredit-splice-sexp
         python-indent-dedent-line-backspace
         python-indent-electric-colon
+        sgml-slash
         smart-beginning-of-line
         smart-isearch-forward
         sp--self-insert-command
