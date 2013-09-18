@@ -322,6 +322,17 @@ same type."
   "insert printf statement"
   "value: "
   "printf(\"" str " = %" _ "d\\n\", " str ");" \n)
+(define-skeleton tostring-skeleton
+  "insert template to convert anything to string"
+  "#include <sstream>\n"
+  "template <typename T>\n"
+  "std::string to_string(const T& obj)\n"
+  "{\n"
+  "    std::ostringstream oss;\n"
+  "    oss << obj;\n"
+  "    return oss.str();\n"
+  "}\n")
+
 
 ;; ------------------------------------------------------------
 ;; ADVICES
