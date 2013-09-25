@@ -74,7 +74,11 @@
    (or (package-installed-p package)
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
- '(auto-complete smex))
+ '(
+   auto-complete
+   smex
+   elpy
+   ))
 
 ;; auto-complete
 (eval-after-load "auto-complete-autoloads"
@@ -86,12 +90,8 @@
 
            ;; don't autostart ac
            (setq ac-auto-start nil)
-           (define-key ac-mode-map (kbd "C-.") 'auto-complete)
-
-           ;; auto-complete-python
-           (unless (equal window-system 'w32) ;; somehow ac-python hangs on windows
-             (require 'ac-python nil t)))
-       (warn "auto-complete is not found."))))
+           (define-key ac-mode-map (kbd "C-.") 'auto-complete))
+       (warn "auto-complete not found"))))
 
 ;; smex
 (eval-after-load "smex-autoloads"
@@ -100,7 +100,19 @@
          (progn
            (smex-initialize)
            (global-set-key (kbd "M-x") 'smex))
-       (warn "smex is not found."))))
+       (warn "smex not found"))))
+
+;; elpy
+;; to install dependencies:
+;; $ pip install elpy rope pyflakes
+(eval-after-load "elpy-autoloads"
+  '(progn
+     (if (require 'elpy nil t)
+         (progn
+           (elpy-enable)
+           (elpy-clean-modeline)
+           (elpy-use-ipython))
+       (warn "elpy not found"))))
 
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
@@ -114,8 +126,7 @@
     (if sdkdir
         (setq android-mode-sdk-dir sdkdir)
       (setq android-mode-sdk-dir "~/Development/android-sdk-linux")))
-  (setq android-mode-key-prefix "\C-c \C-a")
-  (android-mode 1))
+  (setq android-mode-key-prefix "\C-c \C-a"))
 
 ;; cmake-mode
 (when (require 'cmake-mode nil t)
@@ -208,14 +219,6 @@ mc/mark-all-like-this otherwise"
 ;; paredit
 (when (require 'paredit nil t)
   (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))
-
-;; python and ipython
-(when (require 'python nil t)
-  (setq
-   python-shell-interpreter "python"
-   python-shell-interpreter-args (concat "-i " (expand-file-name "~/Dropbox/projects/ipython/ipython.py"))
-   python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-   python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "))
 
 (when (require 'wgrep nil t)
   (setq wgrep-enable-key "\C-x\C-q")
