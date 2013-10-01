@@ -78,6 +78,7 @@
    auto-complete
    smex
    elpy
+   window-numbering
    ))
 
 ;; auto-complete
@@ -113,6 +114,12 @@
            (elpy-clean-modeline)
            (elpy-use-ipython))
        (warn "elpy not found"))))
+
+(eval-after-load "window-numbering-autoloads"
+  '(progn
+     (if (require 'window-numbering nil t)
+         (window-numbering-mode 1)
+       (warn "window-numbering-mode not found"))))
 
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
@@ -299,9 +306,6 @@ same type."
                (define-key image-mode-map "p" 'previous-image)
                )))
 
-(when (require 'window-numbering nil t)
-  (window-numbering-mode 1))
-
 ;; ------------------------------------------------------------
 ;; kbd DEFINITIONS
 
@@ -405,6 +409,18 @@ If point was already at that position, move point to beginning of line."
     (back-to-indentation)
     (and (= oldpos (point))
          (beginning-of-line))))
+
+(defun c-current-function-name ()
+  "Returns current function name in C-like
+languages ('beginning-of-defun'-based)"
+  (interactive)
+  (save-excursion
+    (beginning-of-defun)
+    (skip-chars-forward "^(")
+    (skip-chars-backward "\s\n")
+    (setq defun-name-end (point))
+    (skip-chars-backward "^[:space:]")
+    (buffer-substring-no-properties (point) defun-name-end)))
 
 (defun configure-theme ()
   (load-theme 'tango-dark)
