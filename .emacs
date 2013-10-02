@@ -413,7 +413,6 @@ If point was already at that position, move point to beginning of line."
 (defun c-current-function-name ()
   "Returns current function name in C-like
 languages ('beginning-of-defun'-based)"
-  (interactive)
   (save-excursion
     (beginning-of-defun)
     (skip-chars-forward "^(")
