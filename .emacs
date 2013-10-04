@@ -105,14 +105,20 @@
 
 ;; elpy
 ;; to install dependencies:
-;; $ pip install elpy rope pyflakes
+;; $ pip install elpy rope pyflakes ipython
 (eval-after-load "elpy-autoloads"
   '(progn
      (if (require 'elpy nil t)
          (progn
            (elpy-enable)
            (elpy-clean-modeline)
-           (elpy-use-ipython))
+           (elpy-use-ipython)
+           (add-hook 'elpy-mode-hook
+                     '(lambda ()
+                        (define-key elpy-mode-map (kbd "M-p")
+                          nil)
+                        (define-key elpy-mode-map (kbd "M-n")
+                          nil))))
        (warn "elpy not found"))))
 
 (eval-after-load "window-numbering-autoloads"
