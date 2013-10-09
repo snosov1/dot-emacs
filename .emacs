@@ -79,6 +79,7 @@
    smex
    elpy
    window-numbering
+   markdown-mode
    ))
 
 ;; auto-complete
@@ -126,6 +127,21 @@
      (if (require 'window-numbering nil t)
          (window-numbering-mode 1)
        (warn "window-numbering-mode not found"))))
+
+(eval-after-load "markdown-mode-autoloads"
+  '(progn
+     (if (require 'markdown-mode nil t)
+         (progn
+           (setq auto-mode-alist (cons '("\\.md" . markdown-mode) auto-mode-alist))
+           (setq markdown-command (concat "perl " (expand-file-name "~/Dropbox/bin/Markdown.pl")))
+
+           (add-hook 'markdown-mode-hook
+                     '(lambda ()
+                        (define-key markdown-mode-map (kbd "M-p")
+                          nil)
+                        (define-key markdown-mode-map (kbd "M-n")
+                          nil))))
+       (warn "markdown-mode not found"))))
 
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
@@ -214,11 +230,6 @@ mc/mark-all-like-this otherwise"
   (global-set-key (kbd "M-@") 'mc/mark-all-dispatch)
 
   (global-set-key (kbd "M-#") 'mc/insert-numbers))
-
-;; markdown
-(when (require 'markdown-mode nil t)
-  (setq auto-mode-alist (cons '("\\.md" . markdown-mode) auto-mode-alist))
-  (setq markdown-command (concat "perl " (expand-file-name "~/Dropbox/bin/Markdown.pl"))))
 
 ;; browse-kill-ring
 (when (require 'browse-kill-ring nil t)
