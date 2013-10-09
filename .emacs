@@ -403,7 +403,12 @@ same type."
      "If region is active and non empty, use it for searching and
 make first jump. Otherwise, behave like original function."
      (interactive "P\np")
-     (let ((smart-p (and (region-active-p) (< (region-beginning) (region-end)))))
+     (let ((smart-p (and
+                     (region-active-p)
+                     (< (region-beginning) (region-end))
+                     (= (- (line-number-at-pos (region-end))
+                           (line-number-at-pos (region-beginning))) 0)
+                     )))
        (when smart-p
          (kill-ring-save (region-beginning) (region-end)))
 
