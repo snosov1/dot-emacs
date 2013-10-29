@@ -23,6 +23,9 @@
 ;; ------------------------------------------------------------
 ;; BUILT-IN DEPENDENCIES
 
+;; common lisp primitives
+(require 'cl-lib)
+
 ;; enables key bindings from dired-x (like C-x C-j)
 (require 'dired-x)
 
@@ -69,20 +72,24 @@
 (package-initialize)
 
 ;; check if the required packages are installed; suggest installing if not
-(mapc
- (lambda (package)
-   (or (package-installed-p package)
-       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
-           (package-install package))))
- '(
-   auto-complete
-   smex
-   elpy
-   window-numbering
-   markdown-mode
-   ))
+(map-y-or-n-p
+ "Package %s is missing. Install? "
+ 'package-install
+ (cl-remove-if 'package-installed-p
+               '(
+                 auto-complete
+                 smex
+                 elpy
+                 window-numbering
+                 markdown-mode
+                 magit
+                 gitconfig-mode
+                 gitignore-mode
+                 ))
+ '("package" "packages" "install"))
 
-;; auto-complete
+;; PER-PACKAGE CONFIGURATION
+
 (eval-after-load "auto-complete-autoloads"
   '(progn
      (if (require 'auto-complete-config nil t)
@@ -95,7 +102,6 @@
            (define-key ac-mode-map (kbd "C-.") 'auto-complete))
        (warn "auto-complete not found"))))
 
-;; smex
 (eval-after-load "smex-autoloads"
   '(progn
      (if (require 'smex nil t)
@@ -104,8 +110,7 @@
            (global-set-key (kbd "M-x") 'smex))
        (warn "smex not found"))))
 
-;; elpy
-;; to install dependencies:
+;; to install python dependencies:
 ;; $ pip install elpy rope pyflakes ipython
 (eval-after-load "elpy-autoloads"
   '(progn
@@ -143,6 +148,17 @@
                           nil))))
        (warn "markdown-mode not found"))))
 
+(eval-after-load "magit-autoloads"
+  '(progn
+     (if (require 'magit nil t)
+         (progn
+           (require 'gitignore-mode nil t)
+           (require 'gitconfig-mode nil t)
+           (require 'gitattributes-mode nil t)
+
+           (setq magit-revert-item-confirm nil))
+       (warn "magit not found"))))
+
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
 
@@ -151,11 +167,11 @@
 
 ;; android-mode
 (when (require 'android-mode nil t)
-  (let (sdkdir (getenv "ANDROID_SDK"))
+  (let ((sdkdir (getenv "ANDROID_SDK")))
     (if sdkdir
         (setq android-mode-sdk-dir sdkdir)
       (setq android-mode-sdk-dir "~/Development/android-sdk-linux")))
-  (setq android-mode-key-prefix "\C-c \C-a"))
+  (setq android-mode-key-prefix "\C-c\C-a"))
 
 ;; cmake-mode
 (when (require 'cmake-mode nil t)
@@ -179,21 +195,6 @@
   (setq auto-mode-alist
         (append '(("\\.d\\'" . d-mode))
                 auto-mode-alist)))
-
-;; magit
-(when (require 'magit nil t)
-  (require 'gitignore-mode nil t)
-  (require 'gitconfig-mode nil t)
-  (require 'gitattributes-mode nil t)
-
-  (setq magit-revert-item-confirm nil)
-
-  ;; Add an extra newline to separate commit message from git commentary
-  (defun magit-commit-mode-init ()
-    (when (looking-at "\n")
-      (open-line 1)))
-  (add-hook 'git-commit-mode-hook 'magit-commit-mode-init))
-
 
 ;; expand-region
 (when (require 'expand-region nil t)
