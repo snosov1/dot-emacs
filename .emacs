@@ -443,7 +443,22 @@ languages ('beginning-of-defun'-based)"
     (skip-chars-backward "^[:space:]")
     (buffer-substring-no-properties (point) defun-name-end)))
 
+(defun sudo-edit-current-file (&optional arg)
+  "Edit currently visited file as root.
+
+With a prefix ARG prompt for a file to visit.
+Will also prompt for a file to visit if current
+buffer is not visiting a file."
+  (interactive "P")
+  (if (or arg (not buffer-file-name))
+      (find-file (concat "/sudo:root@localhost:"
+                         (ido-read-file-name "Find file(as root): ")))
+    (let ((position (point)))
+        (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))
+        (goto-char position))))
+
 (defun configure-theme ()
+  "Make Emacs pretty"
   (load-theme 'tango-dark)
   (enable-theme 'tango-dark)
   ;; make background a little darker
@@ -844,6 +859,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
 (global-set-key (kbd "M-j")         'join-following-line)
 (global-set-key (kbd "M-Z")         'zap-up-to-char)
+(global-set-key (kbd "\C-x!")       'sudo-edit-current-file)
 
 ;; remap existing commands with "smarter" versions
 (define-key global-map [remap move-beginning-of-line] 'smart-beginning-of-line)
