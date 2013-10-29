@@ -68,7 +68,7 @@
                          ("melpa" . "http://melpa.milkbox.net/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ))
-
+(setq package-enable-at-startup nil)
 (package-initialize)
 
 ;; check if the required packages are installed; suggest installing if not
