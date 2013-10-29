@@ -245,6 +245,7 @@ mc/mark-all-like-this otherwise"
 (when (require 'paredit nil t)
   (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))
 
+;; wgrep
 (when (require 'wgrep nil t)
   (setq wgrep-enable-key "\C-x\C-q")
   (add-hook 'grep-mode-hook
@@ -255,42 +256,7 @@ mc/mark-all-like-this otherwise"
 ;; cuda-mode
 (require 'cuda-mode nil t)
 
-;; export org to s5
-(when (require 'ox-s5 nil t)
-  (defadvice org-s5-export-to-html (around org-s5-export-to-html-tango activate)
-    "Wrap around org-s5-export-to-html to use tango theme colors for source
-code fontification."
-    (let (
-          (old-builtin-foreground (face-attribute 'font-lock-builtin-face :foreground))
-          (old-comment-foreground (face-attribute 'font-lock-comment-face :foreground))
-          (old-constant-foreground (face-attribute 'font-lock-constant-face :foreground))
-          (old-function-foreground (face-attribute 'font-lock-function-name-face :foreground))
-          (old-keyword-foreground (face-attribute 'font-lock-keyword-face :foreground))
-          (old-string-foreground (face-attribute 'font-lock-string-face :foreground))
-          (old-type-foreground (face-attribute 'font-lock-type-face :foreground))
-          (old-variable-foreground (face-attribute 'font-lock-variable-name-face :foreground))
-          )
-      (set-face-foreground 'font-lock-builtin-face       "#75507b")
-      (set-face-foreground 'font-lock-comment-face       "#5f615c")
-      (set-face-foreground 'font-lock-constant-face      "#204a87")
-      (set-face-foreground 'font-lock-function-name-face "#a40000")
-      (set-face-foreground 'font-lock-keyword-face       "#346604")
-      (set-face-foreground 'font-lock-string-face        "#5c3566")
-      (set-face-foreground 'font-lock-type-face          "#204a87")
-      (set-face-foreground 'font-lock-variable-name-face "#b35000")
-
-      ad-do-it
-
-      (set-face-foreground 'font-lock-builtin-face        old-builtin-foreground)
-      (set-face-foreground 'font-lock-comment-face        old-comment-foreground)
-      (set-face-foreground 'font-lock-constant-face       old-constant-foreground)
-      (set-face-foreground 'font-lock-function-name-face  old-function-foreground)
-      (set-face-foreground 'font-lock-keyword-face        old-keyword-foreground)
-      (set-face-foreground 'font-lock-string-face         old-string-foreground)
-      (set-face-foreground 'font-lock-type-face           old-type-foreground)
-      (set-face-foreground 'font-lock-variable-name-face  old-variable-foreground)
-      )))
-
+;; image-mode
 (when (require 'image-mode nil t)
   (defun next-image (arg)
     "Visit the next arg'th image in the same directory of the
