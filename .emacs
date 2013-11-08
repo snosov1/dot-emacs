@@ -205,7 +205,9 @@ same type."
            (require 'gitconfig-mode nil t)
            (require 'gitattributes-mode nil t)
 
-           (setq magit-revert-item-confirm nil))
+           (setq
+            magit-revert-item-confirm nil
+            magit-diff-refine-hunk t))
        (warn "magit not found"))))
 
 ;; ------------------------------------------------------------
@@ -747,7 +749,6 @@ to predefined register"
  '(ls-lisp-dirs-first t)
  '(ls-lisp-ignore-case t)
  '(ls-lisp-verbosity nil)
- '(magit-diff-refine-hunk t)
  '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
  '(org-capture-templates (quote (("t" "Simple TODO" entry (file+headline "~/Dropbox/Private/org/notes.org" "Tasks") "* TODO %?
 DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|cafe|lunch|dance|snack|condoms|phone|house|bus|repo} | %^{cost} | %^{desc} |") ("l" "Link" entry (file+headline "~/Dropbox/Private/org/notes.org" "Links") "* %?
