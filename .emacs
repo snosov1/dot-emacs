@@ -45,21 +45,6 @@
 (require 'ob-python)
 (require 'ob-R)
 
-;; webjump
-(when (require 'webjump nil t)
-  (add-to-list 'webjump-sites
-               '("Lingvo" .
-                 [simple-query
-                  "lingvopro.abbyyonline.com"
-                  "http://lingvopro.abbyyonline.com/en/Translate/en-ru/"
-                  ""]))
-  (add-to-list 'webjump-sites
-               '("Urban Dictionary" .
-                 [simple-query
-                  "www.urbandictionary.com"
-                  "http://www.urbandictionary.com/define.php?term="
-                  ""])))
-
 ;; ------------------------------------------------------------
 ;; EXTERNAL PACKAGES
 
@@ -354,6 +339,28 @@ same type."
 
 ;; ------------------------------------------------------------
 ;; DEFUNS
+
+(defun google-it ()
+  "Google the selected region if any, display a query prompt
+otherwise."
+  (interactive)
+  (browse-url
+   (concat
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
+    (url-hexify-string (if mark-active
+                           (buffer-substring (region-beginning) (region-end))
+                         (read-string "Google: "))))))
+
+(defun lingvo-it ()
+  "Translate the following region in lingvo, display a query
+prompt otherwise."
+  (interactive)
+  (browse-url
+   (concat
+    "http://lingvopro.abbyyonline.com/en/Translate/en-ru/"
+    (url-hexify-string (if mark-active
+                           (buffer-substring (region-beginning) (region-end))
+                         (read-string "Lingvo: "))))))
 
 (defun orgtbl-to-latex-matrix (table params)
   "Convert the Orgtbl mode TABLE to a LaTeX Matrix."
@@ -833,6 +840,8 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-j")         'join-following-line)
 (global-set-key (kbd "M-Z")         'zap-up-to-char)
 (global-set-key (kbd "\C-x!")       'sudo-edit-current-file)
+(global-set-key (kbd "\C-cg")       'google-it)
+(global-set-key (kbd "\C-cl")       'lingvo-it)
 
 ;; remap existing commands with "smarter" versions
 (define-key global-map [remap move-beginning-of-line] 'smart-beginning-of-line)
