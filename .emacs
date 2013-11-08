@@ -103,6 +103,24 @@ same type."
                   ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
                 compilation-error-regexp-alist)))
 
+;; ibuffer
+(when (require 'ibuffer nil t)
+  ;; ibuffer groups
+  (setq ibuffer-saved-filter-groups
+        (quote (("default"
+                 ("org"  (mode . org-mode))
+                 ("dired" (mode . dired-mode))
+                 ("D" (mode . d-mode))
+                 ("C/C++" (or
+                           (mode . cc-mode)
+                           (mode . c-mode)
+                           (mode . c++-mode)))
+                 ("magit" (name . "^\\*magit"))
+                 ("emacs" (name . "^\\*Messages\\*$"))))))
+  (add-hook 'ibuffer-mode-hook
+            (lambda ()
+              (ibuffer-switch-to-saved-filter-groups "default"))))
+
 ;; ------------------------------------------------------------
 ;; EXTERNAL PACKAGES
 
@@ -991,19 +1009,3 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (setq dired-listing-switches (concat "-alh"
                                      (when (not (equal window-system 'w32))
                                        " --group-directories-first")))
-
-;; ibuffer groups
-(setq ibuffer-saved-filter-groups
-      (quote (("default"
-               ("org"  (mode . org-mode))
-               ("dired" (mode . dired-mode))
-               ("D" (mode . d-mode))
-               ("C/C++" (or
-                         (mode . cc-mode)
-                         (mode . c-mode)
-                         (mode . c++-mode)))
-               ("magit" (name . "^\\*magit"))
-               ("emacs" (name . "^\\*Messages\\*$"))))))
-(add-hook 'ibuffer-mode-hook
-          (lambda ()
-            (ibuffer-switch-to-saved-filter-groups "default")))
