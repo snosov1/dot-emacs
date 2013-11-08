@@ -45,6 +45,54 @@
 (require 'ob-python)
 (require 'ob-R)
 
+;; image-mode
+(when (require 'image-mode nil t)
+  (defun next-image (arg)
+    "Visit the next arg'th image in the same directory of the
+same type."
+    (interactive "P")
+    (unless (and (buffer-file-name) (eq major-mode 'image-mode))
+      (error "Not visiting a file in image mode"))
+    (let* ((files   (directory-files
+                     (file-name-directory (buffer-file-name)) nil
+                     (file-name-extension (buffer-file-name)) ))
+           (len     (length files))
+           (this    (file-name-nondirectory (buffer-file-name)))
+           (idx     0))
+      (dolist (file files)
+        (if (not (string= this file))
+            (setq idx  (1+ idx))
+          (setq idx
+                (mod (+ idx (if arg arg 1)) len))
+          (kill-this-buffer) ;; we don't want to have a thousand image
+          ;; buffers around
+          (find-file (elt files idx))))))
+
+  (defun previous-image (arg)
+    "Visit previous image. See `next-image'"
+    (interactive "P")
+    (next-image (if arg (- arg) -1)))
+
+  (add-hook 'image-mode-hook
+            '(lambda ()
+               (define-key image-mode-map "n" 'next-image)
+               (define-key image-mode-map "p" 'previous-image)
+               )))
+
+;; python
+(when (require 'python nil t)
+  (if (executable-find "ipython")
+      (setq
+       python-shell-interpreter "ipython"
+       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "))
+
+  (add-hook 'python-mode-hook
+            '(lambda ()
+               (define-key python-mode-map (kbd "\C-c\C-c") 'compile)
+               (define-key python-mode-map (kbd "\C-c\C-e") 'python-shell-send-buffer)
+               )))
+
 ;; ------------------------------------------------------------
 ;; EXTERNAL PACKAGES
 
@@ -70,7 +118,6 @@
                '(
                  auto-complete
                  smex
-                 elpy
                  window-numbering
                  markdown-mode
                  magit
@@ -100,23 +147,6 @@
            (smex-initialize)
            (global-set-key (kbd "M-x") 'smex))
        (warn "smex not found"))))
-
-;; to install python dependencies:
-;; $ pip install elpy rope pyflakes ipython
-(eval-after-load "elpy-autoloads"
-  '(progn
-     (if (require 'elpy nil t)
-         (progn
-           (elpy-enable)
-           (elpy-clean-modeline)
-           (elpy-use-ipython)
-           (add-hook 'elpy-mode-hook
-                     '(lambda ()
-                        (define-key elpy-mode-map (kbd "M-p")
-                          nil)
-                        (define-key elpy-mode-map (kbd "M-n")
-                          nil))))
-       (warn "elpy not found"))))
 
 (eval-after-load "window-numbering-autoloads"
   '(progn
@@ -246,40 +276,6 @@ mc/mark-all-like-this otherwise"
 
 ;; cuda-mode
 (require 'cuda-mode nil t)
-
-;; image-mode
-(when (require 'image-mode nil t)
-  (defun next-image (arg)
-    "Visit the next arg'th image in the same directory of the
-same type."
-    (interactive "P")
-    (unless (and (buffer-file-name) (eq major-mode 'image-mode))
-      (error "Not visiting a file in image mode"))
-    (let* ((files   (directory-files
-                     (file-name-directory (buffer-file-name)) nil
-                     (file-name-extension (buffer-file-name)) ))
-           (len     (length files))
-           (this    (file-name-nondirectory (buffer-file-name)))
-           (idx     0))
-      (dolist (file files)
-        (if (not (string= this file))
-            (setq idx  (1+ idx))
-          (setq idx
-                (mod (+ idx (if arg arg 1)) len))
-          (kill-this-buffer) ;; we don't want to have a thousand image
-                             ;; buffers around
-          (find-file (elt files idx))))))
-
-  (defun previous-image (arg)
-    "Visit previous image. See `next-image'"
-    (interactive "P")
-    (next-image (if arg (- arg) -1)))
-
-  (add-hook 'image-mode-hook
-            '(lambda ()
-               (define-key image-mode-map "n" 'next-image)
-               (define-key image-mode-map "p" 'previous-image)
-               )))
 
 ;; ------------------------------------------------------------
 ;; SKELETONS
