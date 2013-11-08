@@ -1003,7 +1003,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (define-key subword-mode-map (vector 'remap 'transpose-words) nil)
 (define-key subword-mode-map (vector 'remap 'upcase-word) nil)
 (define-key subword-mode-map (vector 'remap 'downcase-word) nil)
-(define-key subword-mode-map (vector 'remap 'capitalize-word) nil)
 
 ;; dired listing switches
 (setq dired-listing-switches (concat "-alh"
