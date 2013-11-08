@@ -282,22 +282,6 @@ same type."
                )))
 
 ;; ------------------------------------------------------------
-;; kbd DEFINITIONS
-
-;; open explorer in current directory
-(fset 'open-explorer
-   [?\M-& ?e ?x ?p ?l ?o ?r ?e ?r ?  ?. return])
-;; open current name in explorer
-(fset 'open-in-explorer
-   [?& ?e ?x ?p ?l ?o ?r ?e ?r return])
-;; open nautilus in current directory
-(fset 'open-nautilus
-   [?\M-& ?n ?a ?u ?t ?i ?l ?u ?s ?  ?. return])
-;; open current name in nautilus
-(fset 'open-in-nautilus
-   [?& ?n ?a ?u ?t ?i ?l ?u ?s return])
-
-;; ------------------------------------------------------------
 ;; SKELETONS
 
 (define-skeleton printf-skeleton
@@ -314,7 +298,6 @@ same type."
   "    oss << obj;\n"
   "    return oss.str();\n"
   "}\n")
-
 
 ;; ------------------------------------------------------------
 ;; ADVICES
@@ -462,17 +445,9 @@ buffer is not visiting a file."
   "Open default system windows manager in current directory"
   (interactive)
   (when (equal window-system 'w32)
-    (save-window-excursion (execute-kbd-macro (symbol-function 'open-explorer))))
+    (async-shell-command "explorer ."))
   (when (equal window-system 'x)
-    (save-window-excursion (execute-kbd-macro (symbol-function 'open-nautilus)))))
-
-(defun open-in-window-manager ()
-  "Open item under cursor in default system windows manager"
-  (interactive)
-  (when (equal window-system 'w32)
-    (save-window-excursion (execute-kbd-macro (symbol-function 'open-in-explorer))))
-  (when (equal window-system 'x)
-    (save-window-excursion (execute-kbd-macro (symbol-function 'open-in-nautilus)))))
+    (async-shell-command "nautilus .")))
 
 (defun dired-goto-file-ido (file)
   "Use ido-read-file-name in dired-goto-file"
@@ -888,8 +863,6 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
                'dired-toggle-read-only)
              (define-key dired-mode-map (kbd "E")
                'open-window-manager)
-             (define-key dired-mode-map [(shift return)]
-               'open-in-window-manager)
              (define-key dired-mode-map (kbd "j")
                'dired-goto-file-ido)))
 
