@@ -74,7 +74,13 @@
 ;; check if the required packages are installed; suggest installing if not
 (map-y-or-n-p
  "Package %s is missing. Install? "
- 'package-install
+ '(lambda (package)
+    ;; for some reason, package-install doesn't work well if you
+    ;; won't call package-refresh-contents beforehand
+    (unless (boundp '--package-contents-refreshed-on-init)
+      (package-refresh-contents)
+      (setq --package-contents-refreshed-on-init 1))
+    (package-install package))
  (cl-remove-if 'package-installed-p
                '(
                  auto-complete
