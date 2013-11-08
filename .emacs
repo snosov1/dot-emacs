@@ -863,7 +863,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 ;; way around
 (define-key key-translation-map [?\C-/] [?\C-_]) ;; translate C-/ to C-_
 
-;; convinient binding for C-x C-s in org-src-mode
+;; convenient binding for C-x C-s in org-src-mode
 (add-hook 'org-src-mode-hook
           '(lambda ()
              (define-key org-src-mode-map (kbd "C-x C-s") 'org-edit-src-exit)))
