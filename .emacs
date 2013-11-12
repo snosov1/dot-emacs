@@ -504,6 +504,11 @@ buffer is not visiting a file."
                          ;; .. entry
       (dired-next-line 1)))
 
+(defun dired-jump-universal-other (arg)
+  "Calls dired-jump. With prefix argument uses other window"
+  (interactive "P")
+  (dired-jump arg))
+
 (defun swap-buffers-in-windows ()
   "Put the buffer from the selected window in next window"
   (interactive)
@@ -842,6 +847,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-x!")       'sudo-edit-current-file)
 (global-set-key (kbd "\C-cg")       'google-it)
 (global-set-key (kbd "\C-cl")       'lingvo-it)
+(global-set-key (kbd "C-x C-j")     'dired-jump-universal-other)
 
 ;; remap existing commands with "smarter" versions
 (define-key global-map [remap move-beginning-of-line] 'smart-beginning-of-line)
