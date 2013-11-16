@@ -194,7 +194,9 @@ same type."
                         (define-key markdown-mode-map (kbd "M-p")
                           nil)
                         (define-key markdown-mode-map (kbd "M-n")
-                          nil))))
+                          nil)
+                        (define-key markdown-mode-map (kbd "C-c C-c")
+                          'compile))))
        (warn "markdown-mode not found"))))
 
 (eval-after-load "magit-autoloads"
@@ -244,7 +246,8 @@ same type."
 ;; for the D programming language
 (when (require 'd-mode nil t)
   (setq auto-mode-alist
-        (append '(("\\.d\\'" . d-mode))
+        (append '(("\\.d\\'" . d-mode)
+                  ("\\.di\\'" . d-mode))
                 auto-mode-alist)))
 
 ;; expand-region
@@ -432,6 +435,71 @@ languages ('beginning-of-defun'-based)"
     (skip-chars-backward "^[:space:]")
     (buffer-substring-no-properties (point) defun-name-end)))
 
+(defun parent-directory (dir)
+  (file-name-directory (directory-file-name dir)))
+
+(defun search-file-up (path name)
+  "Searches for file `name' in parent directories recursively"
+  (let* ((tags-file-name (concat path name))
+         (parent (parent-directory path)))
+    (message tags-file-name)
+    (cond
+     ((file-exists-p tags-file-name) tags-file-name)
+     ((string= parent path) nil)
+     (t (search-file-up parent name)))))
+
+(defun add-sudo-to-filename (filename)
+  "Adds sudo proxy to filename for use with TRAMP.
+
+Works for both local and remote hosts (>=23.4). The syntax used
+for remote hosts follows the pattern
+'/ssh:you@remotehost|sudo:remotehost:/path/to/file'. Some people
+say, that you may need to call smth like
+`(set-default 'tramp-default-proxies-alist (quote ((\".*\"
+\"\\`root\\'\" \"/ssh:%u@%h:\"))))', but it works for just fine
+without it. "
+  (with-temp-buffer
+  (insert filename)
+  (end-of-buffer)
+  (if (re-search-backward "@\\(.*\\):" nil t)
+      (let ((remote-name (buffer-substring (match-beginning 1) (match-end 1))))
+        (goto-char (match-end 1))
+        (insert (concat "|sudo:" remote-name))
+        (beginning-of-buffer)
+        (forward-char)
+        (when (looking-at "scpc")
+          (delete-char 4)
+          (insert "ssh"))
+        (buffer-string))
+    (concat "/sudo::" filename))))
+
+(defun update-tags-file (arg)
+  "Suggests options to update the TAGS file via ctags.
+
+With prefix arg - makes a call as sudo. Works for remote hosts
+also (>=23.4)"
+  (interactive "P")
+  (let ((tags-file-name
+         (read-file-name
+          "TAGS file: " (expand-file-name (or
+                          (search-file-up default-directory "TAGS")
+                          default-directory))))
+        (ctags-command "")
+        (languages (case major-mode
+                     ((cc-mode c++-mode c-mode) " --languages=C,C++")
+                     ((d-mode) " --languages=D")
+                     (t ""))))
+    (when tags-file-name
+      (setq ctags-command (concat ctags-command "cd " (replace-regexp-in-string ".*:" "" (file-name-directory tags-file-name)) " && ")))
+
+    (setq ctags-command (concat ctags-command "ctags -e -R . " languages))
+
+    (with-temp-buffer
+      (when arg
+        (cd (add-sudo-to-filename (expand-file-name default-directory))))
+      (shell-command (read-from-minibuffer "ctags command: "  ctags-command)))
+    (visit-tags-table tags-file-name)))
+
 (defun sudo-edit-current-file (&optional arg)
   "Edit currently visited file as root.
 
@@ -443,8 +511,8 @@ buffer is not visiting a file."
       (find-file (concat "/sudo:root@localhost:"
                          (ido-read-file-name "Find file(as root): ")))
     (let ((position (point)))
-        (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))
-        (goto-char position))))
+      (find-alternate-file (add-sudo-to-filename buffer-file-name))
+      (goto-char position))))
 
 (defun configure-theme ()
   "Make Emacs pretty"
@@ -847,7 +915,10 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "\C-x!")       'sudo-edit-current-file)
 (global-set-key (kbd "\C-cg")       'google-it)
 (global-set-key (kbd "\C-cl")       'lingvo-it)
-(global-set-key (kbd "C-x C-j")     'dired-jump-universal-other)
+(global-set-key "\C-x\C-j"          'dired-jump-universal-other)
+(global-set-key "\C-x\C-u"          'update-tags-file)
+(global-set-key "\C-x\C-v"          'visit-tags-table)
+(global-set-key "\C-x\C-l"          'tags-apropos)
 
 ;; remap existing commands with "smarter" versions
 (define-key global-map [remap move-beginning-of-line] 'smart-beginning-of-line)
