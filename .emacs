@@ -1042,14 +1042,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 ;; do not disturb with "buffer still has active clients" on buffer killing
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
-(setq term-remote-hosts '(
-                          ("argus-cv" "ssh" "sergei@argus-cv.dnsalias.org" "-p7707")
-                          ("carma-1" "ssh" "ubuntu@192.168.0.106")
-                          ("jetson-1" "ssh" "nvidia@192.168.0.147")
-                          ("jetson-2" "ssh" "nvidia@192.168.0.166")
-                          ("sergei-ws" "ssh" "sergei@192.168.0.43")
-                          ("tegra-server" "ssh" "snosov1@192.168.0.14") ;; masha without spec symbols
-                          ))
+;; ftp dumb hosts
 (setq ange-ftp-dumb-unix-host-regexp (regexp-opt '(
                                                    "files.itseez.com"
                                                    )))
