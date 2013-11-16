@@ -144,7 +144,6 @@ same type."
     (package-install package))
  (cl-remove-if 'package-installed-p
                '(
-                 auto-complete
                  smex
                  window-numbering
                  markdown-mode
@@ -155,18 +154,6 @@ same type."
  '("package" "packages" "install"))
 
 ;; PER-PACKAGE CONFIGURATION
-
-(eval-after-load "auto-complete-autoloads"
-  '(progn
-     (if (require 'auto-complete-config nil t)
-         (progn
-           (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-           (ac-config-default)
-
-           ;; don't autostart ac
-           (setq ac-auto-start nil)
-           (define-key ac-mode-map (kbd "C-.") 'auto-complete))
-       (warn "auto-complete not found"))))
 
 (eval-after-load "smex-autoloads"
   '(progn
