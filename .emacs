@@ -423,7 +423,7 @@ languages ('beginning-of-defun'-based)"
     (buffer-substring-no-properties (point) defun-name-end)))
 
 (defun parent-directory (dir)
-  (file-name-directory (directory-file-name dir)))
+  (file-name-directory (directory-file-name (expand-file-name dir))))
 
 (defun search-file-up (path name)
   "Searches for file `name' in parent directories recursively"
