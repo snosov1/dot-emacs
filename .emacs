@@ -894,6 +894,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "M-/")         'hippie-expand)
 (global-set-key (kbd "\C-x k")      'kill-this-buffer)
 (global-set-key (kbd "C-+")         'org-list-repair)
+(global-set-key (kbd "M-+")         'org-list-repair)
 (global-set-key (kbd "C-x w")       'webjump)
 (global-set-key (kbd "\C-x\C-r")    'rename-buffer)
 (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
