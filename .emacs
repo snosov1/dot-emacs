@@ -116,7 +116,9 @@ same type."
                            (mode . c-mode)
                            (mode . c++-mode)))
                  ("magit" (name . "^\\*magit"))
-                 ("emacs" (name . "^\\*Messages\\*$"))))))
+                 ("emacs" (name . "^\\*Messages\\*$"))
+                 ("shell commands" (name . "^\\*.*Shell Command\\*"))
+                 ))))
   (add-hook 'ibuffer-mode-hook
             (lambda ()
               (ibuffer-switch-to-saved-filter-groups "default"))))
