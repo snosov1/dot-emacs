@@ -1,8 +1,7 @@
-
 ######################################################################
 # Put this in your remote system's .profile for remote bash to track
 # your current dir
-function set-eterm-dir {
+set_eterm_dir () {
     echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
     echo -e "\033AnSiTc" "$(pwd)"
     if [ $(uname) = "SunOS" ]; then
@@ -17,6 +16,6 @@ function set-eterm-dir {
 
 # Track directory, username, and cwd for remote logons.
 if [ "$TERM" = "eterm-color" ]; then
-    PROMPT_COMMAND=set-eterm-dir
+    PROMPT_COMMAND=set_eterm_dir
 fi
 ######################################################################
