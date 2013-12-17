@@ -278,6 +278,7 @@ mc/mark-all-like-this otherwise"
 ;; browse-kill-ring
 (when (require 'browse-kill-ring nil t)
   (global-set-key (kbd "C-x C-y") 'browse-kill-ring)
+  (define-key browse-kill-ring-mode-map (kbd "C-c C-k") 'browse-kill-ring-quit)
   (setq browse-kill-ring-quit-action 'save-and-restore))
 
 ;; dummyparens
