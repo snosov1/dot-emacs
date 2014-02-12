@@ -696,6 +696,13 @@ Portable keywords are: error, important, info."
                   re
                   (expand-file-name (vc-git-root default-directory))))))
 
+(defun grep-dispatch (arg)
+  "With prefix calls `git-grep' and `find-grep' otherwise"
+  (interactive "P")
+  (if arg
+      (call-interactively 'git-grep)
+    (call-interactively 'find-grep)))
+
 (defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
 (make-variable-buffer-local 'hs-hide-all-toggle-state)
 (defun hs-toggle-hideshow-all (arg)
@@ -924,7 +931,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key (kbd "<f5>")        'revert-buffer)
 (global-set-key (kbd "\C-c f")      'toggle-window-split)
 (global-set-key (kbd "\C-c\C-f")    'toggle-window-split)
-(global-set-key [(control shift f)] 'git-grep)
+(global-set-key [(control shift f)] 'grep-dispatch)
 (global-set-key (kbd "\C-x\C-e")    'eval-dispatch)
 (global-set-key (kbd "M-\\")        'fixup-whitespace)
 (global-set-key (kbd "C-M-h")       'backward-kill-word)
