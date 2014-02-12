@@ -116,6 +116,7 @@ same type."
                            (mode . c-mode)
                            (mode . c++-mode)))
                  ("magit" (name . "^\\*magit"))
+                 ("Markdown" (mode . markdown-mode))
                  ("emacs" (name . "^\\*Messages\\*$"))
                  ("shell commands" (name . "^\\*.*Shell Command\\*"))
                  ))))
@@ -146,6 +147,7 @@ same type."
     (package-install package))
  (cl-remove-if 'package-installed-p
                '(
+                 howdoi
                  smex
                  window-numbering
                  markdown-mode
@@ -156,6 +158,13 @@ same type."
  '("package" "packages" "install"))
 
 ;; PER-PACKAGE CONFIGURATION
+
+(eval-after-load "howdoi-autoloads"
+  '(progn
+     (if (require 'howdoi nil t)
+         (progn
+           (global-set-key (kbd "M-?") 'howdoi))
+       (warn "howdoi not found"))))
 
 (eval-after-load "smex-autoloads"
   '(progn
@@ -374,11 +383,6 @@ prompt otherwise."
            :lstart "" :lend " \\\\" :sep " & "
            :efmt "%s\\,(%s)" :hline "\\hline")))
     (orgtbl-to-generic table (org-combine-plists params2 params))))
-
-(defun org-s5-init-dir ()
-  "Initialize directory for S5 presentation"
-  (interactive)
-  (start-process-shell-command "git" nil "git clone ~/Dropbox/emacs/org-s5/ ."))
 
 (defmacro smart-isearch (direction)
   `(defun ,(intern (format "smart-isearch-%s" direction)) (&optional regexp-p no-recursive-edit)
