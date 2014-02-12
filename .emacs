@@ -147,13 +147,22 @@ same type."
     (package-install package))
  (cl-remove-if 'package-installed-p
                '(
+                 android-mode
+                 browse-kill-ring
+                 cmake-mode
+                 d-mode
+                 dired-details
+                 expand-region
                  howdoi
                  smex
                  window-numbering
                  markdown-mode
                  magit
+                 multiple-cursors
+                 paredit
                  gitconfig-mode
                  gitignore-mode
+                 wgrep
                  ))
  '("package" "packages" "install"))
 
@@ -210,27 +219,109 @@ same type."
             magit-diff-refine-hunk t))
        (warn "magit not found"))))
 
+;; android-mode
+(eval-after-load "android-mode-autoloads"
+  '(progn
+     (when (require 'android-mode nil t)
+       (let ((sdkdir (getenv "ANDROID_SDK")))
+         (if sdkdir
+             (setq android-mode-sdk-dir sdkdir)
+           (setq android-mode-sdk-dir "~/Development/android-sdk-linux")))
+       (setq android-mode-key-prefix "\C-c\C-a"))))
+
+;; cmake-mode
+(eval-after-load "cmake-mode-autoloads"
+  '(progn
+     (when (require 'cmake-mode nil t)
+       (setq auto-mode-alist
+             (append '(("CMakeLists\\.txt\\'" . cmake-mode)
+                       ("CMakeCache\\.txt\\'" . cmake-mode)
+                       ("\\.cmake\\'" . cmake-mode))
+                     auto-mode-alist)))))
+
+;; d-mode
+;; for the D programming language
+(eval-after-load "d-mode-autoloads"
+  '(progn
+     (when (require 'd-mode nil t)
+       (setq auto-mode-alist
+             (append '(("\\.d\\'" . d-mode)
+                       ("\\.di\\'" . d-mode))
+                     auto-mode-alist)))))
+
+;; expand-region
+(eval-after-load "expand-region-autoloads"
+  '(progn
+     (when (require 'expand-region nil t)
+       (global-set-key (kbd "C-=") 'er/expand-region)
+       (global-set-key (kbd "C--") 'er/contract-region))))
+
+;; dired-details
+(eval-after-load "dired-details-autoloads"
+  '(progn
+     (when (require 'dired-details nil t)
+       (add-hook 'dired-mode-hook
+                 '(lambda ()
+                    (dired-details-install)
+                    (setq dired-details-hidden-string "--- ")
+                    (define-key dired-mode-map (kbd "h") 'dired-details-toggle))))))
+
+;; multiple cursors
+(eval-after-load "multiple-cursors-autoloads"
+  '(progn
+     (when (require 'multiple-cursors nil t)
+       (defun mc/mark-all-dispatch ()
+         "Calls mc/edit-lines if multiple lines are selected and
+mc/mark-all-like-this otherwise"
+         (interactive)
+         (cond
+          ((> (- (line-number-at-pos (region-end))
+                 (line-number-at-pos (region-beginning))) 0)
+           (mc/edit-lines))
+          (t
+           (mc/mark-all-like-this))))
+
+       (setq mc/list-file "~/Dropbox/dot-emacs/.mc-lists.el")
+       (load mc/list-file t) ;; load, but no errors if it does not exist yet please
+
+       (global-set-key (kbd "C->")     'mc/mark-next-like-this)
+       (global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
+
+       (global-set-key (kbd "M-@") 'mc/mark-all-dispatch)
+
+       (global-set-key (kbd "M-#") 'mc/insert-numbers))))
+
+;; browse-kill-ring
+(eval-after-load "browse-kill-ring-autoloads"
+  '(progn
+     (when (require 'browse-kill-ring nil t)
+       (global-set-key (kbd "C-x C-y") 'browse-kill-ring)
+       (define-key browse-kill-ring-mode-map (kbd "C-c C-k") 'browse-kill-ring-quit)
+       (define-key browse-kill-ring-mode-map (kbd "C-x C-k") 'browse-kill-ring-quit)
+       (define-key browse-kill-ring-mode-map (kbd "C-x k") 'browse-kill-ring-quit)
+       (setq browse-kill-ring-quit-action 'save-and-restore))))
+
+;; paredit
+(eval-after-load "paredit-autoloads"
+  '(progn
+     (when (require 'paredit nil t)
+       (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))))
+
+;; wgrep
+(eval-after-load "wgrep-autoloads"
+  '(progn
+     (when (require 'wgrep nil t)
+       (setq wgrep-enable-key "\C-x\C-q")
+       (add-hook 'grep-mode-hook
+                 '(lambda ()
+                    (define-key grep-mode-map "\C-c\C-c"
+                      'wgrep-save-all-buffers))))))
+
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
 
 ;; NOTE: these dependencies should be eventually migrated to use
 ;; package.el
-
-;; android-mode
-(when (require 'android-mode nil t)
-  (let ((sdkdir (getenv "ANDROID_SDK")))
-    (if sdkdir
-        (setq android-mode-sdk-dir sdkdir)
-      (setq android-mode-sdk-dir "~/Development/android-sdk-linux")))
-  (setq android-mode-key-prefix "\C-c\C-a"))
-
-;; cmake-mode
-(when (require 'cmake-mode nil t)
-  (setq auto-mode-alist
-        (append '(("CMakeLists\\.txt\\'" . cmake-mode)
-                  ("CMakeCache\\.txt\\'" . cmake-mode)
-                  ("\\.cmake\\'" . cmake-mode))
-                auto-mode-alist)))
 
 ;; dos-mode
 ;; for editing Windows .bat-files
@@ -240,71 +331,9 @@ same type."
                   ("\\.bat\\'" . dos-mode))
                 auto-mode-alist)))
 
-;; d-mode
-;; for the D programming language
-(when (require 'd-mode nil t)
-  (setq auto-mode-alist
-        (append '(("\\.d\\'" . d-mode)
-                  ("\\.di\\'" . d-mode))
-                auto-mode-alist)))
-
-;; expand-region
-(when (require 'expand-region nil t)
-  (global-set-key (kbd "C-=") 'er/expand-region)
-  (global-set-key (kbd "C--") 'er/contract-region))
-
-;; dired-details
-(when (require 'dired-details nil t)
-  (add-hook 'dired-mode-hook
-            '(lambda ()
-               (dired-details-install)
-               (setq dired-details-hidden-string "--- ")
-               (define-key dired-mode-map (kbd "h") 'dired-details-toggle))))
-
-;; multiple cursors
-(when (require 'multiple-cursors nil t)
-  (defun mc/mark-all-dispatch ()
-    "Calls mc/edit-lines if multiple lines are selected and
-mc/mark-all-like-this otherwise"
-    (interactive)
-    (cond
-     ((> (- (line-number-at-pos (region-end))
-            (line-number-at-pos (region-beginning))) 0)
-      (mc/edit-lines))
-     (t
-      (mc/mark-all-like-this))))
-
-  (setq mc/list-file "~/Dropbox/dot-emacs/.mc-lists.el")
-  (load mc/list-file t) ;; load, but no errors if it does not exist yet please
-
-  (global-set-key (kbd "C->")     'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
-
-  (global-set-key (kbd "M-@") 'mc/mark-all-dispatch)
-
-  (global-set-key (kbd "M-#") 'mc/insert-numbers))
-
-;; browse-kill-ring
-(when (require 'browse-kill-ring nil t)
-  (global-set-key (kbd "C-x C-y") 'browse-kill-ring)
-  (define-key browse-kill-ring-mode-map (kbd "C-c C-k") 'browse-kill-ring-quit)
-  (setq browse-kill-ring-quit-action 'save-and-restore))
-
 ;; dummyparens
 (when (require 'dummyparens nil t)
   (global-dummyparens-mode))
-
-;; paredit
-(when (require 'paredit nil t)
-  (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))
-
-;; wgrep
-(when (require 'wgrep nil t)
-  (setq wgrep-enable-key "\C-x\C-q")
-  (add-hook 'grep-mode-hook
-            '(lambda ()
-               (define-key grep-mode-map "\C-c\C-c"
-                 'wgrep-save-all-buffers))))
 
 ;; cuda-mode
 (require 'cuda-mode nil t)
@@ -915,6 +944,7 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
 (global-set-key "\C-x\C-u"          'update-tags-file)
 (global-set-key "\C-x\C-v"          'visit-tags-table)
 (global-set-key "\C-x\C-l"          'tags-apropos)
+(global-set-key "\C-c\C-c"          'compile)
 
 ;; remap existing commands with "smarter" versions
 (define-key global-map [remap move-beginning-of-line] 'smart-beginning-of-line)
@@ -984,22 +1014,10 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
              (define-key view-mode-map "v"
                'scroll-up-command)))
 
-(add-hook 'cmake-mode-hook
-          '(lambda ()
-             (define-key cmake-mode-map "\C-c\C-c"
-               'compile)))
-
-(add-hook 'sh-mode-hook
-          '(lambda ()
-             (define-key sh-mode-map "\C-c\C-c"
-               'compile)))
-
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
 (add-hook 'c-mode-common-hook
           '(lambda ()
-             (define-key c-mode-base-map "\C-c\C-c"
-               'compile)
              (define-key c-mode-base-map "\C-c\C-o"
                'ff-find-other-file)
              (define-key c-mode-base-map "\C-c\C-p"
