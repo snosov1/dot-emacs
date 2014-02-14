@@ -184,7 +184,7 @@ same type."
   '(progn
      (if (require 'howdoi nil t)
          (progn
-           (global-set-key (kbd "M-?") 'howdoi))
+           (global-set-key (kbd "M-?") 'howdoi-query-line-at-point-replace-by-code-snippet))
        (warn "howdoi not found"))))
 
 (eval-after-load "smex-autoloads"
@@ -206,7 +206,6 @@ same type."
      (if (require 'markdown-mode nil t)
          (progn
            (setq auto-mode-alist (cons '("\\.md" . markdown-mode) auto-mode-alist))
-           (setq markdown-command (concat "perl " (expand-file-name "~/Dropbox/bin/Markdown.pl")))
 
            (add-hook 'markdown-mode-hook
                      '(lambda ()
@@ -214,8 +213,8 @@ same type."
                           nil)
                         (define-key markdown-mode-map (kbd "M-n")
                           nil)
-                        (define-key markdown-mode-map (kbd "C-c C-c")
-                          'compile))))
+                        (define-key markdown-mode-map (kbd "\C-c\C-c")
+                          'markdown-export))))
        (warn "markdown-mode not found"))))
 
 (eval-after-load "magit-autoloads"
@@ -293,7 +292,7 @@ mc/mark-all-like-this otherwise"
           (t
            (mc/mark-all-like-this))))
 
-       (setq mc/list-file "~/Dropbox/dot-emacs/.mc-lists.el")
+       (setq mc/list-file "~/.mc-lists.el")
        (load mc/list-file t) ;; load, but no errors if it does not exist yet please
 
        (global-set-key (kbd "C->")     'mc/mark-next-like-this)
@@ -899,9 +898,6 @@ to predefined register"
  '(ls-lisp-ignore-case t)
  '(ls-lisp-verbosity nil)
  '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
- '(org-capture-templates (quote (("t" "Simple TODO" entry (file+headline "~/Dropbox/Private/org/notes.org" "Tasks") "* TODO %?
-DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/expenses.org") "| %u | %^{tag|misc|grocery|room|gas|car|sveta-stuff|cafe|lunch|dance|snack|condoms|phone|house|bus|repo} | %^{cost} | %^{desc} |") ("l" "Link" entry (file+headline "~/Dropbox/Private/org/notes.org" "Links") "* %?
-%c"))))
  '(org-clock-mode-line-total (quote current))
  '(org-confirm-babel-evaluate nil)
  '(org-directory "~/Dropbox/Private/org")
