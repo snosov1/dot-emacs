@@ -167,18 +167,18 @@ same type."
 (eval-after-load "org-autoloads"
   '(progn
      (when (require 'org nil t)
-         ;; enable python execution in org-mode
-  (require 'ob-python)
-  (require 'ob-R)
+       ;; enable python execution in org-mode
+       (require 'ob-python)
+       (require 'ob-R)
 
-  (defun conditional-org-reveal-export-to-html ()
-    (save-excursion
-      (beginning-of-buffer)
-      (when (search-forward "#+REVEAL" nil nil)
-        (org-reveal-export-to-html))))
+       (defun conditional-org-reveal-export-to-html ()
+         (save-excursion
+           (beginning-of-buffer)
+           (when (search-forward "#+REVEAL" nil nil)
+             (org-reveal-export-to-html))))
 
-  (add-hook 'org-ctrl-c-ctrl-c-final-hook
-            'conditional-org-reveal-export-to-html))))
+       (add-hook 'org-ctrl-c-ctrl-c-final-hook
+                 'conditional-org-reveal-export-to-html))))
 
 (eval-after-load "howdoi-autoloads"
   '(progn
