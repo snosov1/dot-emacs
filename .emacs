@@ -39,21 +39,6 @@
 ;; hippie-expand
 (require 'hippie-exp)
 
-;; enable org-mode
-(when (require 'org)
-  ;; enable python execution in org-mode
-  (require 'ob-python)
-  (require 'ob-R)
-
-  (defun conditional-org-reveal-export-to-html ()
-    (save-excursion
-      (beginning-of-buffer)
-      (when (search-forward "#+REVEAL" nil nil)
-        (org-reveal-export-to-html))))
-
-  (add-hook 'org-ctrl-c-ctrl-c-final-hook
-            'conditional-org-reveal-export-to-html))
-
 ;; image-mode
 (when (require 'image-mode nil t)
   (defun next-image (arg)
@@ -137,7 +122,8 @@ same type."
 ;; EXTERNAL PACKAGES
 
 ;; initialization
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+(setq package-archives '(("org-mode" . "http://orgmode.org/elpa/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ))
@@ -177,6 +163,22 @@ same type."
  '("package" "packages" "install"))
 
 ;; PER-PACKAGE CONFIGURATION
+
+(eval-after-load "org-autoloads"
+  '(progn
+     (when (require 'org nil t)
+         ;; enable python execution in org-mode
+  (require 'ob-python)
+  (require 'ob-R)
+
+  (defun conditional-org-reveal-export-to-html ()
+    (save-excursion
+      (beginning-of-buffer)
+      (when (search-forward "#+REVEAL" nil nil)
+        (org-reveal-export-to-html))))
+
+  (add-hook 'org-ctrl-c-ctrl-c-final-hook
+            'conditional-org-reveal-export-to-html))))
 
 (eval-after-load "howdoi-autoloads"
   '(progn
@@ -416,17 +418,6 @@ prompt otherwise."
                            (buffer-substring (region-beginning) (region-end))
                          (read-string "Lingvo: "))))))
 
-(defun orgtbl-to-latex-matrix (table params)
-  "Convert the Orgtbl mode TABLE to a LaTeX Matrix."
-  (interactive)
-  (let* ((params2
-          (list
-           :tstart (concat "\\[\n\\begin{pmatrix}")
-           :tend "\\end{pmatrix}\n\\]"
-           :lstart "" :lend " \\\\" :sep " & "
-           :efmt "%s\\,(%s)" :hline "\\hline")))
-    (orgtbl-to-generic table (org-combine-plists params2 params))))
-
 (defmacro smart-isearch (direction)
   `(defun ,(intern (format "smart-isearch-%s" direction)) (&optional regexp-p no-recursive-edit)
      "If region is active and non empty, use it for searching and
@@ -557,10 +548,50 @@ buffer is not visiting a file."
   (enable-theme 'tango-dark)
   ;; make background a little darker
   (set-background-color "#1d1f21")
+
   ;; require term mode after theme is set
-  (require 'term)
-  ;; set better ansi-term colors
-  (setq ansi-term-color-vector [unspecified "#1d1f21" "#cc6666" "firebrick" "#f0c674" "#81a2be" "#b294bb" "cyan3" "#c5c8c6"])
+  (when (require 'term)
+    (defcustom term-remote-hosts '()
+      "List of remote hosts")
+
+    ;; parse ~/.ssh/config to provide `remote-term' completion
+    ;; capabilities
+    (defcustom ssh-config-filename "~/.ssh/config"
+      "ssh config filename")
+    (defun term-parse-ssh-config ()
+      (interactive)
+      (setq term-remote-hosts '())
+      (if (file-exists-p ssh-config-filename)
+          (with-temp-buffer
+            (find-file ssh-config-filename)
+            (while (re-search-forward "Host\\s-+\\([^\s]+\\)$" nil t)
+              (let ((host (match-string-no-properties 1)))
+                (add-to-list 'term-remote-hosts `(,host "ssh" ,host)))))))
+    (term-parse-ssh-config)
+
+    (defun remote-term-do (new-buffer-name cmd &rest switches)
+      "Fires a remote terminal"
+      (setq term-ansi-buffer-name (concat "*" new-buffer-name "*"))
+      (setq term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
+      (setq term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches))
+      (set-buffer term-ansi-buffer-name)
+      (term-mode)
+      (term-char-mode)
+      (term-set-escape-char ?\C-x)
+      (switch-to-buffer term-ansi-buffer-name))
+
+    (defun remote-term (host-name)
+      (interactive
+       (list (completing-read "Remote host: " term-remote-hosts)))
+      (dolist (known-host term-remote-hosts)
+        (when (equal (car known-host) host-name)
+          (apply 'remote-term-do known-host))))
+
+    (define-key term-mode-map "\C-x\C-j"   'dired-jump-universal-other)
+    (define-key term-raw-escape-map "\C-j" 'dired-jump-universal-other)
+    (define-key term-mode-map "\C-c\C-l"   'term-line-mode)
+    (define-key term-raw-escape-map "\C-l" 'term-line-mode))
+
   ;; set font
   (ignore-errors
     (set-frame-font
@@ -900,24 +931,31 @@ DEADLINE:%^t") ("e" "Expenses entry" table-line (file "~/Dropbox/Private/org/exp
  '(diff-header ((t (:background "black"))))
  '(diff-refine-change ((t (:background "dark slate gray"))))
  '(diff-removed ((t (:foreground "tomato"))))
- '(dired-async-in-process-face ((t (:background "cornflower blue"))))
- '(ediff-current-diff-A ((t (:background "white" :foreground "black"))))
- '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))))
- '(ediff-current-diff-B ((t (:background "white" :foreground "black"))))
- '(ediff-current-diff-C ((t (:background "white" :foreground "black"))))
- '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))))
- '(ediff-even-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
- '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))))
- '(ediff-even-diff-C ((t (:background "antique white" :foreground "Black"))))
- '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))))
- '(ediff-fine-diff-Ancestor ((t (:background "gainsboro" :foreground "red"))))
- '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))))
- '(ediff-fine-diff-C ((t (:background "gainsboro" :foreground "purple"))))
- '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))))
- '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))))
- '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))))
- '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black"))))
- '(magit-item-highlight ((t (:background "black")))))
+ '(dired-async-in-process-face ((t (:background "cornflower blue"))) t)
+ '(ediff-current-diff-A ((t (:background "white" :foreground "black"))) t)
+ '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))) t)
+ '(ediff-current-diff-B ((t (:background "white" :foreground "black"))) t)
+ '(ediff-current-diff-C ((t (:background "white" :foreground "black"))) t)
+ '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))) t)
+ '(ediff-even-diff-Ancestor ((t (:background "antique white" :foreground "black"))) t)
+ '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))) t)
+ '(ediff-even-diff-C ((t (:background "antique white" :foreground "Black"))) t)
+ '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))) t)
+ '(ediff-fine-diff-Ancestor ((t (:background "gainsboro" :foreground "red"))) t)
+ '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))) t)
+ '(ediff-fine-diff-C ((t (:background "gainsboro" :foreground "purple"))) t)
+ '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))) t)
+ '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))) t)
+ '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))) t)
+ '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black"))) t)
+ '(magit-item-highlight ((t (:background "black"))))
+ '(term-color-black ((t (:background "#1d1f21" :foreground "#1d1f21"))))
+ '(term-color-blue ((t (:background "#81a2be" :foreground "#81a2be"))))
+ '(term-color-green ((t (:background "firebrick" :foreground "firebrick"))))
+ '(term-color-magenta ((t (:background "#b294bb" :foreground "#b294bb"))))
+ '(term-color-red ((t (:background "#cc6666" :foreground "#cc6666"))))
+ '(term-color-white ((t (:background "#c5c8c6" :foreground "#c5c8c6"))))
+ '(term-color-yellow ((t (:background "#f0c674" :foreground "#f0c674")))))
 
 ;; ------------------------------------------------------------
 ;; KEY BINDINGS
