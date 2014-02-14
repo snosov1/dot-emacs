@@ -39,6 +39,7 @@
         org-return-indent
         org-self-insert-command
         org-yank
+        orgtbl-self-insert-command
         paredit-splice-sexp
         python-indent-dedent-line-backspace
         python-indent-electric-colon
