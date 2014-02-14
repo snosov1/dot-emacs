@@ -40,10 +40,19 @@
 (require 'hippie-exp)
 
 ;; enable org-mode
-(require 'org)
-;; enable python execution in org-mode
-(require 'ob-python)
-(require 'ob-R)
+(when (require 'org)
+  ;; enable python execution in org-mode
+  (require 'ob-python)
+  (require 'ob-R)
+
+  (defun conditional-org-reveal-export-to-html ()
+    (save-excursion
+      (beginning-of-buffer)
+      (when (search-forward "#+REVEAL" nil nil)
+        (org-reveal-export-to-html))))
+
+  (add-hook 'org-ctrl-c-ctrl-c-final-hook
+            'conditional-org-reveal-export-to-html))
 
 ;; image-mode
 (when (require 'image-mode nil t)
@@ -159,6 +168,7 @@ same type."
                  markdown-mode
                  magit
                  multiple-cursors
+                 ox-reveal
                  paredit
                  gitconfig-mode
                  gitignore-mode
@@ -316,6 +326,10 @@ mc/mark-all-like-this otherwise"
                  '(lambda ()
                     (define-key grep-mode-map "\C-c\C-c"
                       'wgrep-save-all-buffers))))))
+
+;; ox-reveal
+;; export .org files as reveal.js presentations (https://github.com/hakimel/reveal.js/)
+(require 'ox-reveal nil t)
 
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
