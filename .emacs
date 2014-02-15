@@ -8,18 +8,6 @@
 ;; PATHS
 (add-to-list 'load-path "~/.emacs.d")
 
-;; this complicated 'let' places every subdir of Dropbox/emacs AT THE
-;; BEGINING of load-path, so custom versions of libraries are loaded
-;; before bundled ones (org and term in particular)
-(let ((default-directory "~/Dropbox/emacs"))
-  (setq load-path
-        (append
-         (let ((load-path (copy-sequence load-path))) ;; Shadow
-           (append
-            (copy-sequence (normal-top-level-add-to-load-path '(".")))
-            (normal-top-level-add-subdirs-to-load-path)))
-         load-path)))
-
 ;; ------------------------------------------------------------
 ;; BUILT-IN DEPENDENCIES
 
@@ -147,6 +135,7 @@ same type."
                  cmake-mode
                  d-mode
                  dired-details
+                 dummyparens
                  expand-region
                  howdoi
                  smex
@@ -179,6 +168,12 @@ same type."
 
        (add-hook 'org-ctrl-c-ctrl-c-final-hook
                  'conditional-org-reveal-export-to-html))))
+
+(eval-after-load "dummyparens-autoloads"
+  '(progn
+     (if (require 'dummyparens nil t)
+         (global-dummyparens-mode)
+       (warn "dummyparens not found"))))
 
 (eval-after-load "howdoi-autoloads"
   '(progn
@@ -345,10 +340,6 @@ mc/mark-all-like-this otherwise"
         (append '(("\\.cmd\\'" . dos-mode)
                   ("\\.bat\\'" . dos-mode))
                 auto-mode-alist)))
-
-;; dummyparens
-(when (require 'dummyparens nil t)
-  (global-dummyparens-mode))
 
 ;; cuda-mode
 (require 'cuda-mode nil t)
