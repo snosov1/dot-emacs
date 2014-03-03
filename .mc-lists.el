@@ -20,6 +20,7 @@
         double-quote-word
         downcase-dispatch
         dp-self-insert-command
+        end-of-buffer
         eval-dispatch
         fixup-whitespace
         forward-sexp
@@ -27,6 +28,7 @@
         isearch-abort
         join-following-line
         kill-region
+        kmacro-end-or-call-macro
         open-line-indent
         org-backward-sentence
         org-beginning-of-line
@@ -61,14 +63,12 @@
         describe-key
         dired-toggle-read-only
         edebug-next-mode
-        end-of-buffer
         find-tag
         ido-find-file
         ido-switch-buffer
         ignore
         isearch-printing-char
         keyboard-escape-quit
-        kmacro-end-or-call-macro
         mc/dwim
         mc/mark-all-dispatch
         python-shell-send-buffer
