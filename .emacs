@@ -852,6 +852,18 @@ to predefined register"
     (window-configuration-to-register pop-predefined-register))
   (jump-to-register register delete))
 
+(defun append-tramp-host ()
+  "Appends host name to the current buffer name for remote files"
+  (interactive)
+  (when (tramp-tramp-file-p (buffer-file-name))
+    (rename-buffer
+     (concat
+      (or (uniquify-buffer-base-name) (buffer-name))
+      " <"
+      (tramp-file-name-host
+       (tramp-dissect-file-name (buffer-file-name))) ">")
+     t)))
+
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
 
@@ -1029,10 +1041,16 @@ to predefined register"
              (define-key org-mode-map (kbd "C-c !")
                'org-time-stamp)))
 
+(add-hook 'find-file-hook
+          '(lambda()
+             (append-tramp-host)))
+
 (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-jump-to-top)
 (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
 (add-hook 'dired-mode-hook
           '(lambda()
+             (append-tramp-host)
+
              ;; keep default behavior in dired
              (define-key dired-mode-map (kbd "C-x C-q")
                'dired-toggle-read-only)
