@@ -363,11 +363,11 @@ mc/mark-all-like-this otherwise"
 ;; ------------------------------------------------------------
 ;; SKELETONS
 
-(define-skeleton printf-skeleton
+(define-skeleton skeleton-printf
   "insert printf statement"
   "value: "
   "printf(\"" str " = %" _ "d\\n\", " str ");" \n)
-(define-skeleton tostring-skeleton
+(define-skeleton skeleton-tostring
   "insert template to convert anything to string"
   "#include <sstream>\n"
   "template <typename T>\n"
