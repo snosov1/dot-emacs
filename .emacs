@@ -106,6 +106,19 @@ same type."
             (lambda ()
               (ibuffer-switch-to-saved-filter-groups "default"))))
 
+(when (require 'tramp nil t)
+  (defun append-tramp-host ()
+    "Appends host name to the current buffer name for remote files"
+    (interactive)
+    (when (tramp-tramp-file-p (buffer-file-name))
+      (rename-buffer
+       (concat
+        (replace-regexp-in-string " <.*>$" "" (or (uniquify-buffer-base-name) (buffer-name)))
+        " <"
+        (tramp-file-name-host
+         (tramp-dissect-file-name (buffer-file-name))) ">")
+       t))))
+
 ;; ------------------------------------------------------------
 ;; EXTERNAL PACKAGES
 
@@ -135,6 +148,7 @@ same type."
                  cmake-mode
                  d-mode
                  dired-details
+                 dos
                  dummyparens
                  expand-region
                  howdoi
@@ -323,6 +337,16 @@ mc/mark-all-like-this otherwise"
                     (define-key grep-mode-map "\C-c\C-c"
                       'wgrep-save-all-buffers))))))
 
+;; dos-mode
+;; for editing Windows .bat-files
+(eval-after-load "dos-autoloads"
+  '(progn
+     (when (require 'dos nil t)
+       (setq auto-mode-alist
+             (append '(("\\.cmd\\'" . dos-mode)
+                       ("\\.bat\\'" . dos-mode))
+                     auto-mode-alist)))))
+
 ;; ox-reveal
 ;; export .org files as reveal.js presentations (https://github.com/hakimel/reveal.js/)
 (require 'ox-reveal nil t)
@@ -332,14 +356,6 @@ mc/mark-all-like-this otherwise"
 
 ;; NOTE: these dependencies should be eventually migrated to use
 ;; package.el
-
-;; dos-mode
-;; for editing Windows .bat-files
-(when (require 'dos nil t)
-  (setq auto-mode-alist
-        (append '(("\\.cmd\\'" . dos-mode)
-                  ("\\.bat\\'" . dos-mode))
-                auto-mode-alist)))
 
 ;; cuda-mode
 (require 'cuda-mode nil t)
@@ -474,7 +490,7 @@ for remote hosts follows the pattern
 '/ssh:you@remotehost|sudo:remotehost:/path/to/file'. Some people
 say, that you may need to call smth like
 `(set-default 'tramp-default-proxies-alist (quote ((\".*\"
-\"\\`root\\'\" \"/ssh:%u@%h:\"))))', but it works for just fine
+\"\\`root\\'\" \"/ssh:%u@%h:\"))))', but it works for me just fine
 without it. "
   (with-temp-buffer
   (insert filename)
@@ -851,18 +867,6 @@ to predefined register"
   (unless (equal register pop-predefined-register)
     (window-configuration-to-register pop-predefined-register))
   (jump-to-register register delete))
-
-(defun append-tramp-host ()
-  "Appends host name to the current buffer name for remote files"
-  (interactive)
-  (when (tramp-tramp-file-p (buffer-file-name))
-    (rename-buffer
-     (concat
-      (or (uniquify-buffer-base-name) (buffer-name))
-      " <"
-      (tramp-file-name-host
-       (tramp-dissect-file-name (buffer-file-name))) ">")
-     t)))
 
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
