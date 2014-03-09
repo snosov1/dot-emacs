@@ -352,12 +352,6 @@ mc/mark-all-like-this otherwise"
 (require 'ox-reveal nil t)
 
 ;; ------------------------------------------------------------
-;; EXTERNAL DEPENDENCIES
-
-;; cuda-mode
-(require 'cuda-mode nil t)
-
-;; ------------------------------------------------------------
 ;; SKELETONS
 
 (define-skeleton skeleton-printf
