@@ -354,9 +354,6 @@ mc/mark-all-like-this otherwise"
 ;; ------------------------------------------------------------
 ;; EXTERNAL DEPENDENCIES
 
-;; NOTE: these dependencies should be eventually migrated to use
-;; package.el
-
 ;; cuda-mode
 (require 'cuda-mode nil t)
 
@@ -369,6 +366,7 @@ mc/mark-all-like-this otherwise"
   "printf(\"" str " = %" _ "d\\n\", " str ");" \n)
 (define-skeleton skeleton-tostring
   "insert template to convert anything to string"
+  nil
   "#include <sstream>\n"
   "template <typename T>\n"
   "std::string to_string(const T& obj)\n"
@@ -377,6 +375,14 @@ mc/mark-all-like-this otherwise"
   "    oss << obj;\n"
   "    return oss.str();\n"
   "}\n")
+(define-skeleton skeleton-bash-root
+  "Exits if not run as root"
+  nil
+  "if [[ $(id -u) -ne 0 ]] ; then echo \"Please, run as root\" ; exit 1 ; fi\n")
+(define-skeleton skeleton-bash-base-dir
+  "Stores the directory of the script to the DIR variable"
+  nil
+  "DIR=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" && pwd )\"\n")
 
 ;; ------------------------------------------------------------
 ;; ADVICES
