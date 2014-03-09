@@ -376,9 +376,9 @@ mc/mark-all-like-this otherwise"
   "    return oss.str();\n"
   "}\n")
 (define-skeleton skeleton-bash-root
-  "Exits if not run as root"
+  "Exits if not run as sudo"
   nil
-  "if [[ $(id -u) -ne 0 ]] ; then echo \"Please, run as root\" ; exit 1 ; fi\n")
+  "if [[ $(id -u) -ne 0 ]] ; then echo \"Please, run as sudo\" ; exit 1 ; fi\n")
 (define-skeleton skeleton-bash-base-dir
   "Stores the directory of the script to the DIR variable"
   nil
