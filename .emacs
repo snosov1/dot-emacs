@@ -377,6 +377,13 @@ mc/mark-all-like-this otherwise"
   "Stores the directory of the script to the DIR variable"
   nil
   "DIR=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" && pwd )\"\n")
+(define-skeleton skeleton-timer
+  "Add timed block"
+  "block name: "
+  "TIMER(" str ", \"" str "\");\n"
+  "TIMERON(" str ");\n"
+  _
+  "TIMEROFF(" str ");\n")
 
 ;; ------------------------------------------------------------
 ;; ADVICES
