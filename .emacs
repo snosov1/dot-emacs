@@ -110,13 +110,13 @@ same type."
   (defun append-tramp-host ()
     "Appends host name to the current buffer name for remote files"
     (interactive)
-    (when (tramp-tramp-file-p (buffer-file-name))
+    (when (tramp-tramp-file-p default-directory)
       (rename-buffer
        (concat
         (replace-regexp-in-string " <.*>$" "" (or (uniquify-buffer-base-name) (buffer-name)))
         " <"
         (tramp-file-name-host
-         (tramp-dissect-file-name (buffer-file-name))) ">")
+         (tramp-dissect-file-name default-directory)) ">")
        t))))
 
 ;; ------------------------------------------------------------
