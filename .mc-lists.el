@@ -41,6 +41,7 @@
         org-return-indent
         org-self-insert-command
         org-yank
+        orgtbl-hijacker-command-102
         orgtbl-self-insert-command
         paredit-splice-sexp
         python-indent-dedent-line-backspace
