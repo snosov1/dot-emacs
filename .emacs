@@ -273,8 +273,7 @@ same type."
 (eval-after-load "expand-region-autoloads"
   '(progn
      (when (require 'expand-region nil t)
-       (global-set-key (kbd "C-=") 'er/expand-region)
-       (global-set-key (kbd "C--") 'er/contract-region))))
+       (global-set-key (kbd "C-=") 'er/expand-region))))
 
 ;; dired-details
 (eval-after-load "dired-details-autoloads"
