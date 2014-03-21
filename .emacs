@@ -3,6 +3,7 @@
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 ;; no splash screen
 (setq inhibit-startup-message t)
+(setq mac-command-modifier 'meta)
 
 ;; ------------------------------------------------------------
 ;; PATHS
