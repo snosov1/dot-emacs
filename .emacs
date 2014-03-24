@@ -906,7 +906,7 @@ to predefined register"
  '(ido-mode (quote both) nil (ido))
  '(indent-tabs-mode nil)
  '(initial-buffer-choice t)
- '(initial-major-mode (quote org-mode))
+ '(initial-major-mode (quote emacs-lisp-mode))
  '(initial-scratch-message nil)
  '(ls-lisp-dirs-first t)
  '(ls-lisp-ignore-case t)
