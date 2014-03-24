@@ -997,6 +997,7 @@ to predefined register"
 (global-set-key (kbd "\C-x\C-e")    'eval-dispatch)
 (global-set-key (kbd "M-\\")        'fixup-whitespace)
 (global-set-key (kbd "C-M-h")       'backward-kill-word)
+(global-set-key (kbd "M-h")         'backward-kill-word)
 (global-set-key (kbd "M-/")         'hippie-expand)
 (global-set-key (kbd "\C-x k")      'kill-this-buffer)
 (global-set-key (kbd "C-+")         'org-list-repair)
@@ -1043,8 +1044,10 @@ to predefined register"
 
 (add-hook 'org-mode-hook
           '(lambda ()
-             ;; don't redefine C-<TAB>
+             ;; don't redefine some bindings
              (define-key org-mode-map [C-tab]
+               nil)
+             (define-key org-mode-map (kbd "M-h")
                nil)
              ;; swap active/inactive time-stamp bindings
              (define-key org-mode-map (kbd "C-c .")
