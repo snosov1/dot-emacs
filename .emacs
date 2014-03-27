@@ -1014,7 +1014,7 @@ to predefined register"
 (global-set-key (kbd "\C-x!")       'sudo-edit-current-file)
 (global-set-key (kbd "\C-cg")       'google-it)
 (global-set-key (kbd "\C-cl")       'lingvo-it)
-(global-set-key (kbd "\C-c\C-o")    'browse-url)
+(global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
 (global-set-key "\C-x\C-j"          'dired-jump-universal-other)
 (global-set-key "\C-x\C-u"          'update-tags-file)
 (global-set-key "\C-x\C-v"          'visit-tags-table)
