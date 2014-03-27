@@ -409,6 +409,10 @@ mc/mark-all-like-this otherwise"
 ;; ------------------------------------------------------------
 ;; DEFUNS
 
+(defun fov2focal (fov)
+  "Evaluates focal length given fov in degrees"
+  (/ 1.0 (tan (/ (* float-pi (/ fov 2.0)) 180.0))))
+
 (defun google-it ()
   "Google the selected region if any, display a query prompt
 otherwise."
