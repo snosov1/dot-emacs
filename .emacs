@@ -1110,16 +1110,13 @@ to predefined register"
 (add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
 (add-hook 'c-mode-common-hook
           '(lambda ()
-             (define-key c-mode-base-map "\C-c\C-c"
-               'compile)
              (define-key c-mode-base-map "\C-c\C-o"
                'ff-find-other-file)
-             (define-key c-mode-base-map "\C-c\C-p"
-               'printf-skeleton)
-             (define-key c-mode-base-map (kbd "C-M-h")
-               'backward-kill-word)
-             (define-key c-mode-base-map (kbd "M-j")
-               'join-following-line)
+
+             (define-key c-mode-base-map "\C-c\C-c"    nil)
+             (define-key c-mode-base-map (kbd "C-M-h") nil)
+             (define-key c-mode-base-map (kbd "M-j")   nil)
+
              ;; hs-mode
              (hs-minor-mode t)
              (define-key c-mode-base-map "\C-ch"
