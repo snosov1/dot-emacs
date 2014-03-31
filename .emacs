@@ -226,6 +226,8 @@ same type."
                         (define-key markdown-mode-map (kbd "M-n")
                           nil)
                         (define-key markdown-mode-map (kbd "\C-c\C-c")
+                          nil)
+                        (define-key markdown-mode-map (kbd "\C-c\C-e")
                           'markdown-export))))
        (warn "markdown-mode not found"))))
 
