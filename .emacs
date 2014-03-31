@@ -1104,7 +1104,9 @@ to predefined register"
 (add-hook 'sh-mode-hook
           '(lambda ()
              (define-key sh-mode-map "\C-c\C-c"
-               'compile)))
+               nil)
+             (define-key sh-mode-map "\C-c\C-o"
+               nil)))
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
