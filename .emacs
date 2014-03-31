@@ -992,6 +992,7 @@ to predefined register"
 (global-set-key (kbd "M-p")         'move-text-up)
 (global-set-key (kbd "M-n")         'move-text-down)
 (global-set-key (kbd "\C-c m")      'magit-status)
+(global-set-key (kbd "\C-c RET")    'magit-status)
 (global-set-key (kbd "\C-c s")      'swap-buffers-in-windows)
 (global-set-key (kbd "\C-c\C-s")    'swap-buffers-in-windows)
 (global-set-key (kbd "M-\"")        'double-quote-word)
