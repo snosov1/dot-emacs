@@ -43,7 +43,6 @@ same type."
            (this    (file-name-nondirectory (buffer-file-name)))
            (idx     0)
            (dir     (file-name-directory (buffer-file-name))))
-      (cd-absolute dir)
       (dolist (file files)
         (if (not (string= this file))
             (setq idx  (1+ idx))
@@ -51,7 +50,7 @@ same type."
                 (mod (+ idx (if arg arg 1)) len))
           (kill-this-buffer) ;; we don't want to have a thousand image
           ;; buffers around
-          (find-file (elt files idx))))))
+          (find-file (concat dir (elt files idx)))))))
 
   (defun previous-image (arg)
     "Visit previous image. See `next-image'"
