@@ -410,11 +410,26 @@ mc/mark-all-like-this otherwise"
       (term-char-mode)))
 
 ;; ------------------------------------------------------------
-;; DEFUNS
+;; MATH DEFUNS
+
+(defun deg2rad (x)
+  "Converts degrees to radians"
+  (/ (* x float-pi) 180.0))
+
+(defun rad2deg (x)
+  "Converts radians to degrees"
+  (/ (* x 180.0) float-pi))
 
 (defun fov2focal (fov)
-  "Evaluates focal length given fov in degrees"
-  (/ 1.0 (tan (/ (* float-pi (/ fov 2.0)) 180.0))))
+  "Evaluates dimensionless focal length given fov in radians"
+  (/ 1.0 (tan (/ fov 2.0))))
+
+(defun focal2fov (fov)
+  "Evaluates fov in radians given dimensionless focal length"
+  (* 2.0 (atan (/ 1.0 fov))))
+
+;; ------------------------------------------------------------
+;; DEFUNS
 
 (defun google-it ()
   "Google the selected region if any, display a query prompt
