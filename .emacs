@@ -1067,6 +1067,10 @@ to predefined register"
           '(lambda ()
              (define-key org-src-mode-map (kbd "C-x C-s") 'org-edit-src-exit)))
 
+(add-hook 'shell-mode-hook
+          '(lambda ()
+             (define-key shell-mode-map (kbd "\C-c\C-o") nil)))
+
 (add-hook 'org-mode-hook
           '(lambda ()
              ;; don't redefine some bindings
