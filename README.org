@@ -553,20 +553,20 @@ Emacs.
    MR Name                    Size Mode             Filename/Process
    -- ----                    ---- ----             ----------------
   [ org ]
-   ,*  README.org             33556 Org              ~/.dev-setup/dot-emacs/README.org
+   *  README.org             33556 Org              ~/.dev-setup/dot-emacs/README.org
   [ dired ]
   [ D ]
   [ C/C++ ]
   [ magit ]
   [ Markdown ]
   [ emacs ]
-   ,*  *Messages*               549 Fundamental
+   *  *Messages*               549 Fundamental
   [ shell commands ]
   [ Default ]
       .emacs                 44041 Emacs-Lisp       ~/.dev-setup/dot-emacs/.emacs
-      ,*scratch*                  0 Emacs-Lisp
+      *scratch*                  0 Emacs-Lisp
       config                   337 Conf[Space]      ~/.ssh/config
-   ,*% *Compile-Log*            102 Special
+   *% *Compile-Log*            102 Special
 
       6 buffers              78585                  3 files, no processes
 #+END_EXAMPLE
