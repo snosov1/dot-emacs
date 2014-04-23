@@ -544,9 +544,11 @@ also (>=23.4)"
   (interactive "P")
   (let ((tags-file-name
          (read-file-name
-          "TAGS file: " (expand-file-name (or
-                          (search-file-up default-directory "TAGS")
-                          default-directory))))
+          "TAGS file: " (let ((fn (search-file-up default-directory "TAGS")))
+                          (if fn
+                              (parent-directory fn)
+                            default-directory))
+          nil nil "TAGS"))
         (ctags-command "")
         (languages (case major-mode
                      ((cc-mode c++-mode c-mode) " --languages=C,C++")
