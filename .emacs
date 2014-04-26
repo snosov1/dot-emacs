@@ -387,6 +387,15 @@ mc/mark-all-like-this otherwise"
   "TIMERON(" str ");\n"
   _
   "TIMEROFF(" str ");\n")
+(define-skeleton skeleton-read
+  "convenient read function for D"
+  nil
+  "T read(T)()\n"
+  "{\n"
+  "    T t;\n"
+  "    readf(\" %s\", &t);\n"
+  "    return t;\n"
+  "}\n")
 
 ;; ------------------------------------------------------------
 ;; ADVICES
