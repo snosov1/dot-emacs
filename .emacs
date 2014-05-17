@@ -560,13 +560,13 @@ also (>=23.4)"
           nil nil "TAGS"))
         (ctags-command "")
         (languages (case major-mode
-                     ((cc-mode c++-mode c-mode) " --languages=C,C++")
-                     ((d-mode) " --languages=D")
+                     ((cc-mode c++-mode c-mode) "--languages=C,C++")
+                     ((d-mode) "--languages=D")
                      (t ""))))
     (when tags-file-name
       (setq ctags-command (concat ctags-command "cd " (replace-regexp-in-string ".*:" "" (file-name-directory tags-file-name)) " && ")))
 
-    (setq ctags-command (concat ctags-command "ctags -e -R . " languages))
+    (setq ctags-command (concat ctags-command "ctags -e " languages " -R . "))
 
     (with-temp-buffer
       (when arg
@@ -1050,6 +1050,7 @@ to predefined register"
 (global-set-key "\C-x\C-j"          'dired-jump-universal-other)
 (global-set-key "\C-x\C-u"          'update-tags-file)
 (global-set-key "\C-x\C-v"          'visit-tags-table)
+(global-set-key "\C-x\C-t"          'tags-reset-tags-tables)
 (global-set-key "\C-x\C-l"          'tags-apropos)
 (global-set-key "\C-c\C-c"          'compile)
 
