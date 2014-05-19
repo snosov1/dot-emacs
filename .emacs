@@ -277,17 +277,6 @@ same type."
 (eval-after-load "expand-region-autoloads"
   '(progn
      (when (require 'expand-region nil t)
-       (defun er--this-expansion-is-better (start end best-start best-end)
-         "t if the current region is an improvement on previous expansions.
-
-This is provided as a separate function for those that would like
-to override the heuristic."
-         (and
-          (<= (point) start)
-          (>= (mark) end)
-          (> (- (mark) (point)) (- end start))
-          (< (- (mark) (point)) (- best-end best-start))))
-
        (global-set-key (kbd "C-=") 'er/expand-region))))
 
 ;; dired-details
