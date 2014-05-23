@@ -22,11 +22,16 @@ std::string to_string(const T& obj)
     return oss.str();
 }
 " nil 0)
+    ("savepbm" "std::vector<int> params;
+params.push_back(CV_IMWRITE_PXM_BINARY);
+params.push_back(0); // 1 for binary format, 0 for ascii format
+cv::imwrite(\"image.pbm\", image, params); // the .pbm extension specifies the encoding format
+" nil 0)
+    ("cout" "std::cout << v << std::endl;" nil 0)
    ))
 
 (define-abbrev-table 'c-mode-abbrev-table
   '(
-    ("printf" "pp" nil 0)
     ("timer" "TIMER(timer, \"timer\");
 TIMERON(timer);
 TIMEROFF(timer);
@@ -88,6 +93,7 @@ TIMEROFF(timer);
 (define-abbrev-table 'global-abbrev-table
   '(
     ("ln" "ln -s target link" nil 0)
+    ("avconvimages" "avconv -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
    ))
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
@@ -156,7 +162,6 @@ TIMEROFF(timer);
 
 (define-abbrev-table 'python-mode-abbrev-table
   '(
-    ("ass" "if" nil 0)
     ("class" "class" nil 0)
     ("def" "def" nil 0)
     ("for" "for" nil 0)
@@ -171,10 +176,8 @@ TIMEROFF(timer);
 
 (define-abbrev-table 'shell-mode-abbrev-table
   '(
-    ("bashdir" "DIR=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" && pwd )\"
-" nil 0)
-    ("bashroot" "if [[ $(id -u) -ne 0 ]] ; then echo \"Please, run as sudo\" ; exit 1 ; fi
-" nil 0)
+    ("bashdir" "DIR=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" && pwd )\"" nil 0)
+    ("bashroot" "if [[ $(id -u) -ne 0 ]] ; then echo \"Please, run as sudo\" ; exit 1 ; fi" nil 0)
    ))
 
 (define-abbrev-table 'special-mode-abbrev-table '())
@@ -188,4 +191,3 @@ TIMEROFF(timer);
 (define-abbrev-table 'vc-git-log-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
-
