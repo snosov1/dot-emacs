@@ -376,49 +376,6 @@ mc/mark-all-like-this otherwise"
 (require 'ox-reveal nil t)
 
 ;; ------------------------------------------------------------
-;; SKELETONS
-
-(define-skeleton skeleton-printf
-  "insert printf statement"
-  "value: "
-  "printf(\"" str " = %" _ "d\\n\", " str ");" \n)
-(define-skeleton skeleton-tostring
-  "insert template to convert anything to string"
-  nil
-  "#include <sstream>\n"
-  "template <typename T>\n"
-  "std::string to_string(const T& obj)\n"
-  "{\n"
-  "    std::ostringstream oss;\n"
-  "    oss << obj;\n"
-  "    return oss.str();\n"
-  "}\n")
-(define-skeleton skeleton-bash-root
-  "Exits if not run as sudo"
-  nil
-  "if [[ $(id -u) -ne 0 ]] ; then echo \"Please, run as sudo\" ; exit 1 ; fi\n")
-(define-skeleton skeleton-bash-base-dir
-  "Stores the directory of the script to the DIR variable"
-  nil
-  "DIR=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" && pwd )\"\n")
-(define-skeleton skeleton-timer
-  "Add timed block"
-  "block name: "
-  "TIMER(" str ", \"" str "\");\n"
-  "TIMERON(" str ");\n"
-  _
-  "TIMEROFF(" str ");\n")
-(define-skeleton skeleton-read
-  "convenient read function for D"
-  nil
-  "T read(T)()\n"
-  "{\n"
-  "    T t;\n"
-  "    readf(\" %s\", &t);\n"
-  "    return t;\n"
-  "}\n")
-
-;; ------------------------------------------------------------
 ;; ADVICES
 
 (defadvice insert-for-yank-1 (after indent-region activate)
@@ -1181,6 +1138,8 @@ to predefined register"
              (setq comment-start "//" comment-end "")))
 
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+
+(add-to-list 'auto-mode-alist '("\\.abbrev_defs\\'" . emacs-lisp-mode))
 
 ;; ------------------------------------------------------------
 ;; MISCELLANEOUS CONFIGS
