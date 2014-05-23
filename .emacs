@@ -25,6 +25,13 @@
 (require 'vc-git)
 (require 'grep)
 
+;; abbrev
+(when (require 'abbrev nil t)
+  (add-hook 'find-file-hook
+            '(lambda()
+               (abbrev-mode -1)))
+  (setq-default abbrev-mode nil))
+
 ;; hippie-expand
 (require 'hippie-exp)
 
