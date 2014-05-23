@@ -121,6 +121,27 @@ same type."
          (tramp-dissect-file-name default-directory)) ">")
        t))))
 
+(when (require 'flyspell nil t)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+  (defcustom ispell-common-dictionaries
+    '("en" "ru")
+    "List of dictionaries for common use")
+
+  (setq ispell-dictionary (car ispell-common-dictionaries))
+
+  (defun ispell-next-dictionary()
+    "Cycle through dictionaries in `ispell-common-dictionaries'"
+    (interactive)
+    (let* ((dic ispell-current-dictionary)
+           (next (cadr (member dic ispell-common-dictionaries)))
+           (change (if next next (car ispell-common-dictionaries))))
+      (ispell-change-dictionary change)))
+
+  (define-key flyspell-mode-map (kbd "C-x M-$") 'flyspell-buffer)
+  (define-key flyspell-mode-map (kbd "C-c M-$") 'ispell-next-dictionary))
+
 ;; ------------------------------------------------------------
 ;; EXTERNAL PACKAGES
 
