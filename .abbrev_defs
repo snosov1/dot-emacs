@@ -94,6 +94,7 @@ TIMEROFF(timer);
   '(
     ("ln" "ln -s target link" nil 0)
     ("avconvimages" "avconv -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
+    ("ccache" "CC=/usr/lib/ccache/gcc CXX=/usr/lib/ccache/g++" nil 0)
    ))
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
