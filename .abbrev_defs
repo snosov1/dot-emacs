@@ -32,9 +32,9 @@ cv::imwrite(\"image.pbm\", image, params); // the .pbm extension specifies the e
 
 (define-abbrev-table 'c-mode-abbrev-table
   '(
-    ("timer" "TIMER(timer, \"timer\");
-TIMERON(timer);
-TIMEROFF(timer);
+    ("timer" "TIMER(name, \"name\");
+TIMERON(name);
+TIMEROFF(name);
 " nil 0)
    ))
 
