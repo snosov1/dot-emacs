@@ -893,6 +893,30 @@ to predefined register"
     (window-configuration-to-register pop-predefined-register))
   (jump-to-register register delete))
 
+(defun replace-path-with-truename ()
+  "Replaces the region or the path around point with its true name.
+
+To get the true name it follows the symbolic links and converts
+relative paths to absolute."
+
+  (interactive)
+  (let (bds p1 p2 inputStr resultStr)
+    ;; get current selection or filename
+    (if (region-active-p)
+        (setq bds (cons (region-beginning) (region-end) ))
+      (setq bds (bounds-of-thing-at-point 'filename)))
+    (setq p1 (car bds))
+    (setq p2 (cdr bds))
+
+    ;; grab the string
+    (setq fn (buffer-substring-no-properties p1 p2)  )
+
+    (if (file-exists-p fn)
+        (progn
+          (delete-region p1 p2 )
+          (insert (file-truename fn)))
+      (message "Path is non-existing"))))
+
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
 
@@ -1032,6 +1056,7 @@ to predefined register"
 (global-set-key (kbd "\C-cl")       'lingvo-it)
 (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
 (global-set-key (kbd "C-z")         'undo)
+(global-set-key (kbd "C-x /")       'replace-path-with-truename)
 (global-set-key "\C-x\C-j"          'dired-jump-universal-other)
 (global-set-key "\C-x\C-u"          'update-tags-file)
 (global-set-key "\C-x\C-v"          'visit-tags-table)
