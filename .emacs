@@ -915,7 +915,7 @@ relative paths to absolute."
         (progn
           (delete-region p1 p2 )
           (insert (file-truename fn)))
-      (message "Path is non-existing"))))
+      (message "Path \"%s\" doesn't exist" fn))))
 
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
