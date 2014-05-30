@@ -7,6 +7,7 @@
 ;; https://github.com/snosov1/dot-emacs#m-%7C
 
 (defvar toc-regexp "^*.*:toc:\\($\\|[^ ]*:$\\)")
+(defvar special-chars-regexp "[][~`!@#$%^&*()+={}|\:;\"'<,>.?/]")
 (defvar max-depth 2)
 
 (defun raw-toc ()
@@ -27,16 +28,10 @@
 
 (defun hrefify-github (str)
   (let* ((spc-fix (replace-regexp-in-string " " "-" str))
-         (slash-fix (replace-regexp-in-string "/" "" spc-fix))
-         (upcase-fix (replace-regexp-in-string "[A-Z]" 'downcase slash-fix t))
-         (comma-fix (replace-regexp-in-string "," "" upcase-fix t))
-         (open-paren-fix (replace-regexp-in-string "\(" "" comma-fix t))
-         (close-paren-fix (replace-regexp-in-string "\)" "" open-paren-fix t))
-         (percent-fix (replace-regexp-in-string "%" "" close-paren-fix t))
+         (upcase-fix (replace-regexp-in-string "[A-Z]" 'downcase spc-fix t))
+         (special-chars-fix (replace-regexp-in-string special-chars-regexp "" upcase-fix t))
          )
-    (concat "#" percent-fix)))
-
-
+    (concat "#" special-chars-fix)))
 
 (defun hrefify-toc (toc hrefify)
   (with-temp-buffer
@@ -47,7 +42,11 @@
         (progn
           (when (looking-at "\\*")
             (delete-char 1)
-            (replace-string "*" "    " nil (line-beginning-position) (line-end-position))
+            (replace-string "*" "    " nil
+                            (line-beginning-position)
+                            (or (save-excursion
+                                  (search-forward " " (line-end-position) t))
+                                (line-end-position)))
             (skip-chars-forward " ")
             (insert "- ")
 
