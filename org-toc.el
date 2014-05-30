@@ -29,8 +29,14 @@
   (let* ((spc-fix (replace-regexp-in-string " " "-" str))
          (slash-fix (replace-regexp-in-string "/" "" spc-fix))
          (upcase-fix (replace-regexp-in-string "[A-Z]" 'downcase slash-fix t))
+         (comma-fix (replace-regexp-in-string "," "" upcase-fix t))
+         (open-paren-fix (replace-regexp-in-string "\(" "" comma-fix t))
+         (close-paren-fix (replace-regexp-in-string "\)" "" open-paren-fix t))
+         (percent-fix (replace-regexp-in-string "%" "" close-paren-fix t))
          )
-    (concat "#" upcase-fix)))
+    (concat "#" percent-fix)))
+
+
 
 (defun hrefify-toc (toc hrefify)
   (with-temp-buffer
