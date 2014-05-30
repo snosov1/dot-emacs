@@ -1,3 +1,6 @@
+;; TODO: control depth
+;; TODO: Handle English characters (those should be lowercased)
+
 (defvar toc-regexp "^*.*:toc:\\($\\|[^ ]*:$\\)")
 
 (defun raw-toc ()
