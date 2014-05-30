@@ -1,7 +1,5 @@
-;; TODO: control depth
-;; TODO: Handle English characters (those should be lowercased)
-
 (defvar toc-regexp "^*.*:toc:\\($\\|[^ ]*:$\\)")
+(defvar max-depth 2)
 
 (defun raw-toc ()
   (let ((content (buffer-substring-no-properties
@@ -21,8 +19,10 @@
 
 (defun hrefify-github (str)
   (let* ((spc-fix (replace-regexp-in-string " " "-" str))
-         (slash-fix (replace-regexp-in-string "/" "" spc-fix)))
-    (concat "#" slash-fix)))
+         (slash-fix (replace-regexp-in-string "/" "" spc-fix))
+         (upcase-fix (replace-regexp-in-string "[A-Z]" 'downcase slash-fix t))
+         )
+    (concat "#" upcase-fix)))
 
 (defun hrefify-toc (toc hrefify)
   (with-temp-buffer
@@ -32,15 +32,10 @@
     (while
         (progn
           (when (looking-at "\\*")
+            (delete-char 1)
             (replace-string "*" "    " nil (line-beginning-position) (line-end-position))
             (skip-chars-forward " ")
             (insert "- ")
-
-            ;; (let ((N (skip-chars-forward "*")))
-            ;;   (delete-char N)
-            ;;   (while (not (equal 0 (setq N (1- N))))
-            ;;     (insert "    "))
-            ;;   (insert "-"))
 
             (let* ((beg (point))
                    (end (line-end-position))
@@ -52,6 +47,19 @@
               (end-of-line)
               (insert "]]"))
             (= 0 (forward-line 1)))))
+
+    (buffer-substring-no-properties
+     (point-min) (point-max))))
+
+(defun flush-subheadings (toc max-stars)
+  (with-temp-buffer
+    (insert toc)
+    (beginning-of-buffer)
+
+    (let ((re "^"))
+      (dotimes (i (1+ max-stars))
+        (setq re (concat re "\\*")))
+      (flush-lines re))
 
     (buffer-substring-no-properties
      (point-min) (point-max))))
@@ -69,5 +77,5 @@
       (while (looking-at "\\*\\*")
         (delete-region (point) (progn (forward-line 1) (point))))
 
-      (insert (hrefify-toc (raw-toc) 'hrefify-github))
+      (insert (hrefify-toc (flush-subheadings (raw-toc) max-depth) 'hrefify-github))
       )))
