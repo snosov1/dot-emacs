@@ -29,8 +29,16 @@
     (while
         (progn
           (when (looking-at "\\*")
-            (insert "*")
-            (skip-chars-forward "* ")
+            (replace-string "*" "    " nil (line-beginning-position) (line-end-position))
+            (skip-chars-forward " ")
+            (insert "- ")
+
+            ;; (let ((N (skip-chars-forward "*")))
+            ;;   (delete-char N)
+            ;;   (while (not (equal 0 (setq N (1- N))))
+            ;;     (insert "    "))
+            ;;   (insert "-"))
+
             (let* ((beg (point))
                    (end (line-end-position))
                    (heading (buffer-substring-no-properties
