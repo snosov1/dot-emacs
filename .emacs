@@ -1106,9 +1106,7 @@ relative paths to absolute."
              (define-key org-mode-map (kbd "C-c !")
                'org-time-stamp)))
 
-(add-hook 'find-file-hook
-          '(lambda()
-             (append-tramp-host)))
+(add-hook 'find-file-hook 'append-tramp-host)
 
 (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-jump-to-top)
 (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
@@ -1210,6 +1208,10 @@ relative paths to absolute."
 
 ;; delete trailing whitespace before save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; maintain an up-to-date table of contents in org files
+(load-file "org-toc.el")
+(add-hook 'before-save-hook 'ot-insert-toc)
 
 ;; show matching parentheses
 (show-paren-mode 1)
