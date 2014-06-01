@@ -39,7 +39,8 @@
 
 ;;; Code:
 
-(defconst ot-toc-regexp "^*.*:toc:\\($\\|[^ ]*:$\\)"
+;; just in case, simple regexp "^*.*:toc:\\($\\|[^ ]*:$\\)"
+(defconst ot-toc-regexp "^*.*:toc\\(@[0-9]\\|\\(@[0-9]@[a-zA-Z]+\\)\\)?:\\($\\|[^ ]*:$\\)"
   "Regexp to find the heading with the :toc: tag")
 (defconst ot-special-chars-regexp "[][~`!@#$%^&*()+={}|\:;\"'<,>.?/]"
   "Regexp with the special characters (which are omitted in hrefs
