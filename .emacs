@@ -1210,8 +1210,8 @@ relative paths to absolute."
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; maintain an up-to-date table of contents in org files
-(load-file "org-toc.el")
-(add-hook 'before-save-hook 'ot-insert-toc)
+;; (load-file "org-toc.el")
+;; (add-hook 'before-save-hook 'ot-insert-toc)
 
 ;; show matching parentheses
 (show-paren-mode 1)
