@@ -52,6 +52,10 @@ contents. The default of 2 uses only the highest level headings
 and their subheadings (one and two stars)."
   :group 'org-toc)
 
+(defcustom ot-hrefify-default "gh"
+  "Default hrefify function to use."
+  :group 'org-toc)
+
 (defun ot-raw-toc ()
   "Return the \"raw\" table of contents of the current file,
 i.e. simply flush everything that's not a heading."
@@ -71,7 +75,7 @@ i.e. simply flush everything that's not a heading."
       (buffer-substring-no-properties
        (point-min) (point-max)))))
 
-(defun ot-hrefify-github (str)
+(defun ot-hrefify-gh (str)
   "Given a heading, transform it into a href using the GitHub
 rules."
   (let* ((spc-fix (replace-regexp-in-string " " "-" str))
@@ -79,6 +83,11 @@ rules."
          (special-chars-fix (replace-regexp-in-string ot-special-chars-regexp "" upcase-fix t))
          )
     (concat "#" special-chars-fix)))
+
+(defun ot-hrefify-org (str)
+  "Given a heading, transform it into a href using the org-mode
+rules."
+  str)
 
 (defun ot-hrefify-toc (toc hrefify)
   "Format the raw `toc' using the `hrefify' function to transform
@@ -135,18 +144,31 @@ each heading into a link."
       (let ((case-fold-search t))
         ;; find the first heading with the :TOC: tag
         (when (re-search-forward ot-toc-regexp (point-max) t)
-          (forward-line 1)
 
-          ;; insert newline if TOC is currently empty
-          (when (looking-at "^\\*")
-            (open-line 1))
+          (let* ((tag (match-string 1))
+                 (depth (if tag
+                            (- (aref tag 1) ?0) ;; is there a better way to convert char to number?
+                          ot-max-depth))
+                 (hrefify-tag (if (and tag (>= (length tag) 4))
+                                  (downcase (substring tag 3))
+                                ot-hrefify-default))
+                 (hrefify-string (concat "ot-hrefify-" hrefify-tag))
+                 (hrefify (intern-soft hrefify-string)))
+            (if hrefify
+                (progn
+                  (forward-line 1)
 
-          ;; remove previous TOC
-          (delete-region (point)
-                         (save-excursion
-                           (search-forward-regexp "^\\*" (point-max) 0)
-                           (forward-line -1)
-                           (end-of-line)
-                           (point)))
+                  ;; insert newline if TOC is currently empty
+                  (when (looking-at "^\\*")
+                    (open-line 1))
 
-          (insert (ot-hrefify-toc (ot-flush-subheadings (ot-raw-toc) ot-max-depth) 'ot-hrefify-github)))))))
+                  ;; remove previous TOC
+                  (delete-region (point)
+                                 (save-excursion
+                                   (search-forward-regexp "^\\*" (point-max) 0)
+                                   (forward-line -1)
+                                   (end-of-line)
+                                   (point)))
+
+                  (insert (ot-hrefify-toc (ot-flush-subheadings (ot-raw-toc) depth) hrefify)))
+              (message (concat "Hrefify function " hrefify-string " is not found")))))))))
