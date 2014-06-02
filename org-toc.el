@@ -25,7 +25,8 @@
 ;;; Commentary:
 
 ;; org-toc is a utility to have an up-to-date table of contents in the
-;; org files without exporting (primarily for readme files on GitHub).
+;; org files without exporting (useful primarily for readme files on
+;; GitHub).
 
 ;; To enable this functionality put into your .emacs file something
 ;; like
@@ -36,11 +37,12 @@
 ;; heading with a :TOC: tag will be updated with the current table of
 ;; contents.
 
+;; For details, see https://github.com/snosov1/org-toc/README.org
 
 ;;; Code:
 
 ;; just in case, simple regexp "^*.*:toc:\\($\\|[^ ]*:$\\)"
-(defconst ot-toc-regexp "^*.*:toc\\(@[0-9]\\|\\(@[0-9]@[a-zA-Z]+\\)\\)?:\\($\\|[^ ]*:$\\)"
+(defconst ot-org-toc-regexp "^*.*:toc\\(@[0-9]\\|\\(@[0-9]@[a-zA-Z]+\\)\\)?:\\($\\|[^ ]*:$\\)"
   "Regexp to find the heading with the :toc: tag")
 (defconst ot-special-chars-regexp "[][~`!@#$%^&*()+={}|\:;\"'<,>.?/]"
   "Regexp with the special characters (which are omitted in hrefs
@@ -63,12 +65,12 @@ i.e. simply flush everything that's not a heading."
                   (point-min) (point-max))))
     (with-temp-buffer
       (insert content)
-      (beginning-of-buffer)
+      (goto-char (point-min))
       (keep-lines "^\*")
 
       ;; don't include the TOC itself
-      (beginning-of-buffer)
-      (re-search-forward ot-toc-regexp)
+      (goto-char (point-min))
+      (re-search-forward ot-org-toc-regexp)
       (beginning-of-line)
       (delete-region (point) (progn (forward-line 1) (point)))
 
@@ -94,17 +96,17 @@ rules."
 each heading into a link."
   (with-temp-buffer
     (insert toc)
-    (beginning-of-buffer)
+    (goto-char (point-min))
 
     (while
         (progn
           (when (looking-at "\\*")
             (delete-char 1)
-            (replace-string "*" "    " nil
-                            (line-beginning-position)
-                            (or (save-excursion
-                                  (search-forward " " (line-end-position) t))
-                                (line-end-position)))
+
+            (while (looking-at "\\*")
+              (delete-char 1)
+              (insert "    "))
+
             (skip-chars-forward " ")
             (insert "- ")
 
@@ -126,7 +128,7 @@ each heading into a link."
   "Flush subheadings of the raw `toc' deeper than `max-depth'."
   (with-temp-buffer
     (insert toc)
-    (beginning-of-buffer)
+    (goto-char (point-min))
 
     (let ((re "^"))
       (dotimes (i (1+ max-depth))
@@ -137,13 +139,29 @@ each heading into a link."
      (point-min) (point-max))))
 
 (defun ot-insert-toc ()
+  "Looks for a headline with the TOC tag and updates it with the
+current table of contents.
+
+To add a TOC tag, you can use the command
+`org-set-tags-command'.
+
+You can also use the following tag formats:
+
+- TOC@2 - sets the max depth of the headlines in the table of
+  contents to 2 (the default)
+
+- TOC@2@gh - sets the max depth as in above and also uses the
+  GitHub-style hrefs in the table of contents (the default). The
+  other supported href style is 'org', which is the default org
+  style (you can use C-c C-o to go to the headline at point)."
+
   (interactive)
   (when (eq major-mode 'org-mode)
     (save-excursion
-      (beginning-of-buffer)
+      (goto-char (point-min))
       (let ((case-fold-search t))
         ;; find the first heading with the :TOC: tag
-        (when (re-search-forward ot-toc-regexp (point-max) t)
+        (when (re-search-forward ot-org-toc-regexp (point-max) t)
 
           (let* ((tag (match-string 1))
                  (depth (if tag
