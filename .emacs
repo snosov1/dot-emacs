@@ -188,6 +188,7 @@ same type."
                  magit
                  multiple-cursors
                  ox-reveal
+                 org-toc
                  paredit
                  gitconfig-mode
                  gitignore-mode
@@ -212,6 +213,12 @@ same type."
 
        (add-hook 'org-ctrl-c-ctrl-c-final-hook
                  'conditional-org-reveal-export-to-html))))
+
+(eval-after-load "org-toc-autoloads"
+  '(progn
+     (if (require 'org-toc nil t)
+         (add-hook 'org-mode-hook 'org-toc-enable)
+       (warn "org-toc not found"))))
 
 (eval-after-load "dummyparens-autoloads"
   '(progn
@@ -1208,10 +1215,6 @@ relative paths to absolute."
 
 ;; delete trailing whitespace before save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; maintain an up-to-date table of contents in org files
-;; (load-file "org-toc.el")
-;; (add-hook 'before-save-hook 'ot-insert-toc)
 
 ;; show matching parentheses
 (show-paren-mode 1)
