@@ -950,6 +950,7 @@ relative paths to absolute."
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-suspend-hook (quote (ediff-default-suspend-function ediff-restore-window-configuration)))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
+ '(fill-column 80)
  '(frame-background-mode (quote dark))
  '(grep-find-command (quote ("find . -type f -exec grep -nHi -e  {} +" . 35)))
  '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill)))
@@ -1225,6 +1226,15 @@ relative paths to absolute."
 
 ;; make emacs look good
 (configure-theme)
+
+;; Show keystrokes in progress
+(setq echo-keystrokes 0.01)
+
+;; Allow recursive minibuffers
+(setq enable-recursive-minibuffers t)
+
+;; Sentences do not need double spaces to end. Period.
+(set-default 'sentence-end-double-space nil)
 
 ;; RecognizeCamelCaseSubwording
 (global-subword-mode)
