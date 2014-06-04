@@ -156,6 +156,7 @@ same type."
 (setq package-archives '(("org-mode" . "http://orgmode.org/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ))
 (setq package-enable-at-startup nil)
