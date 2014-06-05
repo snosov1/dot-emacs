@@ -1233,7 +1233,7 @@ relative paths to absolute."
 ;; Allow recursive minibuffers
 (setq enable-recursive-minibuffers t)
 
-;; Sentences do not need double spaces to end. Period.
+;; Revolt, outrage, revolution! No double spaces in the end of sentences.
 (set-default 'sentence-end-double-space nil)
 
 ;; RecognizeCamelCaseSubwording
