@@ -313,6 +313,11 @@ same type."
 (eval-after-load "expand-region-autoloads"
   '(progn
      (when (require 'expand-region nil t)
+       (add-hook 'text-mode-hook
+                 '(lambda ()
+                    (setq-local er/try-expand-list
+                          (remove 'er/mark-method-call er/try-expand-list))))
+
        (global-set-key (kbd "C-=") 'er/expand-region))))
 
 ;; dired-details
