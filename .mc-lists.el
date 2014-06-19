@@ -55,6 +55,7 @@
         sp-remove-active-pair-overlay
         sp-self-insert-command
         sp-wrap-cancel
+        transpose-words
         upcase-dispatch
         wrap-region-trigger
         zap-up-to-char
@@ -71,6 +72,7 @@
         ido-switch-buffer
         ignore
         isearch-printing-char
+        ispell-word
         keyboard-escape-quit
         mc/dwim
         mc/mark-all-dispatch

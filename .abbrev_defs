@@ -1,5 +1,11 @@
 ;;-*-coding: utf-8;-*-
+(define-abbrev-table '2048-mode-abbrev-table '())
+
 (define-abbrev-table 'Buffer-menu-mode-abbrev-table '())
+
+(define-abbrev-table 'Custom-mode-abbrev-table '())
+
+(define-abbrev-table 'apropos-mode-abbrev-table '())
 
 (define-abbrev-table 'awk-mode-abbrev-table
   '(
@@ -13,6 +19,12 @@
 
 (define-abbrev-table 'c++-mode-abbrev-table
   '(
+    ("cout" "std::cout << v << std::endl;" nil 0)
+    ("savepbm" "std::vector<int> params;
+params.push_back(CV_IMWRITE_PXM_BINARY);
+params.push_back(0); // 1 for binary format, 0 for ascii format
+cv::imwrite(\"image.pbm\", image, params); // the .pbm extension specifies the encoding format
+" nil 0)
     ("tostring" "#include <sstream>
 template <typename T>
 std::string to_string(const T& obj)
@@ -22,12 +34,6 @@ std::string to_string(const T& obj)
     return oss.str();
 }
 " nil 0)
-    ("savepbm" "std::vector<int> params;
-params.push_back(CV_IMWRITE_PXM_BINARY);
-params.push_back(0); // 1 for binary format, 0 for ascii format
-cv::imwrite(\"image.pbm\", image, params); // the .pbm extension specifies the encoding format
-" nil 0)
-    ("cout" "std::cout << v << std::endl;" nil 0)
    ))
 
 (define-abbrev-table 'c-mode-abbrev-table
@@ -74,9 +80,15 @@ TIMEROFF(name);
 
 (define-abbrev-table 'dos-mode-abbrev-table '())
 
+(define-abbrev-table 'edebug-eval-mode-abbrev-table '())
+
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'ert-results-mode-abbrev-table '())
+
+(define-abbrev-table 'ert-simple-view-mode-abbrev-table '())
 
 (define-abbrev-table 'fundamental-mode-abbrev-table '())
 
@@ -92,10 +104,10 @@ TIMEROFF(name);
 
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("ln" "ln -s target link" nil 0)
     ("avconvimages" "avconv -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
     ("ccache" "CC=/usr/lib/ccache/gcc CXX=/usr/lib/ccache/g++" nil 0)
     ("cmake" "cmake -GNinja .." nil 0)
+    ("ln" "ln -s target link" nil 0)
     ("run-at-time" "(run-at-time \"15 sec\" nil '(lambda () (call-process \"notify-send\" nil nil nil \"Time's up!\")))" nil 0)
    ))
 
@@ -173,6 +185,12 @@ TIMEROFF(name);
     ("while" "while" nil 0)
    ))
 
+(define-abbrev-table 'reb-lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'reb-mode-abbrev-table '())
+
+(define-abbrev-table 'rxt-help-mode-abbrev-table '())
+
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 
 (define-abbrev-table 'sh-mode-abbrev-table '())
@@ -180,12 +198,15 @@ TIMEROFF(name);
 (define-abbrev-table 'shell-mode-abbrev-table
   '(
     ("bashdir" "DIR=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" && pwd )\"" nil 0)
+    ("bashinc" "count=$((count + 1))" nil 0)
     ("bashroot" "if [[ $(id -u) -ne 0 ]] ; then echo \"Please, run as sudo\" ; exit 1 ; fi" nil 0)
    ))
 
 (define-abbrev-table 'special-mode-abbrev-table '())
 
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
+
+(define-abbrev-table 'tar-mode-abbrev-table '())
 
 (define-abbrev-table 'term-mode-abbrev-table '())
 
@@ -194,3 +215,6 @@ TIMEROFF(name);
 (define-abbrev-table 'vc-git-log-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-hg-log-view-mode-abbrev-table '())
+
