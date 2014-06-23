@@ -718,13 +718,13 @@ buffer is not visiting a file."
   (message (buffer-file-name))
   (kill-new (buffer-file-name)))
 
-(defun open-line-indent ()
+(defun open-line-indent (arg)
   "Use newline-and-indent in open-line command if there are
 non-whitespace characters after the point"
-  (interactive)
+  (interactive "P")
   (save-excursion
     (if (looking-at-p "\\s-*$") ;; how in earth does this work?
-        (newline)
+        (newline arg)
       (newline-and-indent))))
 
 (defun toggle-window-split ()
@@ -1038,8 +1038,10 @@ relative paths to absolute."
 (global-set-key (kbd "\C-c a")      'org-agenda)
 (global-set-key (kbd "\C-x \C-b")   'ibuffer)
 (global-set-key (kbd "\C-x b")      'ibuffer)
-(global-set-key (kbd "M-p")         'move-text-up)
-(global-set-key (kbd "M-n")         'move-text-down)
+(global-set-key (kbd "M-P")         'move-text-up)
+(global-set-key (kbd "M-N")         'move-text-down)
+(global-set-key (kbd "M-p")         'scroll-down-line)
+(global-set-key (kbd "M-n")         'scroll-up-line)
 (global-set-key (kbd "\C-c m")      'magit-status)
 (global-set-key (kbd "\C-c RET")    'magit-status)
 (global-set-key (kbd "\C-c s")      'swap-buffers-in-windows)
