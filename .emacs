@@ -1243,6 +1243,9 @@ relative paths to absolute."
 ;; Revolt, outrage, revolution! No double spaces in the end of sentences.
 (set-default 'sentence-end-double-space nil)
 
+;; make backspace to always delete chars
+(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+
 ;; RecognizeCamelCaseSubwording
 (global-subword-mode)
 ;; don't remap some commands
