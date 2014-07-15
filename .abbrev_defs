@@ -117,6 +117,8 @@ TIMEROFF(name);
 
 (define-abbrev-table 'howdoi-mode-abbrev-table '())
 
+(define-abbrev-table 'html-mode-abbrev-table '())
+
 (define-abbrev-table 'idl-mode-abbrev-table '())
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
@@ -124,6 +126,8 @@ TIMEROFF(name);
 (define-abbrev-table 'java-mode-abbrev-table
   '(
    ))
+
+(define-abbrev-table 'js-mode-abbrev-table '())
 
 (define-abbrev-table 'lisp-mode-abbrev-table '())
 
@@ -181,6 +185,16 @@ TIMEROFF(name);
     ("def" "def" nil 0)
     ("for" "for" nil 0)
     ("if" "if" nil 0)
+    ("matplotlib" "import numpy as np
+import matplotlib.pyplot as plt
+
+# evenly sampled time at 200ms intervals
+t = np.arange(0., 5., 0.2)
+
+# red dashes, blue squares and green triangles
+plt.plot(t, t, 'r--', t, t**2, 'bs', t, t**3, 'g^')
+plt.show()
+" nil 0)
     ("try" "try" nil 0)
     ("while" "while" nil 0)
    ))
@@ -192,6 +206,8 @@ TIMEROFF(name);
 (define-abbrev-table 'rxt-help-mode-abbrev-table '())
 
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
+
+(define-abbrev-table 'sgml-mode-abbrev-table '())
 
 (define-abbrev-table 'sh-mode-abbrev-table '())
 
@@ -217,4 +233,3 @@ TIMEROFF(name);
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-hg-log-view-mode-abbrev-table '())
-

@@ -1158,6 +1158,11 @@ relative paths to absolute."
              (define-key view-mode-map "v"
                'scroll-up-command)))
 
+(add-hook 'conf-mode-hook
+          '(lambda ()
+             (define-key conf-mode-map "\C-c\C-c"
+               nil)))
+
 (add-hook 'sh-mode-hook
           '(lambda ()
              (define-key sh-mode-map "\C-c\C-c"
