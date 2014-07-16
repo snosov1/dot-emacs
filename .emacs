@@ -156,8 +156,6 @@ same type."
 (setq package-archives '(("org-mode" . "http://orgmode.org/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")
-                         ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
                          ))
 (setq package-enable-at-startup nil)
 (package-initialize)
@@ -193,6 +191,7 @@ same type."
                  paredit
                  gitconfig-mode
                  gitignore-mode
+                 yaml-mode
                  wgrep
                  ))
  '("package" "packages" "install"))
@@ -220,6 +219,12 @@ same type."
      (if (require 'org-toc nil t)
          (add-hook 'org-mode-hook 'org-toc-enable)
        (warn "org-toc not found"))))
+
+(eval-after-load "yaml-mode-autoloads"
+  '(progn
+     (if (require 'yaml-mode nil t)
+         (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+       (warn "yaml-mode not found"))))
 
 (eval-after-load "dummyparens-autoloads"
   '(progn

@@ -216,6 +216,7 @@ plt.show()
     ("bashdir" "DIR=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" && pwd )\"" nil 0)
     ("bashinc" "count=$((count + 1))" nil 0)
     ("bashroot" "if [[ $(id -u) -ne 0 ]] ; then echo \"Please, run as sudo\" ; exit 1 ; fi" nil 0)
+    ("du" "du -sh * | sort -hr" nil 0)
    ))
 
 (define-abbrev-table 'special-mode-abbrev-table '())
@@ -233,3 +234,6 @@ plt.show()
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-hg-log-view-mode-abbrev-table '())
+
+(define-abbrev-table 'yaml-mode-abbrev-table '())
+
