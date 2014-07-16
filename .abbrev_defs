@@ -84,7 +84,10 @@ TIMEROFF(name);
 
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
 
-(define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
+(define-abbrev-table 'emacs-lisp-mode-abbrev-table
+  '(
+    ("char" "(char-to-string (+ ?x 0))" nil 0)
+   ))
 
 (define-abbrev-table 'ert-results-mode-abbrev-table '())
 
@@ -107,6 +110,7 @@ TIMEROFF(name);
     ("avconvimages" "avconv -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
     ("ccache" "CC=/usr/lib/ccache/gcc CXX=/usr/lib/ccache/g++" nil 0)
     ("cmake" "cmake -GNinja .." nil 0)
+    ("du" "du -sh * | sort -hr" nil 0)
     ("ln" "ln -s target link" nil 0)
     ("run-at-time" "(run-at-time \"15 sec\" nil '(lambda () (call-process \"notify-send\" nil nil nil \"Time's up!\")))" nil 0)
    ))
