@@ -323,7 +323,8 @@ same type."
                     (setq-local er/try-expand-list
                           (remove 'er/mark-method-call er/try-expand-list))))
 
-       (global-set-key (kbd "C-=") 'er/expand-region))))
+       (global-set-key (kbd "C-=") 'er/expand-region)
+       (setq expand-region-fast-keys-enabled nil))))
 
 ;; dired-details
 (eval-after-load "dired-details-autoloads"
