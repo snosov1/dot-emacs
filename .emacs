@@ -341,10 +341,18 @@ same type."
   '(progn
      (when (require 'multiple-cursors nil t)
        (defun mc/mark-all-dispatch ()
-         "Calls mc/edit-lines if multiple lines are selected and
-mc/mark-all-like-this otherwise"
+         "- add a fake cursor at current position and move
+the cursor forward
+
+- call mc/edit-lines if multiple lines are marked
+
+- call mc/mark-all-like-this if marked region is on a single line "
          (interactive)
          (cond
+          ((not (region-active-p))
+           (mc/create-fake-cursor-at-point)
+           (forward-char)
+           (mc/maybe-multiple-cursors-mode))
           ((> (- (line-number-at-pos (region-end))
                  (line-number-at-pos (region-beginning))) 0)
            (mc/edit-lines))
