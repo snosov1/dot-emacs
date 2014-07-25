@@ -1177,6 +1177,16 @@ relative paths to absolute."
              (define-key conf-mode-map "\C-c\C-c"
                nil)))
 
+(add-hook 'occur-mode-hook
+          '(lambda ()
+             (define-key occur-mode-map "\C-x\C-q"
+               'occur-edit-mode)))
+
+(add-hook 'occur-edit-mode-hook
+          '(lambda ()
+             (define-key occur-edit-mode-map "\C-x\C-q"
+               'occur-cease-edit)))
+
 (add-hook 'sh-mode-hook
           '(lambda ()
              (define-key sh-mode-map "\C-c\C-c"
