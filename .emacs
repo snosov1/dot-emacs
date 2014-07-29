@@ -341,8 +341,7 @@ same type."
   '(progn
      (when (require 'multiple-cursors nil t)
        (defun mc/mark-all-dispatch ()
-         "- add a fake cursor at current position and move
-the cursor forward
+         "- add a fake cursor at current position
 
 - call mc/edit-lines if multiple lines are marked
 
@@ -351,7 +350,6 @@ the cursor forward
          (cond
           ((not (region-active-p))
            (mc/create-fake-cursor-at-point)
-           (forward-char)
            (mc/maybe-multiple-cursors-mode))
           ((> (- (line-number-at-pos (region-end))
                  (line-number-at-pos (region-beginning))) 0)
