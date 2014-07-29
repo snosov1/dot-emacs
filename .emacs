@@ -942,6 +942,15 @@ relative paths to absolute."
           (insert (file-truename fn)))
       (message "Path \"%s\" doesn't exist" fn))))
 
+(defun find-function-push-tag (function)
+  "This function is meant as a drop-in replacement for find-tag
+in emacs-lisp-mode. It calls find-function and inserts current
+position into find-tag-marker-ring."
+  (require 'etags)
+  (interactive (find-function-read))
+  (ring-insert find-tag-marker-ring (point-marker))
+  (find-function function))
+
 ;; ------------------------------------------------------------
 ;; CUSTOMIZED
 
@@ -1191,6 +1200,11 @@ relative paths to absolute."
                nil)
              (define-key sh-mode-map "\C-c\C-o"
                nil)))
+
+(add-hook 'emacs-lisp-mode-hook
+          '(lambda ()
+             (define-key emacs-lisp-mode-map (kbd "M-.")
+               'find-function-push-tag)))
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
