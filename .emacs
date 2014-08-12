@@ -518,17 +518,19 @@ languages ('beginning-of-defun'-based)"
     (buffer-substring-no-properties (point) defun-name-end)))
 
 (defun parent-directory (dir)
-  (file-name-directory (directory-file-name (expand-file-name dir))))
+  "Returns parent directory of dir"
+  (when dir
+    (file-name-directory (directory-file-name (expand-file-name dir)))))
 
-(defun search-file-up (path name)
+(defun search-file-up (name &optional path)
   "Searches for file `name' in parent directories recursively"
-  (let* ((tags-file-name (concat path name))
-         (parent (parent-directory path)))
-    (message tags-file-name)
+  (let* ((file-name (concat path name))
+         (parent (parent-directory path))
+         (path (or path default-directory)))
     (cond
-     ((file-exists-p tags-file-name) tags-file-name)
+     ((file-exists-p file-name) file-name)
      ((string= parent path) nil)
-     (t (search-file-up parent name)))))
+     (t (search-file-up name parent)))))
 
 (defun add-sudo-to-filename (filename)
   "Adds sudo proxy to filename for use with TRAMP.
@@ -563,7 +565,7 @@ also (>=23.4)"
   (interactive "P")
   (let ((tags-file-name
          (read-file-name
-          "TAGS file: " (let ((fn (search-file-up default-directory "TAGS")))
+          "TAGS file: " (let ((fn (search-file-up "TAGS" default-directory)))
                           (if fn
                               (parent-directory fn)
                             default-directory))
@@ -965,6 +967,7 @@ position into find-tag-marker-ring."
  '(calendar-week-start-day 1)
  '(compilation-scroll-output (quote first-error))
  '(confirm-kill-emacs (quote y-or-n-p))
+ '(create-lockfiles nil)
  '(default-input-method "russian-computer")
  '(diff-update-on-the-fly nil)
  '(dired-dwim-target t)
