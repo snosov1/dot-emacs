@@ -516,6 +516,12 @@ make first jump. Otherwise, behave like original function."
          (,(intern (format "isearch-repeat-%s" direction)))))))
 (define-key global-map [remap isearch-forward]  (smart-isearch forward))
 (define-key global-map [remap isearch-backward] (smart-isearch backward))
+(define-key global-map [remap occur]
+  (defun smart-occur (arg)
+    (interactive "P")
+    (if (region-active-p)
+        (occur (buffer-substring-no-properties (region-beginning) (region-end)) arg)
+      (call-interactively 'occur))))
 
 (define-key global-map [remap move-beginning-of-line]
   (defun smart-beginning-of-line ()
