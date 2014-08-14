@@ -172,6 +172,7 @@ same type."
     (package-install package))
  (cl-remove-if 'package-installed-p
                '(
+                 auto-complete
                  android-mode
                  browse-kill-ring
                  cmake-mode
@@ -199,6 +200,65 @@ same type."
  '("package" "packages" "install"))
 
 ;; PER-PACKAGE CONFIGURATION
+
+(eval-after-load "auto-complete-autoloads"
+  '(progn
+     (when (require 'auto-complete nil t)
+       (require 'auto-complete-config)
+
+       (defun ac-expand-no-next ()
+         "Try expand, and if expanded twice, complete."
+         (interactive)
+         (unless (ac-expand-common)
+           (let ((string (ac-selected-candidate)))
+             (when string
+               (if (equal ac-prefix string)
+                   (ac-complete)
+                 (ac-expand-string string (eq last-command this-command))
+                 ;; Do reposition if menu at long line
+                 (if (and (> (popup-direction ac-menu) 0)
+                          (ac-menu-at-wrapper-line-p))
+                     (ac-reposition))
+                 (setq ac-show-menu t)
+                 string)))))
+
+       (ac-flyspell-workaround)
+       (setq-default ac-use-comphist nil)
+       (define-key ac-completing-map [tab] 'ac-expand-no-next)
+       ;(define-key ac-completing-map "\r" nil)
+
+       (defun ac-yasnippet-length-sorted-candidates ()
+         "Sorts yasnippet candidates by length."
+         (sort (ac-yasnippet-candidates) '(lambda (l r) (< (length l) (length r)))))
+
+       (ac-define-source yasnippet
+         '((depends yasnippet)
+           (candidates . ac-yasnippet-length-sorted-candidates)
+           (action . yas-expand)
+           (candidate-face . ac-yasnippet-candidate-face)
+           (selection-face . ac-yasnippet-selection-face)
+           (symbol . "a")))
+
+       (add-hook 'emacs-lisp-mode-hook
+                 '(lambda ()
+                    (auto-complete-mode t)
+                    (setq ac-sources '(
+                                       ac-source-yasnippet
+                                       ac-source-features
+                                       ac-source-functions
+                                       ac-source-variables
+                                       ac-source-symbols))))
+
+       ;; (add-hook 'd-mode-hook
+       ;;           '(lambda ()
+       ;;              (auto-complete-mode t)
+       ;;              (yas-minor-mode-on)
+       ;;              (ac-dcd-maybe-start-server)
+       ;;              (add-to-list 'ac-sources 'ac-source-dcd)))
+       ;; (define-key d-mode-map [remap find-tag]     'ac-dcd-goto-definition)
+       ;; (define-key d-mode-map [remap pop-tag-mark] 'ac-dcd-goto-def-pop-marker)
+       ;; (define-key d-mode-map (kbd "M-?")          'ac-dcd-show-ddoc-with-buffer)
+       )))
 
 (eval-after-load "org-autoloads"
   '(progn
