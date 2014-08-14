@@ -191,7 +191,9 @@ same type."
                  paredit
                  gitconfig-mode
                  gitignore-mode
+                 unfill
                  yaml-mode
+                 yasnippet
                  wgrep
                  ))
  '("package" "packages" "install"))
@@ -219,6 +221,20 @@ same type."
      (if (require 'org-toc nil t)
          (add-hook 'org-mode-hook 'org-toc-enable)
        (warn "org-toc not found"))))
+
+(eval-after-load "unfill-autoloads"
+  '(progn
+     (if (require 'unfill nil t)
+         (define-key global-map [remap fill-paragraph]
+           (defun fill-paragraph-dispatch (arg)
+             "Fill or unfill paragraph"
+             (interactive "P")
+             (if arg
+                 (if (region-active-p)
+                     (unfill-region (region-beginning) (region-end))
+                   (unfill-paragraph))
+               (fill-paragraph 'nil 't))))
+       (warn "unfill not found"))))
 
 (eval-after-load "yaml-mode-autoloads"
   '(progn
@@ -403,6 +419,13 @@ same type."
                        ("\\.bat\\'" . dos-mode))
                      auto-mode-alist)))))
 
+(eval-after-load "yasnippet-autoloads"
+  '(progn
+     (if (require 'yasnippet nil t)
+         (progn
+           (yas-global-mode 1))
+       (warn "yasnippet not found"))))
+
 ;; ox-reveal
 ;; export .org files as reveal.js presentations (https://github.com/hakimel/reveal.js/)
 (require 'ox-reveal nil t)
@@ -491,20 +514,20 @@ make first jump. Otherwise, behave like original function."
        (when smart-p
          (isearch-yank-kill)
          (,(intern (format "isearch-repeat-%s" direction)))))))
+(define-key global-map [remap isearch-forward]  (smart-isearch forward))
+(define-key global-map [remap isearch-backward] (smart-isearch backward))
 
-(smart-isearch forward)
-(smart-isearch backward)
-
-(defun smart-beginning-of-line ()
-  "Move point to first non-whitespace character or beginning-of-line.
+(define-key global-map [remap move-beginning-of-line]
+  (defun smart-beginning-of-line ()
+    "Move point to first non-whitespace character or beginning-of-line.
 
 Move point to the first non-whitespace character on this line.
 If point was already at that position, move point to beginning of line."
-  (interactive)
-  (let ((oldpos (point)))
-    (back-to-indentation)
-    (and (= oldpos (point))
-         (beginning-of-line))))
+    (interactive)
+    (let ((oldpos (point)))
+      (back-to-indentation)
+      (and (= oldpos (point))
+           (beginning-of-line)))))
 
 (defun c-current-function-name ()
   "Returns current function name in C-like
@@ -679,29 +702,32 @@ buffer is not visiting a file."
      (push-mark)))
   (dired-goto-file file))
 
-(defun dired-jump-to-bottom ()
-  "Jumps to the last file"
-  (interactive)
-  (end-of-buffer)
-  (dired-previous-line 1))
+(define-key dired-mode-map (vector 'remap 'end-of-buffer)
+  (defun dired-jump-to-bottom ()
+    "Jumps to the last file"
+    (interactive)
+    (end-of-buffer)
+    (dired-previous-line 1)))
 
-(defun dired-jump-to-top ()
-  "Jumps to the .. entry"
-  (interactive)
-  (beginning-of-buffer)
-  (dired-next-line 1)
-  ;; skip another line depending on hidden/shown state of dired-details
-  (when (or (not (boundp 'dired-details-state))
-            (equal dired-details-state 'shown))
-    (dired-next-line 1))
-  (if (looking-at "\\.") ;; top-level directories don't have a
-                         ;; .. entry
-      (dired-next-line 1)))
+(define-key dired-mode-map (vector 'remap 'beginning-of-buffer)
+  (defun dired-jump-to-top ()
+    "Jumps to the .. entry"
+    (interactive)
+    (beginning-of-buffer)
+    (dired-next-line 1)
+    ;; skip another line depending on hidden/shown state of dired-details
+    (when (or (not (boundp 'dired-details-state))
+              (equal dired-details-state 'shown))
+      (dired-next-line 1))
+    (if (looking-at "\\.") ;; top-level directories don't have a
+        ;; .. entry
+        (dired-next-line 1))))
 
-(defun dired-jump-universal-other (arg)
-  "Calls dired-jump. With prefix argument uses other window"
-  (interactive "P")
-  (dired-jump arg))
+(define-key global-map (vector 'remap 'dired-jump)
+  (defun dired-jump-universal-other (arg)
+    "Calls dired-jump. With prefix argument uses other window"
+    (interactive "P")
+    (dired-jump arg)))
 
 (defun swap-buffers-in-windows ()
   "Put the buffer from the selected window in next window"
@@ -732,14 +758,15 @@ buffer is not visiting a file."
   (message (buffer-file-name))
   (kill-new (buffer-file-name)))
 
-(defun open-line-indent (arg)
-  "Use newline-and-indent in open-line command if there are
+(define-key global-map [remap open-line]
+  (defun open-line-indent (arg)
+    "Use newline-and-indent in open-line command if there are
 non-whitespace characters after the point"
-  (interactive "P")
-  (save-excursion
-    (if (looking-at-p "\\s-*$") ;; how in earth does this work?
-        (newline arg)
-      (newline-and-indent))))
+    (interactive "P")
+    (save-excursion
+      (if (looking-at-p "\\s-*$") ;; how in earth does this work?
+          (newline arg)
+        (newline-and-indent)))))
 
 (defun toggle-window-split ()
   "Switches from a horizontal split to a vertical split and vice versa."
@@ -828,26 +855,17 @@ Portable keywords are: error, important, info."
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 
-(defun upcase-dispatch (arg)
-  "Use upcase word or region"
-  (interactive "P")
-  (if (region-active-p)
-      (upcase-region (region-beginning) (region-end))
-    (upcase-word (if arg arg 1))))
+(defmacro action-dispatch (action)
+  `(defun ,(intern (format "%s-dispatch" action)) (arg)
+     "Perform action on word or region."
+     (interactive "P")
+     (if (region-active-p)
+         (,(intern (format "%s-region" action)) (region-beginning) (region-end))
+       (,(intern (format "%s-word" action)) (if arg arg 1)))))
 
-(defun downcase-dispatch (arg)
-  "Use downcase word or region"
-  (interactive "P")
-  (if (region-active-p)
-      (downcase-region (region-beginning) (region-end))
-    (downcase-word (if arg arg 1))))
-
-(defun capitalize-dispatch (arg)
-  "Use capitalize word or region"
-  (interactive "P")
-  (if (region-active-p)
-      (capitalize-region (region-beginning) (region-end))
-    (capitalize-word (if arg arg 1))))
+(define-key global-map [remap upcase-word]     (action-dispatch upcase))
+(define-key global-map [remap downcase-word]   (action-dispatch downcase))
+(define-key global-map [remap capitalize-word] (action-dispatch capitalize))
 
 (defun eval-dispatch ()
   "Evaluate previous sexp or region"
@@ -855,16 +873,6 @@ Portable keywords are: error, important, info."
   (if (region-active-p)
       (eval-region (region-beginning) (region-end) t)
     (eval-and-replace)))
-
-(defun fill-paragraph-with-set (arg)
-  "Temporary sets fill-column to given prefix argument and calls
-fill-paragraph"
-  (interactive "P")
-  (setq cfc (current-fill-column))
-  (if arg
-      (set-fill-column arg))
-  (fill-paragraph 'nil 't)
-  (set-fill-column cfc))
 
 ;; move text
 (defun move-text-internal (arg)
@@ -911,21 +919,21 @@ fill-paragraph"
   "Register for saving window configuration before jump"
   :type 'register)
 
-(defun jump-to-register-with-save (register &optional delete)
-  "Like jump-to-register, but saves current window configuration
+(define-key global-map [remap jump-to-register]
+  (defun jump-to-register-with-save (register &optional delete)
+    "Like jump-to-register, but saves current window configuration
 to predefined register"
-  (interactive "cJump to register: \nP")
-  ;; autosave current window configuration unless we're jumping back
-  (unless (equal register pop-predefined-register)
-    (window-configuration-to-register pop-predefined-register))
-  (jump-to-register register delete))
+    (interactive "cJump to register: \nP")
+    ;; autosave current window configuration unless we're jumping back
+    (unless (equal register pop-predefined-register)
+      (window-configuration-to-register pop-predefined-register))
+    (jump-to-register register delete)))
 
 (defun replace-path-with-truename ()
   "Replaces the region or the path around point with its true name.
 
 To get the true name it follows the symbolic links and converts
 relative paths to absolute."
-
   (interactive)
   (let (bds p1 p2 inputStr resultStr)
     ;; get current selection or filename
@@ -1097,31 +1105,18 @@ position into find-tag-marker-ring."
 (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
 (global-set-key (kbd "C-z")         'undo)
 (global-set-key (kbd "C-x /")       'replace-path-with-truename)
-(global-set-key "\C-x\C-j"          'dired-jump-universal-other)
 (global-set-key "\C-x\C-u"          'update-tags-file)
 (global-set-key "\C-x\C-v"          'visit-tags-table)
 (global-set-key "\C-x\C-t"          'tags-reset-tags-tables)
 (global-set-key "\C-x\C-l"          'tags-apropos)
 (global-set-key "\C-c\C-c"          'compile)
 
-;; remap existing commands with "smarter" versions
-(define-key global-map [remap move-beginning-of-line] 'smart-beginning-of-line)
-(define-key global-map [remap upcase-word]            'upcase-dispatch)
-(define-key global-map [remap downcase-word]          'downcase-dispatch)
-(define-key global-map [remap capitalize-word]        'capitalize-dispatch)
-(define-key global-map [remap jump-to-register]       'jump-to-register-with-save)
-(define-key global-map [remap fill-paragraph]         'fill-paragraph-with-set)
-(define-key global-map [remap open-line]              'open-line-indent)
-(define-key global-map [remap isearch-forward]        'smart-isearch-forward)
-(define-key global-map [remap isearch-backward]       'smart-isearch-backward)
-
 ;; define translations
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
-;; C-/ is not representable with an ASCII control code, so it cannot
-;; be sent to terminals, but it is a convenient keybinding for
-;; undo. So mapping it to "traditional" undo sequence C-_ is a cute
-;; way around
+;; C-/ is not representable with an ASCII control code, so it cannot be sent to
+;; terminals, but it is a convenient keybinding for undo. So mapping it to
+;; "traditional" undo sequence C-_ is a cute way around
 (define-key key-translation-map [?\C-/] [?\C-_]) ;; translate C-/ to C-_
 
 ;; convenient binding for C-x C-s in org-src-mode
@@ -1148,8 +1143,6 @@ position into find-tag-marker-ring."
 
 (add-hook 'find-file-hook 'append-tramp-host)
 
-(define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-jump-to-top)
-(define-key dired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
 (add-hook 'dired-mode-hook
           '(lambda()
              (append-tramp-host)
