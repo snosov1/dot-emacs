@@ -946,11 +946,12 @@ Portable keywords are: error, important, info."
 (define-key global-map [remap downcase-word]   (action-dispatch downcase))
 (define-key global-map [remap capitalize-word] (action-dispatch capitalize))
 
-(defun eval-dispatch ()
+(defun eval-dispatch (arg)
   "Evaluate previous sexp or region"
-  (interactive)
+  (interactive "P")
   (if (region-active-p)
-      (eval-region (region-beginning) (region-end) t)
+      (let ((edebug-all-forms arg))
+        (eval-region (region-beginning) (region-end) t))
     (eval-and-replace)))
 
 ;; move text
@@ -1280,6 +1281,13 @@ position into find-tag-marker-ring."
           '(lambda ()
              (define-key emacs-lisp-mode-map (kbd "M-.")
                'find-function-push-tag)))
+
+(add-hook 'tar-mode-hook
+          '(lambda ()
+             (define-key tar-mode-map (kbd "g")
+               (defun revert-buffer-without-query ()
+                 (interactive)
+                 (revert-buffer nil t)))))
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
