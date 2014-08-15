@@ -173,6 +173,7 @@ same type."
  (cl-remove-if 'package-installed-p
                '(
                  auto-complete
+                 ac-dcd
                  android-mode
                  browse-kill-ring
                  cmake-mode
@@ -181,6 +182,7 @@ same type."
                  dos
                  dummyparens
                  expand-region
+                 flycheck
                  howdoi
                  smex
                  window-numbering
@@ -247,18 +249,25 @@ same type."
                                        ac-source-features
                                        ac-source-functions
                                        ac-source-variables
-                                       ac-source-symbols))))
+                                       ac-source-symbols
+                                       ac-source-words-in-same-mode-buffers
+                                       ))))
 
-       ;; (add-hook 'd-mode-hook
-       ;;           '(lambda ()
-       ;;              (auto-complete-mode t)
-       ;;              (yas-minor-mode-on)
-       ;;              (ac-dcd-maybe-start-server)
-       ;;              (add-to-list 'ac-sources 'ac-source-dcd)))
-       ;; (define-key d-mode-map [remap find-tag]     'ac-dcd-goto-definition)
-       ;; (define-key d-mode-map [remap pop-tag-mark] 'ac-dcd-goto-def-pop-marker)
-       ;; (define-key d-mode-map (kbd "M-?")          'ac-dcd-show-ddoc-with-buffer)
-       )))
+
+       (when (and (require 'ac-dcd nil t) (require 'd-mode nil t))
+         (add-hook 'd-mode-hook
+                   '(lambda ()
+                      (auto-complete-mode t)
+                      (ac-dcd-maybe-start-server)
+                      (setq ac-sources '(
+                                         ac-source-yasnippet
+                                         ac-source-dcd
+                                         ac-source-words-in-same-mode-buffers
+                                         ))))
+         (define-key d-mode-map [remap find-tag]     'ac-dcd-goto-definition)
+         (define-key d-mode-map [remap pop-tag-mark] 'ac-dcd-goto-def-pop-marker)
+         (define-key d-mode-map (kbd "M-?")          'ac-dcd-show-ddoc-with-buffer)
+         (define-key d-mode-map (kbd "C-c i")        'ac-dcd-add-imports)))))
 
 (eval-after-load "org-autoloads"
   '(progn
@@ -733,6 +742,10 @@ buffer is not visiting a file."
       (dolist (known-host term-remote-hosts)
         (when (equal (car known-host) host-name)
           (apply 'remote-term-do known-host))))
+
+    (add-hook 'term-mode-hook
+              '(lambda ()
+                 (yas-minor-mode -1)))
 
     (define-key term-mode-map "\C-x\C-j"   'dired-jump-universal-other)
     (define-key term-raw-escape-map "\C-j" 'dired-jump-universal-other)

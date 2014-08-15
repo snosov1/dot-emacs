@@ -76,9 +76,11 @@
         keyboard-escape-quit
         mc/dwim
         mc/mark-all-dispatch
+        overwrite-mode
         python-shell-send-buffer
         toggle-input-method
         universal-argument-minus
+        vimgolf-submit
         wdired-abort-changes
         wdired-finish-edit
         ))
