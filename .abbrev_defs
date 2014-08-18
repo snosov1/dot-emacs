@@ -163,6 +163,10 @@ TIMEROFF(name);
 
 (define-abbrev-table 'ert-simple-view-mode-abbrev-table '())
 
+(define-abbrev-table 'eshell-mode-abbrev-table '())
+
+(define-abbrev-table 'flycheck-error-list-mode-abbrev-table '())
+
 (define-abbrev-table 'fundamental-mode-abbrev-table '())
 
 (define-abbrev-table 'gfm-mode-abbrev-table '())
@@ -177,11 +181,12 @@ TIMEROFF(name);
 
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("avconvimages" "avconv -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
+    ("avconv-images" "avconv -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
     ("ccache" "CC=/usr/lib/ccache/gcc CXX=/usr/lib/ccache/g++" nil 0)
     ("cmake" "cmake -GNinja .." nil 0)
     ("du" "du -sh * | sort -hr" nil 0)
     ("ln" "ln -s target link" nil 0)
+    ("mencoder-concat" "mencoder -oac copy -ovc copy -idx -o output.mp4 *.mp4" nil 0)
     ("notify-send" "notify-send \"HELLO FROM EMACS\"" nil 0)
     ("run-at-time" "(run-at-time \"15 sec\" nil '(lambda () (call-process \"notify-send\" nil nil nil \"Time's up!\")))" nil 0)
    ))
@@ -229,6 +234,8 @@ TIMEROFF(name);
 (define-abbrev-table 'magit-wazzup-mode-abbrev-table '())
 
 (define-abbrev-table 'markdown-mode-abbrev-table '())
+
+(define-abbrev-table 'nroff-mode-abbrev-table '())
 
 (define-abbrev-table 'objc-mode-abbrev-table
   '(
@@ -294,6 +301,8 @@ plt.show()
     ("du" "du -sh * | sort -hr" nil 0)
    ))
 
+(define-abbrev-table 'snippet-mode-abbrev-table '())
+
 (define-abbrev-table 'special-mode-abbrev-table '())
 
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
@@ -313,4 +322,3 @@ plt.show()
 (define-abbrev-table 'vc-svn-log-view-mode-abbrev-table '())
 
 (define-abbrev-table 'yaml-mode-abbrev-table '())
-
