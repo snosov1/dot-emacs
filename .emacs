@@ -183,7 +183,6 @@ same type."
                  dummyparens
                  expand-region
                  flycheck
-                 howdoi
                  smex
                  window-numbering
                  markdown-mode
@@ -316,13 +315,6 @@ same type."
      (if (require 'dummyparens nil t)
          (global-dummyparens-mode)
        (warn "dummyparens not found"))))
-
-(eval-after-load "howdoi-autoloads"
-  '(progn
-     (if (require 'howdoi nil t)
-         (progn
-           (global-set-key (kbd "M-?") 'howdoi-query-line-at-point-replace-by-code-snippet))
-       (warn "howdoi not found"))))
 
 (eval-after-load "smex-autoloads"
   '(progn
