@@ -228,13 +228,13 @@ same type."
        (define-key ac-completing-map [tab] 'ac-expand-no-next)
        ;(define-key ac-completing-map "\r" nil)
 
-       (defun ac-yasnippet-length-sorted-candidates ()
+       (defun ac-yasnippet-candidates-sorted-by-length ()
          "Sorts yasnippet candidates by length."
          (sort (ac-yasnippet-candidates) '(lambda (l r) (< (length l) (length r)))))
 
        (ac-define-source yasnippet
          '((depends yasnippet)
-           (candidates . ac-yasnippet-length-sorted-candidates)
+           (candidates . ac-yasnippet-candidates-sorted-by-length)
            (action . yas-expand)
            (candidate-face . ac-yasnippet-candidate-face)
            (selection-face . ac-yasnippet-selection-face)
