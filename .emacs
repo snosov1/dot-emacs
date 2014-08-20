@@ -633,19 +633,19 @@ say, that you may need to call smth like
 \"\\`root\\'\" \"/ssh:%u@%h:\"))))', but it works for me just fine
 without it. "
   (with-temp-buffer
-  (insert filename)
-  (end-of-buffer)
-  (if (re-search-backward "@\\(.*\\):" nil t)
-      (let ((remote-name (buffer-substring (match-beginning 1) (match-end 1))))
-        (goto-char (match-end 1))
-        (insert (concat "|sudo:" remote-name))
-        (beginning-of-buffer)
-        (forward-char)
-        (when (looking-at "scpc")
-          (delete-char 4)
-          (insert "ssh"))
-        (buffer-string))
-    (concat "/sudo::" filename))))
+    (insert filename)
+    (end-of-buffer)
+    (if (re-search-backward "@\\(.*\\):" nil t)
+        (let ((remote-name (buffer-substring (match-beginning 1) (match-end 1))))
+          (goto-char (match-end 1))
+          (insert (concat "|sudo:" remote-name))
+          (beginning-of-buffer)
+          (forward-char)
+          (when (looking-at "scpc")
+            (delete-char 4)
+            (insert "ssh"))
+          (buffer-string))
+      (concat "/sudo::" filename))))
 
 (defun update-tags-file (arg)
   "Suggests options to update the TAGS file via ctags.
@@ -697,16 +697,16 @@ buffer is not visiting a file."
   ;; make background a little darker
   (set-background-color "#1d1f21")
 
-  ;; require term mode after theme is set
+  ;; require term mode after the theme is set
   (when (require 'term)
     (defcustom term-remote-hosts '()
       "List of remote hosts")
 
-    ;; parse ~/.ssh/config to provide `remote-term' completion
-    ;; capabilities
     (defcustom ssh-config-filename "~/.ssh/config"
       "ssh config filename")
     (defun term-parse-ssh-config ()
+      "Parse `ssh-config-filename' to provide `remote-term'
+completion capabilities."
       (interactive)
       (setq term-remote-hosts '())
       (if (file-exists-p ssh-config-filename)
