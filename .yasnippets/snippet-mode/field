@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name : ${ ...  } field
+# key: field
+# --
+\${${1:n}:${2:\$(lisp-fn)}}

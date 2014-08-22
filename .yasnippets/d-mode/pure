@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name : pure nothrow @safe @nogc
+# key: pure
+# --
+pure nothrow @safe @nogc$0

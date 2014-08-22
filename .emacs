@@ -484,6 +484,9 @@ same type."
   '(progn
      (if (require 'yasnippet nil t)
          (progn
+           (let ((yas-dir "~/.yasnippets"))
+             (when (file-exists-p yas-dir)
+               (setq yas-snippet-dirs (list yas-dir))))
            (yas-global-mode 1))
        (warn "yasnippet not found"))))
 

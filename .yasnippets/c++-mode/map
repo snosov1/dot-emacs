@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: map
+# key: map
+# --
+std::map<${1:from}, ${2:to}> $0;
