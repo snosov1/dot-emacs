@@ -500,8 +500,8 @@ same type."
 (defadvice insert-for-yank-1 (after indent-region activate)
   "Indent yanked region in certain modes, C-u prefix to disable"
   (if (and (not current-prefix-arg)
-           (member major-mode '(emacs-lisp-mode
-                                lisp-mode
+           (member major-mode '(sh-mode
+                                emacs-lisp-mode lisp-mode
                                 c-mode c++-mode objc-mode d-mode java-mode cuda-mode
                                 LaTeX-mode TeX-mode
                                 xml-mode html-mode css-mode)))
