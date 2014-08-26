@@ -58,6 +58,7 @@
         transpose-words
         upcase-dispatch
         wrap-region-trigger
+        yas-expand
         zap-up-to-char
         ))
 
@@ -74,10 +75,12 @@
         isearch-printing-char
         ispell-word
         keyboard-escape-quit
+        mc/align
         mc/dwim
         mc/mark-all-dispatch
         overwrite-mode
         python-shell-send-buffer
+        smex
         toggle-input-method
         universal-argument-minus
         vimgolf-submit

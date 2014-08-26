@@ -434,15 +434,39 @@ same type."
           (t
            (mc/mark-all-like-this))))
 
+       (defun mc/align ()
+         "Aligns all the cursor vertically."
+         (interactive)
+         (let ((max-column 0)
+               (cursors-column '()))
+           (mc/for-each-cursor-ordered
+            (mc/save-excursion
+             (goto-char (overlay-start cursor))
+             (let ((cur (current-column)))
+               (setq cursors-column (append cursors-column (list cur)))
+               (setq max-column (if (< max-column cur) cur max-column)))))
+
+           (defun mc--align-insert-times ()
+             (interactive)
+             (dotimes (_ times)
+               (insert " ")))
+
+           (mc/for-each-cursor-ordered
+            (let ((times (- max-column (car cursors-column))))
+              (mc/execute-command-for-fake-cursor 'mc--align-insert-times cursor))
+            (setq cursors-column (cdr cursors-column)))))
+
        (setq mc/list-file "~/.mc-lists.el")
        (load mc/list-file t) ;; load, but no errors if it does not exist yet please
 
-       (global-set-key (kbd "C->")     'mc/mark-next-like-this)
-       (global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
+       (global-set-key (kbd "C->")  'mc/mark-next-like-this)
+       (global-set-key (kbd "C-<")  'mc/mark-previous-like-this)
 
        (global-set-key (kbd "M-@") 'mc/mark-all-dispatch)
 
-       (global-set-key (kbd "M-#") 'mc/insert-numbers))))
+       (global-set-key (kbd "M-#") 'mc/insert-numbers)
+
+       (global-set-key (kbd "M-'") 'mc/align))))
 
 ;; browse-kill-ring
 (eval-after-load "browse-kill-ring-autoloads"
