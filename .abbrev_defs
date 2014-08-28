@@ -136,15 +136,7 @@ TIMEROFF(name);
 
 (define-abbrev-table 'conf-xdefaults-mode-abbrev-table '())
 
-(define-abbrev-table 'd-mode-abbrev-table
-  '(
-    ("read" "T read(T)()
-{
-    T t;
-    readf(\" %s\", &t);
-    return t;
-}" nil 0)
-   ))
+(define-abbrev-table 'd-mode-abbrev-table '())
 
 (define-abbrev-table 'diff-mode-abbrev-table '())
 
@@ -154,10 +146,7 @@ TIMEROFF(name);
 
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
 
-(define-abbrev-table 'emacs-lisp-mode-abbrev-table
-  '(
-    ("char" "(char-to-string (+ ?x 0))" nil 0)
-   ))
+(define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
 
 (define-abbrev-table 'ert-results-mode-abbrev-table '())
 
@@ -179,17 +168,7 @@ TIMEROFF(name);
 
 (define-abbrev-table 'gitignore-mode-abbrev-table '())
 
-(define-abbrev-table 'global-abbrev-table
-  '(
-    ("avconv-images" "avconv -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
-    ("ccache" "CC=/usr/lib/ccache/gcc CXX=/usr/lib/ccache/g++" nil 0)
-    ("cmake" "cmake -GNinja .." nil 0)
-    ("du" "du -sh * | sort -hr" nil 0)
-    ("ln" "ln -s target link" nil 0)
-    ("mencoder-concat" "mencoder -oac copy -ovc copy -idx -o output.mp4 *.mp4" nil 0)
-    ("notify-send" "notify-send \"HELLO FROM EMACS\"" nil 0)
-    ("run-at-time" "(run-at-time \"15 sec\" nil '(lambda () (call-process \"notify-send\" nil nil nil \"Time's up!\")))" nil 0)
-   ))
+(define-abbrev-table 'global-abbrev-table '())
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
 
@@ -203,9 +182,7 @@ TIMEROFF(name);
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'java-mode-abbrev-table '())
 
 (define-abbrev-table 'js-mode-abbrev-table '())
 
@@ -237,9 +214,7 @@ TIMEROFF(name);
 
 (define-abbrev-table 'nroff-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'objc-mode-abbrev-table '())
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -253,9 +228,7 @@ TIMEROFF(name);
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'pike-mode-abbrev-table '())
 
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
 
@@ -267,16 +240,6 @@ TIMEROFF(name);
     ("def" "def" nil 0)
     ("for" "for" nil 0)
     ("if" "if" nil 0)
-    ("matplotlib" "import numpy as np
-import matplotlib.pyplot as plt
-
-# evenly sampled time at 200ms intervals
-t = np.arange(0., 5., 0.2)
-
-# red dashes, blue squares and green triangles
-plt.plot(t, t, 'r--', t, t**2, 'bs', t, t**3, 'g^')
-plt.show()
-" nil 0)
     ("try" "try" nil 0)
     ("while" "while" nil 0)
    ))
@@ -295,11 +258,15 @@ plt.show()
 
 (define-abbrev-table 'shell-mode-abbrev-table
   '(
-    ("bashdir" "DIR=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" && pwd )\"" nil 0)
-    ("bashinc" "count=$((count + 1))" nil 0)
-    ("bashroot" "if [[ $(id -u) -ne 0 ]] ; then echo \"Please, run as sudo\" ; exit 1 ; fi" nil 0)
+    ("avconv-images" "avconv -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
+    ("ccache" "CC=/usr/lib/ccache/gcc CXX=/usr/lib/ccache/g++" nil 0)
+    ("cmake" "cmake -GNinja .." nil 0)
     ("du" "du -sh * | sort -hr" nil 0)
-   ))
+    ("ln" "ln -s target link" nil 0)
+    ("mencoder-concat" "mencoder -oac copy -ovc copy -idx -o output.mp4 *.mp4" nil 0)
+    ("notify-send" "notify-send \"HELLO FROM EMACS\"" nil 0)
+    ("run-at-time" "(run-at-time \"15 sec\" nil '(lambda () (call-process \"notify-send\" nil nil nil \"Time's up!\")))" nil 0)
+    ))
 
 (define-abbrev-table 'snippet-mode-abbrev-table '())
 

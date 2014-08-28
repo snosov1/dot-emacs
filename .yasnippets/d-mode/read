@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name : useful generic read function
+# key: read
+# --
+T read(T)()
+{
+    T t;
+    readf(" %s", &t);
+    return t;
+}

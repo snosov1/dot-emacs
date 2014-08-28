@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: increment
+# key: inc
+# --
+${1:count}=$(($1 + 1))

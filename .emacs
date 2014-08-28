@@ -422,7 +422,7 @@ same type."
 
 - call mc/edit-lines if multiple lines are marked
 
-- call mc/mark-all-like-this if marked region is on a single line "
+- call mc/mark-all-like-this if marked region is on a single line"
          (interactive)
          (cond
           ((not (region-active-p))
@@ -463,9 +463,7 @@ same type."
        (global-set-key (kbd "C-<")  'mc/mark-previous-like-this)
 
        (global-set-key (kbd "M-@") 'mc/mark-all-dispatch)
-
        (global-set-key (kbd "M-#") 'mc/insert-numbers)
-
        (global-set-key (kbd "M-'") 'mc/align))))
 
 ;; browse-kill-ring

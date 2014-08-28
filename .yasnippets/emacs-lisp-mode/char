@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: generate successive chars
+# key: char
+# --
+(char-to-string (+ ?x $0))
