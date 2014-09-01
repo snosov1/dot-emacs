@@ -66,6 +66,7 @@
       '(
         compile
         describe-key
+        dired-details-hide
         dired-toggle-read-only
         edebug-next-mode
         find-tag
