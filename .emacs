@@ -1328,6 +1328,8 @@ position into find-tag-marker-ring."
 
 (add-to-list 'auto-mode-alist '("\\.abbrev_defs\\'" . emacs-lisp-mode))
 
+(add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
+
 ;; ------------------------------------------------------------
 ;; MISCELLANEOUS CONFIGS
 
@@ -1386,6 +1388,9 @@ position into find-tag-marker-ring."
 
 ;; make backspace to always delete chars
 (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+
+;; Answering just 'y' or 'n' will do
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; RecognizeCamelCaseSubwording
 (global-subword-mode)
