@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: const iterator
+# key: cit
+# --
+${1:std::}${2:vector<int>}::const_iterator ${3:it};
