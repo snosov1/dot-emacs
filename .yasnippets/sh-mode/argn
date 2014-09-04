@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: request a specific number of arguments
+# key: argn
+# --
+if [[ $# -lt $1 ]] ; then echo "Please, provide at least $1 argument(s)" ; exit 1 ; fi

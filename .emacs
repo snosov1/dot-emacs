@@ -737,9 +737,11 @@ completion capabilities."
       (if (file-exists-p ssh-config-filename)
           (with-temp-buffer
             (find-file ssh-config-filename)
+            (goto-char (point-min))
             (while (re-search-forward "Host\\s-+\\([^\s]+\\)$" nil t)
               (let ((host (match-string-no-properties 1)))
-                (add-to-list 'term-remote-hosts `(,host "ssh" ,host)))))))
+                (add-to-list 'term-remote-hosts `(,host "ssh" ,host))))
+            (kill-buffer))))
     (term-parse-ssh-config)
 
     (defun remote-term-do (new-buffer-name cmd &rest switches)
