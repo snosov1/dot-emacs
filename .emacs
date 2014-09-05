@@ -1204,6 +1204,7 @@ position into find-tag-marker-ring."
 (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
 (global-set-key (kbd "C-z")         'undo)
 (global-set-key (kbd "C-x /")       'replace-path-with-truename)
+(global-set-key [escape]            'keyboard-escape-quit)
 (global-set-key "\C-x\C-u"          'update-tags-file)
 (global-set-key "\C-x\C-v"          'visit-tags-table)
 (global-set-key "\C-x\C-t"          'tags-reset-tags-tables)
