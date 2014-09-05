@@ -1107,6 +1107,7 @@ position into find-tag-marker-ring."
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
  '(org-src-fontify-natively t)
  '(org-startup-indented t)
+ '(org-support-shift-select (quote always))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(scroll-conservatively 1)
