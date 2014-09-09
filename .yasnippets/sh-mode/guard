@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: must haves in a shell script
+# key: guard
+# --
+set -e # exit on error
+set -u # disallow unset variables usage

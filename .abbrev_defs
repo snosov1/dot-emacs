@@ -258,7 +258,9 @@ TIMEROFF(name);
 
 (define-abbrev-table 'shell-mode-abbrev-table
   '(
-    ("avconv-images" "avconv -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
+    ("ffmpeg-images" "ffmpeg -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
+    ("ffmpeg-side-by-side" "ffmpeg -i left.mp4 -i right.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v:0]pad=iw*2:ih[bg]; [bg][1:v:0]overlay=w\" out.mp4")
+    ("ffmpeg-top-bottom" "ffmpeg -i left.mp4 -i right.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v]pad=iw:ih*2[bg]; [bg][1:v]overlay=0:h\" out.mp4")
     ("ccache" "CC=/usr/lib/ccache/gcc CXX=/usr/lib/ccache/g++" nil 0)
     ("cmake" "cmake -GNinja .." nil 0)
     ("du" "du -sh * | sort -hr" nil 0)
