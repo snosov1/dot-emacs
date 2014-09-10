@@ -2,8 +2,6 @@
 # name: ife
 # key: ife
 # --
-if ${1:[ -f file ]; } then
-    $0
+if [ $0 ]; then
 else
-
 fi

@@ -2,7 +2,6 @@
 # name : struct ... { ... }
 # key: struct
 # --
-struct ${1:name}
+struct $0
 {
-    $0
 };

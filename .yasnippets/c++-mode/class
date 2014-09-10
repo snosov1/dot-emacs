@@ -2,10 +2,6 @@
 # name: class
 # key: class
 # --
-class ${1:Name}
+class $0
 {
-public:
-    ${1:$(yas/substr yas-text "[^: ]*")}();
-    ${2:virtual ~${1:$(yas/substr yas-text "[^: ]*")}();}
 };
-$0

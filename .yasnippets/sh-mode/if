@@ -2,6 +2,5 @@
 # name: if
 # key: if
 # --
-if ${1:[ -f file ];} then
-    $0
+if [ $0 ]; then
 fi

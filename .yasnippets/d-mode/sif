@@ -2,7 +2,6 @@
 # name : static if (...) { ... }
 # key: sif
 # --
-static if (${1:condition})
+static if ($0)
 {
-    $0
 }

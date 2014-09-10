@@ -2,8 +2,6 @@
 # name: ifelse
 # key: ife
 # --
-if(${1:cond})
-    $2
-else(${3:cond})
-    $0
+if($0)
+else()
 endif()

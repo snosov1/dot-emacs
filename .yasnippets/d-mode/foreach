@@ -2,7 +2,6 @@
 # name: foreach
 # key: fore
 # --
-foreach (${1:ref e}; ${2:sequence})
+foreach (${1:ref} ${2:i}; $0)
 {
-    $0
 }
