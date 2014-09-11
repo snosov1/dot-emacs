@@ -6,10 +6,6 @@
 (setq mac-command-modifier 'meta)
 
 ;; ------------------------------------------------------------
-;; PATHS
-(add-to-list 'load-path "~/.emacs.d")
-
-;; ------------------------------------------------------------
 ;; BUILT-IN DEPENDENCIES
 
 ;; common lisp primitives
