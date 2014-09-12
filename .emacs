@@ -149,7 +149,7 @@ same type."
 ;; EXTERNAL PACKAGES
 
 ;; initialization
-(setq package-archives '(("org-mode" . "http://orgmode.org/elpa/")
+(setq package-archives '(("org" . "http://orgmode.org/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")
                          ))
@@ -249,21 +249,24 @@ same type."
                                        ac-source-words-in-same-mode-buffers
                                        ))))
 
-
        (when (and (require 'ac-dcd nil t) (require 'd-mode nil t))
-         (add-hook 'd-mode-hook
-                   '(lambda ()
-                      (auto-complete-mode t)
-                      (ac-dcd-maybe-start-server)
-                      (setq ac-sources '(
-                                         ac-source-yasnippet
-                                         ac-source-dcd
-                                         ac-source-words-in-same-mode-buffers
-                                         ))))
-         (define-key d-mode-map [remap find-tag]     'ac-dcd-goto-definition)
-         (define-key d-mode-map [remap pop-tag-mark] 'ac-dcd-goto-def-pop-marker)
-         (define-key d-mode-map (kbd "M-?")          'ac-dcd-show-ddoc-with-buffer)
-         (define-key d-mode-map (kbd "C-c i")        'ac-dcd-add-imports)))))
+         (if (and (executable-find ac-dcd-server-executable)
+                  (executable-find ac-dcd-executable))
+             (progn
+               (add-hook 'd-mode-hook
+                         '(lambda ()
+                            (auto-complete-mode t)
+                            (ac-dcd-maybe-start-server)
+                            (setq ac-sources '(
+                                               ac-source-yasnippet
+                                               ac-source-dcd
+                                               ac-source-words-in-same-mode-buffers
+                                               ))))
+               (define-key d-mode-map [remap find-tag]     'ac-dcd-goto-definition)
+               (define-key d-mode-map [remap pop-tag-mark] 'ac-dcd-goto-def-pop-marker)
+               (define-key d-mode-map (kbd "M-?")          'ac-dcd-show-ddoc-with-buffer)
+               (define-key d-mode-map (kbd "C-c i")        'ac-dcd-add-imports))
+           (warn "dcd-server not found"))))))
 
 (eval-after-load "org-autoloads"
   '(progn
@@ -1095,7 +1098,6 @@ position into find-tag-marker-ring."
  '(ido-enable-flex-matching t)
  '(ido-mode (quote both) nil (ido))
  '(indent-tabs-mode nil)
- '(initial-buffer-choice t)
  '(initial-major-mode (quote emacs-lisp-mode))
  '(initial-scratch-message nil)
  '(ls-lisp-dirs-first t)
