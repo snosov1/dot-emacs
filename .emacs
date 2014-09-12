@@ -171,6 +171,7 @@ same type."
                  auto-complete
                  ac-dcd
                  android-mode
+                 async
                  browse-kill-ring
                  cmake-mode
                  d-mode
@@ -305,6 +306,11 @@ same type."
      (if (require 'yaml-mode nil t)
          (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
        (warn "yaml-mode not found"))))
+
+(eval-after-load "async-autoloads"
+  '(progn
+     (unless (require 'dired-async nil t)
+       (warn "dired-async not found"))))
 
 (eval-after-load "dummyparens-autoloads"
   '(progn
@@ -1127,6 +1133,8 @@ position into find-tag-marker-ring."
  '(diff-refine-change ((t (:background "dark slate gray"))))
  '(diff-removed ((t (:foreground "tomato"))))
  '(dired-async-in-process-face ((t (:background "cornflower blue"))) t)
+ '(dired-async-message ((t (:inherit mode-line-emphasis))))
+ '(dired-async-mode-message ((t (:inherit highlight))))
  '(ediff-current-diff-A ((t (:background "white" :foreground "black"))) t)
  '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))) t)
  '(ediff-current-diff-B ((t (:background "white" :foreground "black"))) t)
