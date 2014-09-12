@@ -2,7 +2,7 @@
 # name: fori
 # key: fori
 # --
-for (${1:auto} ${2:it} = ${3:vec}.begin(); $2 != $3.end(); ++$2)
+for (${1:auto}${1:$(and (> (length yas-text) 0) " ")}${2:it} = ${3:vec}.begin(); $2 != $3.end(); ++$2)
 {
     $0
 }
