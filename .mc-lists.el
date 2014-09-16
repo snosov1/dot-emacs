@@ -24,6 +24,7 @@
         eval-dispatch
         fixup-whitespace
         forward-sexp
+        increment-decimal-number-at-point
         indent-for-tab-command
         isearch-abort
         join-following-line

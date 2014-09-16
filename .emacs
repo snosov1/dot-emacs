@@ -391,6 +391,10 @@ same type."
 (eval-after-load "d-mode-autoloads"
   '(progn
      (when (require 'd-mode nil t)
+       (add-hook 'd-mode-hook
+                 '(lambda ()
+                    (add-to-list 'c-offsets-alist '(arglist-cont-nonempty . c-lineup-cascaded-calls))
+                    (add-to-list 'c-offsets-alist '(statement-cont . c-lineup-cascaded-calls))))
        (setq auto-mode-alist
              (append '(("\\.d\\'" . d-mode)
                        ("\\.di\\'" . d-mode))
@@ -636,6 +640,22 @@ languages ('beginning-of-defun'-based)"
     (setq defun-name-end (point))
     (skip-chars-backward "^[:space:]")
     (buffer-substring-no-properties (point) defun-name-end)))
+
+(defun increment-decimal-number-at-point (&optional arg)
+  "Increment the number at point by `arg'."
+  (interactive "p*")
+  (save-excursion
+    (save-match-data
+      (let (inc-by field-width answer)
+        (setq inc-by (if arg arg 1))
+        (skip-chars-backward "0123456789")
+        (when (re-search-forward "[0-9]+" nil t)
+          (setq field-width (- (match-end 0) (match-beginning 0)))
+          (setq answer (+ (string-to-number (match-string 0) 10) inc-by))
+          (when (< answer 0)
+            (setq answer (+ (expt 10 field-width) answer)))
+          (replace-match (format (concat "%0" (int-to-string field-width) "d")
+                                 answer)))))))
 
 (defun parent-directory (dir)
   "Returns parent directory of dir"
@@ -1217,6 +1237,7 @@ position into find-tag-marker-ring."
 (global-set-key "\C-x\C-t"          'tags-reset-tags-tables)
 (global-set-key "\C-x\C-l"          'tags-apropos)
 (global-set-key "\C-c\C-c"          'compile)
+(global-set-key "\C-c+"             'increment-decimal-number-at-point)
 
 ;; define translations
 (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
