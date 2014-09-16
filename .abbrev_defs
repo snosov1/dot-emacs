@@ -258,18 +258,19 @@ TIMEROFF(name);
 
 (define-abbrev-table 'shell-mode-abbrev-table
   '(
-    ("ffmpeg-images" "ffmpeg -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
-    ("ffmpeg-side-by-side" "ffmpeg -i left.mp4 -i right.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v:0]pad=iw*2:ih[bg]; [bg][1:v:0]overlay=w\" out.mp4")
-    ("ffmpeg-top-bottom" "ffmpeg -i left.mp4 -i right.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v]pad=iw:ih*2[bg]; [bg][1:v]overlay=0:h\" out.mp4")
     ("ccache" "CC=/usr/lib/ccache/gcc CXX=/usr/lib/ccache/g++" nil 0)
     ("cmake" "cmake -GNinja .." nil 0)
-    ("du" "du -sh * | sort -hr" nil 0)
-    ("ln" "ln -s target link" nil 0)
     ("convert-gif" "convert -delay 50 *.jpg out.gif" nil 0)
+    ("du" "du -sh * | sort -hr" nil 0)
+    ("ffmpeg-images" "ffmpeg -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
+    ("ffmpeg-side-by-side" "ffmpeg -i left.mp4 -i right.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v:0]pad=iw*2:ih[bg]; [bg][1:v:0]overlay=w\" out.mp4" nil 0)
+    ("ffmpeg-top-bottom" "ffmpeg -i left.mp4 -i right.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v]pad=iw:ih*2[bg]; [bg][1:v]overlay=0:h\" out.mp4" nil 0)
+    ("ln" "ln -s target link" nil 0)
     ("mencoder-concat" "mencoder -oac copy -ovc copy -idx -o output.mp4 *.mp4" nil 0)
     ("notify-send" "notify-send \"HELLO FROM EMACS\"" nil 0)
     ("run-at-time" "(run-at-time \"15 sec\" nil '(lambda () (call-process \"notify-send\" nil nil nil \"Time's up!\")))" nil 0)
-    ))
+    ("sshgen" "ssh-keygen -t rsa -C \"your_email@example.com\"" nil 0)
+   ))
 
 (define-abbrev-table 'snippet-mode-abbrev-table '())
 
