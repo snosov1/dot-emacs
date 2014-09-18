@@ -1,4 +1,3 @@
-#+TITLE: .emacs
 #+AUTHOR: Sergei Nosov
 #+EMAIL: sergei.nosov@gmail.com
 
