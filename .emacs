@@ -391,10 +391,11 @@ same type."
 (eval-after-load "d-mode-autoloads"
   '(progn
      (when (require 'd-mode nil t)
-       (add-hook 'd-mode-hook
-                 '(lambda ()
-                    (add-to-list 'c-offsets-alist '(arglist-cont-nonempty . c-lineup-cascaded-calls))
-                    (add-to-list 'c-offsets-alist '(statement-cont . c-lineup-cascaded-calls))))
+       (when (fboundp 'd-lineup-cascaded-calls)
+           (add-hook 'd-mode-hook
+                     '(lambda ()
+                        (add-to-list 'c-offsets-alist '(arglist-cont-nonempty . d-lineup-cascaded-calls))
+                        (add-to-list 'c-offsets-alist '(statement-cont . d-lineup-cascaded-calls)))))
        (setq auto-mode-alist
              (append '(("\\.d\\'" . d-mode)
                        ("\\.di\\'" . d-mode))
