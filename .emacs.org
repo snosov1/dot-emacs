@@ -1,12 +1,19 @@
 #+AUTHOR: Sergei Nosov
 #+EMAIL: sergei.nosov@gmail.com
 
+* Foreword
+
+This is a little novel for casual reading about a text editor. Incidentally, it
+also works as an Emacs configuration file.
+
+WARNING: WORK IN PROGRESS!
+
 * UI customization
 
-** Lean and mean and clean
+** Lean and mean
 
-Emacs doesn't need a lot of UI elements - it should be lean and mean, well, and
-clean.
+Emacs doesn't need a lot of UI elements - it should be lean and mean. Well, and
+clean, and it should look good on the screen.
 
 #+BEGIN_SRC emacs-lisp
   (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
