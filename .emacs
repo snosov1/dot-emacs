@@ -808,24 +808,6 @@ completion capabilities."
 (defun ediff-restore-window-configuration ()
   (jump-to-register ?E))
 
-(defun open-window-manager ()
-  "Open default system windows manager in current directory"
-  (interactive)
-  (when (equal window-system 'w32)
-    (async-shell-command "explorer ."))
-  (when (equal window-system 'x)
-    (async-shell-command "nautilus .")))
-
-(defun dired-goto-file-ido (file)
-  "Use ido-read-file-name in dired-goto-file"
-  (interactive
-   (prog1                          ; let push-mark display its message
-       (list (expand-file-name
-          (ido-read-file-name "Goto file: " ; use ido-read-file-name
-                  (dired-current-directory))))
-     (push-mark)))
-  (dired-goto-file file))
-
 (define-key dired-mode-map (vector 'remap 'end-of-buffer)
   (defun dired-jump-to-bottom ()
     "Jumps to the last file"
@@ -1276,13 +1258,27 @@ position into find-tag-marker-ring."
           '(lambda()
              (append-tramp-host)
 
-             ;; keep default behavior in dired
              (define-key dired-mode-map (kbd "C-x C-q")
                'dired-toggle-read-only)
              (define-key dired-mode-map (kbd "E")
-               'open-window-manager)
+               (defun open-window-manager ()
+                 "Open default system windows manager in current directory"
+                 (interactive)
+                 (save-window-excursion
+                   (if (equal window-system 'w32)
+                       (async-shell-command "explorer .")
+                     (if (equal window-system 'x)
+                         (async-shell-command "nautilus ."))))))
              (define-key dired-mode-map (kbd "j")
-               'dired-goto-file-ido)))
+               (defun dired-goto-file-ido (file)
+                 "Use ido-read-file-name in dired-goto-file"
+                 (interactive
+                  (prog1                          ; let push-mark display its message
+                      (list (expand-file-name
+                             (ido-read-file-name "Goto file: " ; use ido-read-file-name
+                                                 (dired-current-directory))))
+                    (push-mark)))
+                 (dired-goto-file file)))))
 
 (add-hook 'view-mode-hook
           '(lambda ()

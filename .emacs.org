@@ -217,9 +217,10 @@ better positions:
 - Group directories first:
 
   #+BEGIN_SRC emacs-lisp
-    (setq dired-listing-switches (concat "-alh"
-                                         (when (not (equal window-system 'w32))
-                                           " --group-directories-first")))
+    (setq dired-listing-switches
+          (concat "-alh"
+                  (when (not (equal window-system 'w32))
+                    " --group-directories-first")))
   #+END_SRC
 
 ** Wdired
@@ -237,13 +238,14 @@ Use =E= in dired to open a system's native file explorer in current directory:
 
 #+BEGIN_SRC emacs-lisp
   (define-key dired-mode-map (kbd "E")
-                 (defun open-window-manager ()
-                   "Open default system windows manager in current directory"
-                   (interactive)
-                   (when (equal window-system 'w32)
-                     (async-shell-command "explorer ."))
-                   (when (equal window-system 'x)
-                     (async-shell-command "nautilus ."))))
+    (defun open-window-manager ()
+      "Open default system windows manager in current directory"
+      (interactive)
+      (save-window-excursion
+        (if (equal window-system 'w32)
+            (async-shell-command "explorer .")
+          (if (equal window-system 'x)
+              (async-shell-command "nautilus ."))))))
 #+END_SRC
 
 * Things to remember
