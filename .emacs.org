@@ -8,6 +8,14 @@ also works as an Emacs configuration file.
 
 WARNING: WORK IN PROGRESS!
 
+* Contents                                                              :TOC:
+ - [[#foreword][Foreword]]
+ - [[#ui-customization][UI customization]]
+     - [[#lean-and-mean][Lean and mean]]
+     - [[#dark-tango][Dark tango]]
+     - [[#deja-vu][Deja Vu]]
+     - [[#forbidden-fruit][Forbidden fruit]]
+
 * UI customization
 
 ** Lean and mean
