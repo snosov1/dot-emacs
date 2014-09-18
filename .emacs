@@ -741,66 +741,67 @@ buffer is not visiting a file."
       (find-alternate-file (add-sudo-to-filename buffer-file-name))
       (goto-char position))))
 
-(defun configure-theme ()
-  "Make Emacs pretty"
-  (load-theme 'tango-dark)
-  (enable-theme 'tango-dark)
-  ;; make background a little darker
-  (set-background-color "#1d1f21")
+(funcall
+ (defun configure-theme ()
+   "Make Emacs pretty"
+   (load-theme 'tango-dark)
+   (enable-theme 'tango-dark)
+   ;; make background a little darker
+   (set-background-color "#1d1f21")
 
-  ;; require term mode after the theme is set
-  (when (require 'term)
-    (defcustom term-remote-hosts '()
-      "List of remote hosts")
+   ;; require term mode after the theme is set
+   (when (require 'term)
+     (defcustom term-remote-hosts '()
+       "List of remote hosts")
 
-    (defcustom ssh-config-filename "~/.ssh/config"
-      "ssh config filename")
-    (defun term-parse-ssh-config ()
-      "Parse `ssh-config-filename' to provide `remote-term'
+     (defcustom ssh-config-filename "~/.ssh/config"
+       "ssh config filename")
+     (defun term-parse-ssh-config ()
+       "Parse `ssh-config-filename' to provide `remote-term'
 completion capabilities."
-      (interactive)
-      (setq term-remote-hosts '())
-      (if (file-exists-p ssh-config-filename)
-          (with-temp-buffer
-            (find-file ssh-config-filename)
-            (goto-char (point-min))
-            (while (re-search-forward "Host\\s-+\\([^\s]+\\)$" nil t)
-              (let ((host (match-string-no-properties 1)))
-                (add-to-list 'term-remote-hosts `(,host "ssh" ,host))))
-            (kill-buffer))))
-    (term-parse-ssh-config)
+       (interactive)
+       (setq term-remote-hosts '())
+       (if (file-exists-p ssh-config-filename)
+           (with-temp-buffer
+             (find-file ssh-config-filename)
+             (goto-char (point-min))
+             (while (re-search-forward "Host\\s-+\\([^\s]+\\)$" nil t)
+               (let ((host (match-string-no-properties 1)))
+                 (add-to-list 'term-remote-hosts `(,host "ssh" ,host))))
+             (kill-buffer))))
+     (term-parse-ssh-config)
 
-    (defun remote-term-do (new-buffer-name cmd &rest switches)
-      "Fires a remote terminal"
-      (setq term-ansi-buffer-name (concat "*" new-buffer-name "*"))
-      (setq term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
-      (setq term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches))
-      (set-buffer term-ansi-buffer-name)
-      (term-mode)
-      (term-char-mode)
-      (term-set-escape-char ?\C-x)
-      (switch-to-buffer term-ansi-buffer-name))
+     (defun remote-term-do (new-buffer-name cmd &rest switches)
+       "Fires a remote terminal"
+       (setq term-ansi-buffer-name (concat "*" new-buffer-name "*"))
+       (setq term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
+       (setq term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches))
+       (set-buffer term-ansi-buffer-name)
+       (term-mode)
+       (term-char-mode)
+       (term-set-escape-char ?\C-x)
+       (switch-to-buffer term-ansi-buffer-name))
 
-    (defun remote-term (host-name)
-      (interactive
-       (list (completing-read "Remote host: " term-remote-hosts)))
-      (dolist (known-host term-remote-hosts)
-        (when (equal (car known-host) host-name)
-          (apply 'remote-term-do known-host))))
+     (defun remote-term (host-name)
+       (interactive
+        (list (completing-read "Remote host: " term-remote-hosts)))
+       (dolist (known-host term-remote-hosts)
+         (when (equal (car known-host) host-name)
+           (apply 'remote-term-do known-host))))
 
-    (add-hook 'term-mode-hook
-              '(lambda ()
-                 (yas-minor-mode -1)))
+     (add-hook 'term-mode-hook
+               '(lambda ()
+                  (yas-minor-mode -1)))
 
-    (define-key term-mode-map "\C-x\C-j"   'dired-jump-universal-other)
-    (define-key term-raw-escape-map "\C-j" 'dired-jump-universal-other)
-    (define-key term-raw-escape-map "\C-l" 'term-line-mode)
-    (define-key term-mode-map "\C-x\C-k"   'term-char-mode))
+     (define-key term-mode-map "\C-x\C-j"   'dired-jump-universal-other)
+     (define-key term-raw-escape-map "\C-j" 'dired-jump-universal-other)
+     (define-key term-raw-escape-map "\C-l" 'term-line-mode)
+     (define-key term-mode-map "\C-x\C-k"   'term-char-mode))
 
-  ;; set font
-  (ignore-errors
-    (set-frame-font
-     (car (x-list-fonts "-*-DejaVu Sans Mono-normal-normal-normal-*-*-*-*-*-*-*-iso10646-1")))))
+   ;; set font
+   (ignore-errors
+     (set-frame-font
+      (car (x-list-fonts "-*-DejaVu Sans Mono-normal-normal-normal-*-*-*-*-*-*-*-iso10646-1"))))))
 
 ;; functions to save and restore window configuration for ediff-mode
 (defun ediff-save-window-configuration ()
@@ -1401,9 +1402,6 @@ position into find-tag-marker-ring."
 
 ;; replace selection with input or yank
 (delete-selection-mode 1)
-
-;; make emacs look good
-(configure-theme)
 
 ;; Show keystrokes in progress
 (setq echo-keystrokes 0.01)
