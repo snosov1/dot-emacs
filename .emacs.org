@@ -15,6 +15,8 @@ WARNING: WORK IN PROGRESS!
      - [[#dark-tango][Dark tango]]
      - [[#deja-vu][Deja Vu]]
      - [[#forbidden-fruit][Forbidden fruit]]
+ - [[#abbreviations][Abbreviations]]
+ - [[#terminal-emulator][Terminal emulator]]
 
 * UI customization
 
@@ -72,3 +74,36 @@ Mac, please, enlighten me!
 #+BEGIN_SRC emacs-lisp
   (setq mac-command-modifier 'meta)
 #+END_SRC
+
+* Abbreviations
+
+I have a collection of abbreviations for commands, that I use rarely enough to
+forget their actual spelling, but often enough to get annoyed every time I have
+to look it up somewhere.
+
+As a simplest example, I always forget how to use the =ln= command to create a
+symbolic link. Where do you have to put =-s=? Where is the target path and where
+is the link name? I know, it's ridiculous, but I was making mistakes every time
+I tried to use it.
+
+Now, I simply print =ln=, hit =M-/= for =hippie-expand= and it becomes =ln -s
+target link= and I'm happy.
+
+The abbreviations are listed in =.abbrev_defs= file and, basically, all of them
+are commands, which do something simple, but are represented by a random-looking
+symbols sequence.
+
+I also use =yasnippet= for a similar functionality, but it didn't work very well
+for me in minibuffer. And since I use minibuffer to issue shell commands (=M-&=)
+quite often, I use abbreviations for common shell commands and =yasnippet= for
+everything else.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'abbrev nil t)
+    (add-hook 'find-file-hook
+              '(lambda()
+                 (abbrev-mode -1)))
+    (setq-default abbrev-mode nil))
+#+END_SRC
+
+* Terminal emulator
