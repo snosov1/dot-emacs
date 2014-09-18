@@ -1,0 +1,60 @@
+#+TITLE: .emacs
+#+AUTHOR: Sergei Nosov
+#+EMAIL: sergei.nosov@gmail.com
+
+* UI customization
+
+** Lean and mean and clean
+
+Emacs doesn't need a lot of UI elements - it should be lean and mean, well, and
+clean.
+
+#+BEGIN_SRC emacs-lisp
+  (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+  (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+  (setq inhibit-startup-message t)
+#+END_SRC
+
+** Dark tango
+
+For some reason, my eyes like dark background. Not pitch black, but pretty
+black.
+
+#+BEGIN_SRC emacs-lisp
+  (defun configure-theme ()
+    "Make Emacs pretty"
+    (load-theme 'tango-dark)
+    (enable-theme 'tango-dark)
+    ;; make background a little bit darker
+    (set-background-color "#1d1f21"))
+
+  (configure-theme)
+#+END_SRC
+
+** Deja Vu
+
+DejaVu fonts family is simply the best one out there. And DejaVu Sans Mono is
+the brightest child in the family:
+
+- it covers a hell lot of Unicode symbols
+- it's community-driven and MIT/public domain licensed
+- it makes l, 1 and I clearly distinguishable, as well as 0 and O
+- it's beautiful looking
+
+Basically, DejaVu Sans Mono is a "font done right" for technical work.
+
+#+BEGIN_SRC emacs-lisp
+  (ignore-errors
+    (set-frame-font
+     (car (x-list-fonts "-*-DejaVu Sans Mono-normal-normal-normal-*-*-*-*-*-*-*-iso10646-1"))))
+#+END_SRC
+
+** Mac
+
+This section is supposed to make Emacs more usable on Mac's, but since I've
+never owned a Mac, I can't really tell whether it works at all. If you own a
+Mac, please, enlighten me!
+
+#+BEGIN_SRC emacs-lisp
+  (setq mac-command-modifier 'meta)
+#+END_SRC
