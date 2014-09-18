@@ -15,8 +15,17 @@ WARNING: WORK IN PROGRESS!
      - [[#dark-tango][Dark tango]]
      - [[#deja-vu][Deja Vu]]
      - [[#forbidden-fruit][Forbidden fruit]]
+ - [[#external-packages][External packages]]
  - [[#abbreviations][Abbreviations]]
- - [[#terminal-emulator][Terminal emulator]]
+ - [[#dired][Dired]]
+     - [[#dired-jump][Dired jump]]
+     - [[#dired-details][Dired details]]
+     - [[#dired-async][Dired async]]
+     - [[#jumping-back-and-forth][Jumping back and forth]]
+     - [[#do-what-i-mean][Do what I mean]]
+     - [[#wdired][Wdired]]
+     - [[#native-explorer][Native explorer]]
+ - [[#things-to-remember][Things to remember]]
 
 * UI customization
 
@@ -75,6 +84,8 @@ Mac, please, enlighten me!
   (setq mac-command-modifier 'meta)
 #+END_SRC
 
+* External packages
+
 * Abbreviations
 
 I have a collection of abbreviations for commands, that I use rarely enough to
@@ -106,4 +117,135 @@ everything else.
     (setq-default abbrev-mode nil))
 #+END_SRC
 
-* Terminal emulator
+* Dired
+
+As you may know, dired stands for DIRectory EDitor and it is, basically, a file
+manager inside Emacs.
+
+I consider dired a truly amazing piece of software. More than anything, it makes
+the job done without over-complication on implementation or interface side.
+
+** Dired jump
+To enable a convenient =C-x C-j= binding, we have to require the =dired-x=
+module. =C-x C-j= opens current directory in dired, when visiting a file or
+jumps to parent directory, when already in dired. With universal argument - =C-u
+C-x C-j= - it opens dired in other window.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map (vector 'remap 'dired-jump)
+    (defun dired-jump-universal-other (arg)
+      "Calls dired-jump. With prefix argument uses other window"
+      (interactive "P")
+      (require 'dired-x)
+      (dired-jump arg)))
+#+END_SRC
+
+** Dired details
+=dired-details= module helps to hide a lot of unnecessary information inside
+dired. You can toggle its visibility by pressing =h=:
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "dired-details-autoloads"
+    '(progn
+       (when (require 'dired-details nil t)
+         (add-hook 'dired-mode-hook
+                   '(lambda ()
+                      (dired-details-install)
+                      (setq dired-details-hidden-string "--- ")
+                      (define-key dired-mode-map (kbd "h") 'dired-details-toggle))))))
+#+END_SRC
+
+** Dired async
+=dired-async= module makes copying, renaming and deletion commands asynchronous:
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "async-autoloads"
+    '(progn
+       (if (require 'dired-async nil t)
+           (progn
+             (set-face-attribute 'dired-async-message nil
+                                 :inherit 'mode-line-emphasis)
+             (set-face-attribute 'dired-async-mode-message nil
+                                 :inherit 'highlight))
+         (warn "dired-async not found"))))
+#+END_SRC
+
+** Jumping back and forth
+=beginning-of-buffer= and =end-of-buffer= commands should move the point to
+better positions:
+
+#+BEGIN_SRC emacs-lisp
+  (define-key dired-mode-map (vector 'remap 'end-of-buffer)
+    (defun dired-jump-to-bottom ()
+      "Jumps to the last file"
+      (interactive)
+      (end-of-buffer)
+      (dired-previous-line 1)))
+
+  (define-key dired-mode-map (vector 'remap 'beginning-of-buffer)
+    (defun dired-jump-to-top ()
+      "Jumps to the .. entry"
+      (interactive)
+      (beginning-of-buffer)
+      (dired-next-line 1)
+      ;; skip another line depending on hidden/shown state of dired-details
+      (when (or (not (boundp 'dired-details-state))
+                (equal dired-details-state 'shown))
+        (dired-next-line 1))
+      (if (looking-at "\\.") ;; top-level directories don't have a
+          ;; .. entry
+          (dired-next-line 1))))
+#+END_SRC
+
+** Do what I mean
+
+- If you have 2 dired windows opened, then copying and renaming should use the
+  directory of the other window as a default target:
+
+  #+BEGIN_SRC emacs-lisp
+    (setq dired-dwim-target t)
+  #+END_SRC
+
+- Don't be afraid of recursive operations:
+
+  #+BEGIN_SRC emacs-lisp
+    (setq
+     dired-recursive-copies (quote always)
+     dired-recursive-deletes (quote always))
+  #+END_SRC
+
+- Group directories first:
+
+  #+BEGIN_SRC emacs-lisp
+    (setq dired-listing-switches (concat "-alh"
+                                         (when (not (equal window-system 'w32))
+                                           " --group-directories-first")))
+  #+END_SRC
+
+** Wdired
+
+When editing dired buffer (=C-x C-q=), allow to change the permissions as well:
+
+#+BEGIN_SRC emacs-lisp
+  (define-key dired-mode-map (kbd "C-x C-q") 'dired-toggle-read-only)
+  (setq wdired-allow-to-change-permissions t)
+#+END_SRC
+
+** Native explorer
+
+Use =E= in dired to open a system's native file explorer in current directory:
+
+#+BEGIN_SRC emacs-lisp
+  (define-key dired-mode-map (kbd "E")
+                 (defun open-window-manager ()
+                   "Open default system windows manager in current directory"
+                   (interactive)
+                   (when (equal window-system 'w32)
+                     (async-shell-command "explorer ."))
+                   (when (equal window-system 'x)
+                     (async-shell-command "nautilus ."))))
+#+END_SRC
+
+* Things to remember
+- append-tramp-host in dired
+- terminal emulator
