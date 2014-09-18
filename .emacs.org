@@ -55,7 +55,7 @@ Basically, DejaVu Sans Mono is a "font done right" for technical work.
      (car (x-list-fonts "-*-DejaVu Sans Mono-normal-normal-normal-*-*-*-*-*-*-*-iso10646-1"))))
 #+END_SRC
 
-** Mac
+** Forbidden fruit
 
 This section is supposed to make Emacs more usable on Mac's, but since I've
 never owned a Mac, I can't really tell whether it works at all. If you own a
