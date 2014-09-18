@@ -794,8 +794,8 @@ completion capabilities."
 
     (define-key term-mode-map "\C-x\C-j"   'dired-jump-universal-other)
     (define-key term-raw-escape-map "\C-j" 'dired-jump-universal-other)
-    (define-key term-mode-map "\C-c\C-l"   'term-line-mode)
-    (define-key term-raw-escape-map "\C-l" 'term-line-mode))
+    (define-key term-raw-escape-map "\C-l" 'term-line-mode)
+    (define-key term-mode-map "\C-x\C-k"   'term-char-mode))
 
   ;; set font
   (ignore-errors
