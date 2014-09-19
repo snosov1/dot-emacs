@@ -8,4 +8,7 @@
 
 (setq vc-follow-symlinks t)
 
+(require 'org-install)
+(require 'ob-tangle)
+
 (org-babel-load-file "~/emacs-init.org")

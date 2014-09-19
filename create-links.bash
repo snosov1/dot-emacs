@@ -16,6 +16,6 @@ if [ ! -f ~/.abbrev_defs ]; then
     ln -s $DIR/.abbrev_defs ~/.abbrev_defs
 fi
 
-if [ ! -f ~/.yasnippets ]; then
+if [ ! -d ~/.yasnippets ]; then
     ln -s $DIR/.yasnippets ~/.yasnippets
 fi
