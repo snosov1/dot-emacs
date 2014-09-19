@@ -6,4 +6,6 @@
 (setq package-enable-at-startup nil)
 (package-initialize)
 
+(setq vc-follow-symlinks t)
+
 (org-babel-load-file "~/emacs-init.org")
