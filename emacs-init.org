@@ -25,7 +25,6 @@ also works as an Emacs configuration file.
      - [[#do-what-i-mean][Do what I mean]]
      - [[#wdired][Wdired]]
      - [[#native-explorer][Native explorer]]
- - [[#things-to-remember][Things to remember]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -295,15 +294,10 @@ Use =E= in dired to open a system's native file explorer in current directory:
               (async-shell-command "nautilus ."))))))
 #+END_SRC
 
-* Things to remember
-- terminal emulator
 * Unstructured configuration
 #+BEGIN_SRC emacs-lisp
   ;; ------------------------------------------------------------
   ;; BUILT-IN DEPENDENCIES
-
-  ;; common lisp primitives
-  (require 'cl-lib)
 
   ;; for zap-up-to-char
   (require 'misc)
