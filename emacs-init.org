@@ -213,7 +213,7 @@ dired. You can toggle its visibility by pressing =h=:
                                  :inherit 'mode-line-emphasis)
              (set-face-attribute 'dired-async-mode-message nil
                                  :inherit 'highlight))
-         (warn "dired-async not found"))))
+         (message "WARNING: dired-async not found"))))
 #+END_SRC
 
 ** Jumping back and forth
@@ -493,7 +493,7 @@ Use =E= in dired to open a system's native file explorer in current directory:
                  (define-key d-mode-map [remap pop-tag-mark] 'ac-dcd-goto-def-pop-marker)
                  (define-key d-mode-map (kbd "M-?")          'ac-dcd-show-ddoc-with-buffer)
                  (define-key d-mode-map (kbd "C-c i")        'ac-dcd-add-imports))
-             (warn "dcd-server not found"))))))
+             (message "WARNING: dcd-server not found"))))))
 
   (eval-after-load "org-autoloads"
     '(progn
@@ -515,7 +515,7 @@ Use =E= in dired to open a system's native file explorer in current directory:
     '(progn
        (if (require 'org-toc nil t)
            (add-hook 'org-mode-hook 'org-toc-enable)
-         (warn "org-toc not found"))))
+         (message "WARNING: org-toc not found"))))
 
   (eval-after-load "unfill-autoloads"
     '(progn
@@ -529,19 +529,19 @@ Use =E= in dired to open a system's native file explorer in current directory:
                        (unfill-region (region-beginning) (region-end))
                      (unfill-paragraph))
                  (fill-paragraph 'nil 't))))
-         (warn "unfill not found"))))
+         (message "WARNING: unfill not found"))))
 
   (eval-after-load "yaml-mode-autoloads"
     '(progn
        (if (require 'yaml-mode nil t)
            (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-         (warn "yaml-mode not found"))))
+         (message "WARNING: yaml-mode not found"))))
 
   (eval-after-load "dummyparens-autoloads"
     '(progn
        (if (require 'dummyparens nil t)
            (global-dummyparens-mode)
-         (warn "dummyparens not found"))))
+         (message "WARNING: dummyparens not found"))))
 
   (eval-after-load "smex-autoloads"
     '(progn
@@ -549,13 +549,13 @@ Use =E= in dired to open a system's native file explorer in current directory:
            (progn
              (smex-initialize)
              (global-set-key (kbd "M-x") 'smex))
-         (warn "smex not found"))))
+         (message "WARNING: smex not found"))))
 
   (eval-after-load "window-numbering-autoloads"
     '(progn
        (if (require 'window-numbering nil t)
            (window-numbering-mode 1)
-         (warn "window-numbering-mode not found"))))
+         (message "WARNING: window-numbering-mode not found"))))
 
   (eval-after-load "markdown-mode-autoloads"
     '(progn
@@ -573,7 +573,7 @@ Use =E= in dired to open a system's native file explorer in current directory:
                             nil)
                           (define-key markdown-mode-map (kbd "\C-c\C-e")
                             'markdown-export))))
-         (warn "markdown-mode not found"))))
+         (message "WARNING: markdown-mode not found"))))
 
   (eval-after-load "magit-autoloads"
     '(progn
@@ -586,7 +586,7 @@ Use =E= in dired to open a system's native file explorer in current directory:
              (setq
               magit-revert-item-confirm nil
               magit-diff-refine-hunk t))
-         (warn "magit not found"))))
+         (message "WARNING: magit not found"))))
 
   ;; android-mode
   (eval-after-load "android-mode-autoloads"
@@ -732,7 +732,7 @@ Use =E= in dired to open a system's native file explorer in current directory:
                (when (file-exists-p yas-dir)
                  (setq yas-snippet-dirs (list yas-dir))))
              (yas-global-mode 1))
-         (warn "yasnippet not found"))))
+         (message "WARNING: yasnippet not found"))))
 
   ;; ox-reveal
   ;; export .org files as reveal.js presentations (https://github.com/hakimel/reveal.js/)
