@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: wrap with timer macros
+# key: timer
+# --
+TIMER(${1:$(sanitize-to-identifier yas-text)}, \"$1\");
+TIMERON(${1:$(sanitize-to-identifier yas-text)});
+$0
+TIMEROFF(${1:$(sanitize-to-identifier yas-text)});

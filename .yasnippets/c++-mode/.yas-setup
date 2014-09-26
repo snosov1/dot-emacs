@@ -1,0 +1,2 @@
+(defun sanitize-to-identifier (str)
+  (mapconcat 'identity (split-string str "[][ ~`!@#$%^&*()+={}|\:;\"'<,>.?/]+") "_"))

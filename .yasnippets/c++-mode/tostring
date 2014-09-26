@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: generic to_string function
+# key: to_string
+# --
+#include <sstream>
+template <typename T>
+std::string to_string(const T& obj)
+{
+    std::ostringstream oss;
+    oss << obj;
+    return oss.str();
+}

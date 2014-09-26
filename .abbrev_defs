@@ -7,9 +7,7 @@
 
 (define-abbrev-table 'apropos-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'awk-mode-abbrev-table '())
 
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
@@ -17,102 +15,9 @@
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table
-  '(
-    ("cout" "std::cout << v << std::endl;" nil 0)
-    ("euleranglescpp" "
-/** this conversion uses NASA standard aeroplane conventions as described on page:
- *   http://www.euclideanspace.com/maths/geometry/rotations/euler/index.htm
- *   Coordinate System: right hand
- *   Positive angle: right hand
- *   Order of euler angles: heading first, then attitude, then bank
- *   matrix row column ordering:
- *   [m00 m01 m02]
- *   [m10 m11 m12]
- *   [m20 m21 m22]*/
-cv::Matx33f euler2mat(const cv::Vec3f &euler)
-{
-    double heading = euler[0];
-    double attitude = euler[1];
-    double bank = euler[2];
+(define-abbrev-table 'c++-mode-abbrev-table '())
 
-    // Assuming the angles are in radians.
-    double ch = cos(heading);
-    double sh = sin(heading);
-    double ca = cos(attitude);
-    double sa = sin(attitude);
-    double cb = cos(bank);
-    double sb = sin(bank);
-
-    double m00 = ch * ca;
-    double m01 = sh*sb - ch*sa*cb;
-    double m02 = ch*sa*sb + sh*cb;
-    double m10 = sa;
-    double m11 = ca*cb;
-    double m12 = -ca*sb;
-    double m20 = -sh*ca;
-    double m21 = sh*sa*cb + ch*sb;
-    double m22 = -sh*sa*sb + ch*cb;
-
-    return cv::Matx33f(m00, m01, m02,
-                       m10, m11, m12,
-                       m20, m21, m22);
-}
-
-/** this conversion uses conventions as described on page:
- *   http://www.euclideanspace.com/maths/geometry/rotations/euler/index.htm
- *   Coordinate System: right hand
- *   Positive angle: right hand
- *   Order of euler angles: heading first, then attitude, then bank
- *   matrix row column ordering:
- *   [m00 m01 m02]
- *   [m10 m11 m12]
- *   [m20 m21 m22]*/
-cv::Vec3f mat2euler(const cv::Matx33f &m) {
-    // Assuming the angles are in radians.
-	if (m(1,0) > 0.998) { // singularity at north pole
-		double heading = atan2(m(0,2), m(2,2));
-		double attitude = M_PI/2;
-		double bank = 0;
-		return cv::Vec3f(heading, attitude, bank);
-	}
-	if (m(1,0) < -0.998) { // singularity at south pole
-		double heading = atan2(m(0,2), m(2,2));
-		double attitude = -M_PI/2;
-		double bank = 0;
-		return cv::Vec3f(heading, attitude, bank);
-	}
-
-	double heading  = atan2(-m(2,0), m(0,0));
-	double attitude = asin ( m(1,0));
-	double bank     = atan2(-m(1,2), m(1,1));
-
-    return cv::Vec3f(heading, attitude, bank);
-}
-" nil 0)
-    ("savepbm" "std::vector<int> params;
-params.push_back(CV_IMWRITE_PXM_BINARY);
-params.push_back(0); // 1 for binary format, 0 for ascii format
-cv::imwrite(\"image.pbm\", image, params); // the .pbm extension specifies the encoding format
-" nil 0)
-    ("tostring" "#include <sstream>
-template <typename T>
-std::string to_string(const T& obj)
-{
-    std::ostringstream oss;
-    oss << obj;
-    return oss.str();
-}
-" nil 0)
-   ))
-
-(define-abbrev-table 'c-mode-abbrev-table
-  '(
-    ("timer" "TIMER(name, \"name\");
-TIMERON(name);
-TIMEROFF(name);
-" nil 0)
-   ))
+(define-abbrev-table 'c-mode-abbrev-table '())
 
 (define-abbrev-table 'calendar-mode-abbrev-table '())
 
@@ -267,7 +172,6 @@ TIMEROFF(name);
     ("ffmpeg-top-bottom" "ffmpeg -i left.mp4 -i right.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v]pad=iw:ih*2[bg]; [bg][1:v]overlay=0:h\" out.mp4" nil 0)
     ("ln" "ln -s target link" nil 0)
     ("mencoder-concat" "mencoder -oac copy -ovc copy -idx -o output.mp4 *.mp4" nil 0)
-    ("run-at-time" "(run-at-time \"15 sec\" nil '(lambda () (call-process \"notify-send\" nil nil nil \"Time's up!\")))" nil 0)
     ("sshgen" "ssh-keygen -t rsa -C \"your_email@example.com\"" nil 0)
    ))
 

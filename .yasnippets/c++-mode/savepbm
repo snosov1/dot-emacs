@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: save image in pbm ascii format
+# key: savepbm
+# --
+std::vector<int> params;
+params.push_back(CV_IMWRITE_PXM_BINARY);
+params.push_back(0);
+cv::imwrite("image.pbm", image, params);
