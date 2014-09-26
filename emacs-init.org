@@ -781,27 +781,20 @@ Use =E= in dired to open a system's native file explorer in current directory:
   ;; ------------------------------------------------------------
   ;; DEFUNS
 
-  (defun google-it ()
-    "Google the selected region if any, display a query prompt
-  otherwise."
-    (interactive)
-    (browse-url
-     (concat
-      "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
-      (url-hexify-string (if mark-active
-                             (buffer-substring (region-beginning) (region-end))
-                           (read-string "Google: "))))))
+  (defmacro url-do-it (backend-name query-beginning docstring)
+    `(defun ,(intern (format "%s-it" (mapconcat 'identity (split-string (downcase backend-name)) "-"))) ()
+       ,(format "%s the selected region if any, display a query prompt otherwise" docstring)
+       (interactive)
+       (browse-url
+        (concat
+         ,query-beginning
+         (url-hexify-string (if mark-active
+                                (buffer-substring (region-beginning) (region-end))
+                              (read-string (concat ,backend-name ": "))))))))
 
-  (defun lingvo-it ()
-    "Translate the following region in lingvo, display a query
-  prompt otherwise."
-    (interactive)
-    (browse-url
-     (concat
-      "http://lingvopro.abbyyonline.com/en/Translate/en-ru/"
-      (url-hexify-string (if mark-active
-                             (buffer-substring (region-beginning) (region-end))
-                           (read-string "Lingvo: "))))))
+  (global-set-key (kbd "\C-cg") (url-do-it "Google" "http://www.google.com/search?ie=utf-8&oe=utf-8&q=" "Google"))
+  (global-set-key (kbd "\C-cl") (url-do-it "Lingvo" "http://lingvopro.abbyyonline.com/en/Translate/en-ru/" "Translate (using Lingvo)"))
+  (global-set-key (kbd "\C-cu") (url-do-it "Urban Dictionary" "http://www.urbandictionary.com/define.php?term=" "Find a definition in Urban Dictionary for"))
 
   (defmacro smart-isearch (direction)
     `(defun ,(intern (format "smart-isearch-%s" direction)) (&optional regexp-p no-recursive-edit)
@@ -1376,8 +1369,6 @@ Use =E= in dired to open a system's native file explorer in current directory:
   (global-set-key (kbd "M-j")         'join-following-line)
   (global-set-key (kbd "M-Z")         'zap-up-to-char)
   (global-set-key (kbd "\C-x!")       'sudo-edit-current-file)
-  (global-set-key (kbd "\C-cg")       'google-it)
-  (global-set-key (kbd "\C-cl")       'lingvo-it)
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
   (global-set-key (kbd "C-z")         'undo)
   (global-set-key (kbd "C-x /")       'replace-path-with-truename)
