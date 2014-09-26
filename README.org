@@ -73,7 +73,7 @@
 воспользоваться следующей командой:
 
 #+BEGIN_SRC sh
-  wget https://raw.github.com/snosov1/bash/master/setup-ubuntu.bash -O- | bash
+  wget http://git.io/e1TCJQ -O- | bash
 #+END_SRC
 
 Во время её выполнения устанавливается сам Emacs, клонируется данный репозиторий
