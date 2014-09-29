@@ -25,6 +25,7 @@ also works as an Emacs configuration file.
      - [[#wdired][Wdired]]
      - [[#native-explorer][Native explorer]]
  - [[#string-edit][String edit]]
+ - [[#images-in-the-same-directory][Images in the same directory]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -269,6 +270,48 @@ As a side note, for the particular case of editing regular expressions, you can
 also use the command =M-x re-builder= to interactively construct highly
 sophisticated expressions.
 
+* Images in the same directory
+
+When you want to look through the images in a directory, it is convenient to
+visit next and previous images with shortcuts - =n= and =p=. This functionality
+is built-in since Emacs 24.4, but until I switch, I need special functions for
+that.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'image-mode nil t)
+    (define-key image-mode-map "n"
+      (defun next-image (arg)
+        "Visit the next arg'th image in the same directory of the
+  same type."
+        (interactive "P")
+        (unless (and (buffer-file-name) (eq major-mode 'image-mode))
+          (error "Not visiting a file in image mode"))
+        (let* ((files   (directory-files
+                         (file-name-directory (buffer-file-name)) nil
+                         (file-name-extension (buffer-file-name)) ))
+               (len     (length files))
+               (this    (file-name-nondirectory (buffer-file-name)))
+               (idx     0)
+               (dir     (file-name-directory (buffer-file-name))))
+          (dolist (file files)
+            (if (not (string= this file))
+                (setq idx  (1+ idx))
+              (setq idx
+                    (mod (+ idx (if arg arg 1)) len))
+              (kill-this-buffer) ;; we don't want to have a thousand image
+              ;; buffers around
+              (find-file (concat dir (elt files idx))))))))
+
+    (define-key image-mode-map "p"
+      (defun previous-image (arg)
+        "Visit previous image. See `next-image'"
+        (interactive "P")
+        (next-image (if arg (- arg) -1))))
+#+END_SRC
+
+Note, that those functions only traverse images with the same extension as the
+current one.
+
 * Unstructured configuration
 #+BEGIN_SRC emacs-lisp
   ;; ------------------------------------------------------------
@@ -283,41 +326,6 @@ sophisticated expressions.
 
   ;; hippie-expand
   (require 'hippie-exp)
-
-  ;; image-mode
-  (when (require 'image-mode nil t)
-    (defun next-image (arg)
-      "Visit the next arg'th image in the same directory of the
-  same type."
-      (interactive "P")
-      (unless (and (buffer-file-name) (eq major-mode 'image-mode))
-        (error "Not visiting a file in image mode"))
-      (let* ((files   (directory-files
-                       (file-name-directory (buffer-file-name)) nil
-                       (file-name-extension (buffer-file-name)) ))
-             (len     (length files))
-             (this    (file-name-nondirectory (buffer-file-name)))
-             (idx     0)
-             (dir     (file-name-directory (buffer-file-name))))
-        (dolist (file files)
-          (if (not (string= this file))
-              (setq idx  (1+ idx))
-            (setq idx
-                  (mod (+ idx (if arg arg 1)) len))
-            (kill-this-buffer) ;; we don't want to have a thousand image
-            ;; buffers around
-            (find-file (concat dir (elt files idx)))))))
-
-    (defun previous-image (arg)
-      "Visit previous image. See `next-image'"
-      (interactive "P")
-      (next-image (if arg (- arg) -1)))
-
-    (add-hook 'image-mode-hook
-              '(lambda ()
-                 (define-key image-mode-map "n" 'next-image)
-                 (define-key image-mode-map "p" 'previous-image)
-                 )))
 
   ;; python
   (when (require 'python nil t)
