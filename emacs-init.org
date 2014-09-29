@@ -259,7 +259,9 @@ To finish editing, press =C-c C-c=. To abort, press =C-c C-k=.
   (eval-after-load "string-edit-autoloads"
     '(progn
        (if (require 'string-edit nil t)
-           (global-set-key "\C-ce" 'string-edit-at-point)
+           (progn
+             (global-set-key "\C-ce" 'string-edit-at-point)
+             (define-key string-edit-mode-map (vector 'remap 'kill-this-buffer) 'string-edit-abort))
          (message "WARNING: string-edit not found"))))
 #+END_SRC
 
