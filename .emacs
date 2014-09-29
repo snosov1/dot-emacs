@@ -32,6 +32,7 @@
                  expand-region
                  flycheck
                  smex
+                 string-edit
                  window-numbering
                  markdown-mode
                  magit

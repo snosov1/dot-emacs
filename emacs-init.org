@@ -24,10 +24,10 @@ also works as an Emacs configuration file.
      - [[#do-what-i-mean][Do what I mean]]
      - [[#wdired][Wdired]]
      - [[#native-explorer][Native explorer]]
+ - [[#string-edit][String edit]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
-
 ** Lean and mean
 
 Emacs doesn't need a lot of UI elements - it should be lean and mean. Well, and
@@ -243,6 +243,29 @@ Use =E= in dired to open a system's native file explorer in current directory:
           (if (equal window-system 'x)
               (async-shell-command "nautilus ."))))))
 #+END_SRC
+
+* String edit
+
+It is frustratingly difficult to follow special characters and sequences in
+strings. Especially, in regular expressions, where you have 2 levels deep
+language hierarchy. This leads to strings like "\\\\" for matching "\".
+
+With string-edit mode you can press =C-c e= to edit a string at point without
+escape sequences, breaking one level of nesting.
+
+To finish editing, press =C-c C-c=. To abort, press =C-c C-k=.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "string-edit-autoloads"
+    '(progn
+       (if (require 'string-edit nil t)
+           (global-set-key "\C-ce" 'string-edit-at-point)
+         (message "WARNING: string-edit not found"))))
+#+END_SRC
+
+As a side note, for the particular case of editing regular expressions, you can
+also use the command =M-x re-builder= to interactively construct highly
+sophisticated expressions.
 
 * Unstructured configuration
 #+BEGIN_SRC emacs-lisp
