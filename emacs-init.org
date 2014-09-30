@@ -24,12 +24,16 @@ also works as an Emacs configuration file.
      - [[#do-what-i-mean][Do what I mean]]
      - [[#wdired][Wdired]]
      - [[#native-explorer][Native explorer]]
- - [[#string-edit][String edit]]
- - [[#images-in-the-same-directory][Images in the same directory]]
  - [[#better-buffer-names][Better buffer names]]
      - [[#default-uniquification][Default uniquification]]
      - [[#append-tramp-host][Append tramp host]]
      - [[#rename-buffer][Rename buffer]]
+ - [[#a-student-has-become-a-pupil][A student has become a pupil]]
+     - [[#searching][Searching]]
+     - [[#beginning-of-line][Beginning of line]]
+     - [[#free-advice][Free advice]]
+ - [[#string-edit][String edit]]
+ - [[#images-in-the-same-directory][Images in the same directory]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -251,6 +255,152 @@ Use =E= in dired to open a system's native file explorer in current directory:
               (async-shell-command "nautilus ."))))))
 #+END_SRC
 
+* Better buffer names
+
+** Default uniquification
+
+If you open several files with the same name, then a good way to distinguish
+between those is to prepend parent directory names to file names. If the names
+still conflict, you can add another parent directory levels, until the clash is
+resolved
+
+#+BEGIN_SRC emacs-lisp
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'forward)
+#+END_SRC
+
+** Append tramp host
+
+For remote files, opened with TRAMP, it makes sense to append the hostname to
+the buffer name.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'tramp nil t)
+    (defun append-tramp-host ()
+      "Appends host name to the current buffer name for remote
+  files"
+      (interactive)
+      (when (tramp-tramp-file-p default-directory)
+        (rename-buffer
+         (concat
+          (replace-regexp-in-string " <.*>$" "" (or (uniquify-buffer-base-name) (buffer-name)))
+          " <"
+          (tramp-file-name-host
+           (tramp-dissect-file-name default-directory)) ">")
+         t)))
+
+    (add-hook 'find-file-hook 'append-tramp-host)
+    (add-hook 'dired-mode-hook 'append-tramp-host))
+#+END_SRC
+
+** Rename buffer
+
+In case you have a better name for a buffer, you can always rename it by
+pressing =C-x C-r=.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "\C-x\C-r") 'rename-buffer)
+#+END_SRC
+
+* A student has become a pupil
+
+There's a couple of alternatives to the built-in functions of Emacs, that try to
+be smarter about what they do, while closely maintaining the original intent and
+implementation.
+
+** Searching
+
+If you select a region, that entirely lies on a single line, then incremental
+searching (=C-s= and =C-r=) will use it as an initial value and make a first
+jump. The common way I use it is:
+
+- mark a word or a longer unit with =er/expand-region= (=C-==)
+- press =C-s= or =C-r= to jump to the next or previous occurrence
+
+#+BEGIN_SRC emacs-lisp
+  (defmacro smart-isearch (direction)
+    `(defun ,(intern (format "smart-isearch-%s" direction)) (&optional regexp-p no-recursive-edit)
+       "If region is active and non empty, use it for searching and
+    make first jump. Otherwise, behave like original function."
+       (interactive "P\np")
+       (let ((smart-p (and
+                       (region-active-p)
+                       (< (region-beginning) (region-end))
+                       (= (- (line-number-at-pos (region-end))
+                             (line-number-at-pos (region-beginning))) 0)
+                       )))
+         (when smart-p
+           (kill-ring-save (region-beginning) (region-end)))
+
+         (,(intern (format "isearch-%s" direction)) regexp-p no-recursive-edit)
+
+         (when smart-p
+           (isearch-yank-kill)
+           (,(intern (format "isearch-repeat-%s" direction)))))))
+  (define-key global-map [remap isearch-forward]  (smart-isearch forward))
+  (define-key global-map [remap isearch-backward] (smart-isearch backward))
+#+END_SRC
+
+Similarly, =occur= (=M-s o=) will use the selected region, if any, without
+prompting. By the way, you can always press =M-s o= during incremental search to
+call =occur= for the current search string.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map [remap occur]
+    (defun smart-occur (arg)
+      (interactive "P")
+      (if (region-active-p)
+          (occur (buffer-substring-no-properties (region-beginning) (region-end)) arg)
+        (call-interactively 'occur))))
+#+END_SRC
+
+I got used to the convention of =C-x C-q= being a toggle between writable and
+read-only buffer states. It's better for occur mode to follow this convention.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key occur-mode-map "\C-x\C-q" 'occur-edit-mode)
+  (define-key occur-edit-mode-map "\C-x\C-q" 'occur-cease-edit)
+#+END_SRC
+
+** Beginning of line
+
+When jumping to the beginning of line, more often than not you actually want to
+jump to the first non-whitespace character. So, the default behavior of
+=beginning-of-line= (=C-a=) is remapped to =back-to-indentation=. In case you
+actually wanted to go to the very beginning of the line, you should hit =C-a=
+one more time.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map [remap move-beginning-of-line]
+    (defun smart-beginning-of-line ()
+      "Move point to first non-whitespace character or beginning-of-line.
+
+    Move point to the first non-whitespace character on this line.
+    If point was already at that position, move point to beginning of line."
+      (interactive)
+      (let ((oldpos (point)))
+        (back-to-indentation)
+        (and (= oldpos (point))
+             (beginning-of-line)))))
+#+END_SRC
+
+** Free advice
+
+It is so natural and convenient for the just yanked region to be properly
+indented, that I got used to this functionality even before I turned it on.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice insert-for-yank-1 (after indent-region activate)
+    "Indent yanked region in certain modes, C-u prefix to disable"
+    (if (and (not current-prefix-arg)
+             (member major-mode '(sh-mode
+                                  emacs-lisp-mode lisp-mode
+                                  c-mode c++-mode objc-mode d-mode java-mode cuda-mode
+                                  LaTeX-mode TeX-mode
+                                  xml-mode html-mode css-mode)))
+        (indent-region (region-beginning) (region-end) nil)))
+#+END_SRC
+
 * String edit
 
 It is frustratingly difficult to follow special characters and sequences in
@@ -317,53 +467,6 @@ that.
 
 Note, that those functions only traverse images with the same extension as the
 current one.
-
-* Better buffer names
-
-** Default uniquification
-
-If you open several files with the same name, then a good way to distinguish
-between those is to prepend parent directory names to file names. If the names
-still conflict, you can add another parent directory levels, until the clash is
-resolved
-
-#+BEGIN_SRC emacs-lisp
-  (require 'uniquify)
-  (setq uniquify-buffer-name-style 'forward)
-#+END_SRC
-
-** Append tramp host
-
-For remote files, opened with TRAMP, it makes sense to append the hostname to
-the buffer name.
-
-#+BEGIN_SRC emacs-lisp
-  (when (require 'tramp nil t)
-    (defun append-tramp-host ()
-      "Appends host name to the current buffer name for remote
-  files"
-      (interactive)
-      (when (tramp-tramp-file-p default-directory)
-        (rename-buffer
-         (concat
-          (replace-regexp-in-string " <.*>$" "" (or (uniquify-buffer-base-name) (buffer-name)))
-          " <"
-          (tramp-file-name-host
-           (tramp-dissect-file-name default-directory)) ">")
-         t)))
-
-    (add-hook 'find-file-hook 'append-tramp-host)
-    (add-hook 'dired-mode-hook 'append-tramp-host))
-#+END_SRC
-
-** Rename buffer
-
-In case you have a better name for a buffer, you can always rename it by
-pressing =C-x C-r=.
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "\C-x\C-r") 'rename-buffer)
-#+END_SRC
 
 * Unstructured configuration
 #+BEGIN_SRC emacs-lisp
@@ -611,16 +714,6 @@ pressing =C-x C-r=.
               magit-diff-refine-hunk t))
          (message "WARNING: magit not found"))))
 
-  ;; android-mode
-  (eval-after-load "android-mode-autoloads"
-    '(progn
-       (when (require 'android-mode nil t)
-         (let ((sdkdir (getenv "ANDROID_SDK")))
-           (if sdkdir
-               (setq android-mode-sdk-dir sdkdir)
-             (setq android-mode-sdk-dir "~/Development/android-sdk-linux")))
-         (setq android-mode-key-prefix "\C-c\C-a"))))
-
   ;; cmake-mode
   (eval-after-load "cmake-mode-autoloads"
     '(progn
@@ -762,27 +855,6 @@ pressing =C-x C-r=.
   (require 'ox-reveal nil t)
 
   ;; ------------------------------------------------------------
-  ;; ADVICES
-
-  (defadvice insert-for-yank-1 (after indent-region activate)
-    "Indent yanked region in certain modes, C-u prefix to disable"
-    (if (and (not current-prefix-arg)
-             (member major-mode '(sh-mode
-                                  emacs-lisp-mode lisp-mode
-                                  c-mode c++-mode objc-mode d-mode java-mode cuda-mode
-                                  LaTeX-mode TeX-mode
-                                  xml-mode html-mode css-mode)))
-        (indent-region (region-beginning) (region-end) nil)))
-
-  (defadvice ido-switch-buffer (after maintain-ansi-term activate)
-    "Go to prompt when switched to ansi-term"
-    (when (member major-mode '(term-mode))
-      (term-line-mode)
-      (end-of-buffer)
-      (end-of-line)
-      (term-char-mode)))
-
-  ;; ------------------------------------------------------------
   ;; MATH DEFUNS
 
   (defun deg2rad (x)
@@ -818,46 +890,6 @@ pressing =C-x C-r=.
   (global-set-key (kbd "\C-cg") (url-do-it "Google" "http://www.google.com/search?ie=utf-8&oe=utf-8&q=" "Google"))
   (global-set-key (kbd "\C-cl") (url-do-it "Lingvo" "http://lingvopro.abbyyonline.com/en/Translate/en-ru/" "Translate (using Lingvo)"))
   (global-set-key (kbd "\C-cu") (url-do-it "Urban Dictionary" "http://www.urbandictionary.com/define.php?term=" "Find a definition in Urban Dictionary for"))
-
-  (defmacro smart-isearch (direction)
-    `(defun ,(intern (format "smart-isearch-%s" direction)) (&optional regexp-p no-recursive-edit)
-       "If region is active and non empty, use it for searching and
-  make first jump. Otherwise, behave like original function."
-       (interactive "P\np")
-       (let ((smart-p (and
-                       (region-active-p)
-                       (< (region-beginning) (region-end))
-                       (= (- (line-number-at-pos (region-end))
-                             (line-number-at-pos (region-beginning))) 0)
-                       )))
-         (when smart-p
-           (kill-ring-save (region-beginning) (region-end)))
-
-         (,(intern (format "isearch-%s" direction)) regexp-p no-recursive-edit)
-
-         (when smart-p
-           (isearch-yank-kill)
-           (,(intern (format "isearch-repeat-%s" direction)))))))
-  (define-key global-map [remap isearch-forward]  (smart-isearch forward))
-  (define-key global-map [remap isearch-backward] (smart-isearch backward))
-  (define-key global-map [remap occur]
-    (defun smart-occur (arg)
-      (interactive "P")
-      (if (region-active-p)
-          (occur (buffer-substring-no-properties (region-beginning) (region-end)) arg)
-        (call-interactively 'occur))))
-
-  (define-key global-map [remap move-beginning-of-line]
-    (defun smart-beginning-of-line ()
-      "Move point to first non-whitespace character or beginning-of-line.
-
-  Move point to the first non-whitespace character on this line.
-  If point was already at that position, move point to beginning of line."
-      (interactive)
-      (let ((oldpos (point)))
-        (back-to-indentation)
-        (and (= oldpos (point))
-             (beginning-of-line)))))
 
   (defun c-current-function-name ()
     "Returns current function name in C-like
@@ -972,6 +1004,15 @@ pressing =C-x C-r=.
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; term
   (when (require 'term)
+
+    (defadvice ido-switch-buffer (after maintain-ansi-term activate)
+      "Go to prompt when switched to ansi-term"
+      (when (member major-mode '(term-mode))
+        (term-line-mode)
+        (end-of-buffer)
+        (end-of-line)
+        (term-char-mode)))
+
     (defcustom term-remote-hosts '()
       "List of remote hosts")
 
@@ -1456,16 +1497,6 @@ pressing =C-x C-r=.
             '(lambda ()
                (define-key conf-mode-map "\C-c\C-c"
                  nil)))
-
-  (add-hook 'occur-mode-hook
-            '(lambda ()
-               (define-key occur-mode-map "\C-x\C-q"
-                 'occur-edit-mode)))
-
-  (add-hook 'occur-edit-mode-hook
-            '(lambda ()
-               (define-key occur-edit-mode-map "\C-x\C-q"
-                 'occur-cease-edit)))
 
   (add-hook 'sh-mode-hook
             '(lambda ()

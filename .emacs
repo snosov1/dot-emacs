@@ -21,7 +21,6 @@
                '(
                  auto-complete
                  ac-dcd
-                 android-mode
                  async
                  browse-kill-ring
                  cmake-mode
