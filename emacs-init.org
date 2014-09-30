@@ -26,6 +26,10 @@ also works as an Emacs configuration file.
      - [[#native-explorer][Native explorer]]
  - [[#string-edit][String edit]]
  - [[#images-in-the-same-directory][Images in the same directory]]
+ - [[#better-buffer-names][Better buffer names]]
+     - [[#default-uniquification][Default uniquification]]
+     - [[#append-tramp-host][Append tramp host]]
+     - [[#rename-buffer][Rename buffer]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -161,8 +165,10 @@ dired. You can toggle its visibility by pressing =h=:
        (if (require 'dired-async nil t)
            (progn
              (set-face-attribute 'dired-async-message nil
+                                 :foreground nil
                                  :inherit 'mode-line-emphasis)
              (set-face-attribute 'dired-async-mode-message nil
+                                 :background nil
                                  :inherit 'highlight))
          (message "WARNING: dired-async not found"))))
 #+END_SRC
@@ -249,7 +255,7 @@ Use =E= in dired to open a system's native file explorer in current directory:
 
 It is frustratingly difficult to follow special characters and sequences in
 strings. Especially, in regular expressions, where you have 2 levels deep
-language hierarchy. This leads to strings like "\\\\" for matching "\".
+languages hierarchy. This leads to strings like "\\\\" for matching "\".
 
 With string-edit mode you can press =C-c e= to edit a string at point without
 escape sequences, breaking one level of nesting.
@@ -306,11 +312,58 @@ that.
       (defun previous-image (arg)
         "Visit previous image. See `next-image'"
         (interactive "P")
-        (next-image (if arg (- arg) -1))))
+        (next-image (if arg (- arg) -1)))))
 #+END_SRC
 
 Note, that those functions only traverse images with the same extension as the
 current one.
+
+* Better buffer names
+
+** Default uniquification
+
+If you open several files with the same name, then a good way to distinguish
+between those is to prepend parent directory names to file names. If the names
+still conflict, you can add another parent directory levels, until the clash is
+resolved
+
+#+BEGIN_SRC emacs-lisp
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'forward)
+#+END_SRC
+
+** Append tramp host
+
+For remote files, opened with TRAMP, it makes sense to append the hostname to
+the buffer name.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'tramp nil t)
+    (defun append-tramp-host ()
+      "Appends host name to the current buffer name for remote
+  files"
+      (interactive)
+      (when (tramp-tramp-file-p default-directory)
+        (rename-buffer
+         (concat
+          (replace-regexp-in-string " <.*>$" "" (or (uniquify-buffer-base-name) (buffer-name)))
+          " <"
+          (tramp-file-name-host
+           (tramp-dissect-file-name default-directory)) ">")
+         t)))
+
+    (add-hook 'find-file-hook 'append-tramp-host)
+    (add-hook 'dired-mode-hook 'append-tramp-host))
+#+END_SRC
+
+** Rename buffer
+
+In case you have a better name for a buffer, you can always rename it by
+pressing =C-x C-r=.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "\C-x\C-r") 'rename-buffer)
+#+END_SRC
 
 * Unstructured configuration
 #+BEGIN_SRC emacs-lisp
@@ -371,19 +424,6 @@ current one.
     (add-hook 'ibuffer-mode-hook
               (lambda ()
                 (ibuffer-switch-to-saved-filter-groups "default"))))
-
-  (when (require 'tramp nil t)
-    (defun append-tramp-host ()
-      "Appends host name to the current buffer name for remote files"
-      (interactive)
-      (when (tramp-tramp-file-p default-directory)
-        (rename-buffer
-         (concat
-          (replace-regexp-in-string " <.*>$" "" (or (uniquify-buffer-base-name) (buffer-name)))
-          " <"
-          (tramp-file-name-host
-           (tramp-dissect-file-name default-directory)) ">")
-         t))))
 
   (when (require 'flyspell nil t)
     (add-hook 'text-mode-hook 'flyspell-mode)
@@ -1271,7 +1311,6 @@ current one.
    '(tab-width 4)
    '(tags-case-fold-search nil)
    '(truncate-lines t)
-   '(uniquify-buffer-name-style (quote forward) nil (uniquify))
    '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
    '(yas-prompt-functions (quote (yas-dropdown-prompt yas-ido-prompt yas-completing-prompt yas-x-prompt yas-no-prompt))))
   (custom-set-faces
@@ -1347,7 +1386,6 @@ current one.
   (global-set-key (kbd "C-+")         'org-list-repair)
   (global-set-key (kbd "M-+")         'org-list-repair)
   (global-set-key (kbd "C-x w")       'webjump)
-  (global-set-key (kbd "\C-x\C-r")    'rename-buffer)
   (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
   (global-set-key (kbd "M-j")         'join-following-line)
   (global-set-key (kbd "M-Z")         'zap-up-to-char)
@@ -1393,10 +1431,6 @@ current one.
                  'org-time-stamp-inactive)
                (define-key org-mode-map (kbd "C-c !")
                  'org-time-stamp)))
-
-  (add-hook 'find-file-hook 'append-tramp-host)
-
-  (add-hook 'dired-mode-hook 'append-tramp-host)
 
   (add-hook 'view-mode-hook
             '(lambda ()
