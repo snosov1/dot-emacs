@@ -344,7 +344,7 @@ jump. The common way I use it is:
 #+END_SRC
 
 Similarly, =occur= (=M-s o=) will use the selected region, if any, without
-prompting. By the way, you can always press =M-s o= during incremental search to
+prompting. By the way, you can press =M-s o= during incremental search to
 call =occur= for the current search string.
 
 #+BEGIN_SRC emacs-lisp
@@ -407,7 +407,8 @@ indented, that I got used to this functionality even before I turned it on.
 
 It is frustratingly difficult to follow special characters and sequences in
 strings. Especially, in regular expressions, where you have 2 levels deep
-languages hierarchy. This leads to strings like "\\\\" for matching "\".
+languages hierarchy. This leads to strings, like, =\\\\= (4 backslashes) for
+matching a =\= (single backslash).
 
 With string-edit mode you can press =C-c e= to edit a string at point without
 escape sequences, breaking one level of nesting.
