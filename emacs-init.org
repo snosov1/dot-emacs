@@ -6,30 +6,13 @@
 This is a little novel for casual reading about a text editor. Incidentally, it
 also works as an Emacs configuration file.
 
-* Contents                                                              :TOC:
+* Contents                                                              :TOC@1:
  - [[#foreword][Foreword]]
  - [[#ui-customization][UI customization]]
-     - [[#lean-and-mean][Lean and mean]]
-     - [[#dark-tango][Dark tango]]
-     - [[#deja-vu][Deja Vu]]
-     - [[#forbidden-fruit][Forbidden fruit]]
  - [[#abbreviations][Abbreviations]]
  - [[#dired][Dired]]
-     - [[#dired-jump][Dired jump]]
-     - [[#dired-details][Dired details]]
-     - [[#dired-async][Dired async]]
-     - [[#jumping-back-and-forth][Jumping back and forth]]
-     - [[#do-what-i-mean][Do what I mean]]
-     - [[#wdired][Wdired]]
-     - [[#native-explorer][Native explorer]]
  - [[#better-buffer-names][Better buffer names]]
-     - [[#default-uniquification][Default uniquification]]
-     - [[#append-tramp-host][Append tramp host]]
-     - [[#rename-buffer][Rename buffer]]
  - [[#a-student-has-become-a-pupil][A student has become a pupil]]
-     - [[#searching][Searching]]
-     - [[#beginning-of-line][Beginning of line]]
-     - [[#free-advice][Free advice]]
  - [[#string-edit][String edit]]
  - [[#images-in-the-same-directory][Images in the same directory]]
  - [[#unstructured-configuration][Unstructured configuration]]
