@@ -434,7 +434,8 @@ sophisticated expressions.
 When you want to look through the images in a directory, it is convenient to
 visit next and previous images with shortcuts - =n= and =p=. This functionality
 is built-in since Emacs 24.4, but until I switch, I need special functions for
-that.
+that. Note, that those functions only traverse images with the same extension as
+the current one.
 
 #+BEGIN_SRC emacs-lisp
   (when (require 'image-mode nil t)
@@ -467,9 +468,6 @@ that.
         (interactive "P")
         (next-image (if arg (- arg) -1)))))
 #+END_SRC
-
-Note, that those functions only traverse images with the same extension as the
-current one.
 
 * Unstructured configuration
 #+BEGIN_SRC emacs-lisp
