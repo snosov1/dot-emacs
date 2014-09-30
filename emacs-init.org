@@ -68,10 +68,12 @@ black.
 DejaVu fonts family is simply the best one out there. And DejaVu Sans Mono is
 the brightest child in the family:
 
-- it covers a hell lot of Unicode symbols
+- it's sans-serif
+- it's mono-space
+- it covers a great amount of Unicode symbols
 - it's community-driven and MIT/public domain licensed
 - it makes l, 1 and I clearly distinguishable, as well as 0 and O
-- it's beautiful looking
+- it's beautiful
 
 Basically, DejaVu Sans Mono is a "font done right" for technical work.
 
