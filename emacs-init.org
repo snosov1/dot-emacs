@@ -6,8 +6,6 @@
 This is a little novel for casual reading about a text editor. Incidentally, it
 also works as an Emacs configuration file.
 
-*WARNING: WORK IN PROGRESS!*
-
 * Contents                                                              :TOC:
  - [[#foreword][Foreword]]
  - [[#ui-customization][UI customization]]
@@ -470,6 +468,10 @@ the current one.
 #+END_SRC
 
 * Unstructured configuration
+
+Right now this section is simply a copy-paste of my old configuration. I
+gradually move things from this section to separate ones.
+
 #+BEGIN_SRC emacs-lisp
   ;; ------------------------------------------------------------
   ;; BUILT-IN DEPENDENCIES
