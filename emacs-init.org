@@ -120,12 +120,12 @@ jumps to parent directory, when already in dired. With universal argument - =C-u
 C-x C-j= - it opens dired in other window.
 
 #+BEGIN_SRC emacs-lisp
-  (require 'dired-x)
-  (define-key global-map (vector 'remap 'dired-jump)
-    (defun dired-jump-universal-other (arg)
-      "Calls dired-jump. With prefix argument uses other window"
-      (interactive "P")
-      (dired-jump arg)))
+  (when (require 'dired-x nil t)
+    (define-key global-map (vector 'remap 'dired-jump)
+      (defun dired-jump-universal-other (arg)
+        "Calls dired-jump. With prefix argument uses other window"
+        (interactive "P")
+        (dired-jump arg))))
 #+END_SRC
 
 ** Dired details
@@ -248,8 +248,8 @@ still conflict, you can add another parent directory levels, until the clash is
 resolved
 
 #+BEGIN_SRC emacs-lisp
-  (require 'uniquify)
-  (setq uniquify-buffer-name-style 'forward)
+  (when (require 'uniquify nil t)
+    (setq uniquify-buffer-name-style 'forward))
 #+END_SRC
 
 ** Append tramp host
