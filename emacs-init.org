@@ -238,6 +238,47 @@ Use =E= in dired to open a system's native file explorer in current directory:
               (async-shell-command "nautilus ."))))))
 #+END_SRC
 
+** Tar (Tahr? Thar?)
+
+One thing that makes me upset about Dired is its somewhat limited support for
+compression. Yes, there's a =Z= key for this, but
+
+- it doesn't compress directories
+- when multiple files are marked, each file is compressed to a separate archive,
+  which is not what I want in 98.6% of cases
+
+For some reason Dired is not very customizable in that regard. Like, I couldn't
+find a way to alter its behavior without a complete rewrite of related function.
+
+So, I ended up with a function which does what I want in 98.6% of cases. You
+press =z=, and it asks you for an output archive name. If multiple files are
+marked at the moment, it will compress those into a single archive. And it works
+for directories, too!
+
+If I want to untar an archive, I simply use =&= which suggests untaring as a
+first guess.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key dired-mode-map (kbd "z")
+    (defun dired-tar-marked-files ()
+      "Ask a name for a .tar.gz archive and compress the marked
+  files into it. If no files are marked or a numeric prefix arg is
+  given, the next ARG files are used. Just C-u means the current
+  file. The prompt mentions the file(s) or the marker, as
+  appropriate."
+      (interactive)
+      (let* ((files (dired-get-marked-files t current-prefix-arg))
+             (out-name (concat
+                        (if (equal (length files) 1)
+                            (file-name-sans-extension (car files))
+                          (file-name-base (directory-file-name (expand-file-name default-directory))))
+                        ".tar.gz")))
+        (async-shell-command (concat
+                              "tar -czvf "
+                              (dired-read-shell-command "Output file name for 'tar -czvf' on %s: " out-name files)
+                              " "
+                              (mapconcat 'identity files " "))))))
+#+END_SRC
 * Better buffer names
 
 ** Default uniquification
