@@ -542,6 +542,29 @@ the current one.
 #+END_SRC
 
 * Programming languages
+** Compile
+
+All I really need for programming is =C-c C-c= to issue the =compile= command.
+And being able to jump to the line with the error from the compilation buffer.
+
+The only nifty trick I find particularly useful is to make the =compile-command=
+variable buffer-local. It means, that each buffer will remember what compilation
+command was issued from it and suggest it on the successive call.
+
+This replaces all the "project management utilities" nonsense for me. It's
+incredibly flexible, convenient and simple at the same time. Great stuff, truly.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'compile nil t)
+    (make-variable-buffer-local 'compile-command)
+
+    ;; those patterns are used by dmd compiler
+    (setq compilation-error-regexp-alist
+          (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
+                    ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
+                  compilation-error-regexp-alist)))
+#+END_SRC
+
 ** Python
 
 Probably, the most prominent package for Python development is =elpy=. At least
@@ -552,9 +575,8 @@ Personally, I don't find those features to be a big deal. So, when =elpy=
 explicitly refused to work on a remote python script, I removed it without
 second thought.
 
-All I really need for programming is =C-c C-c= to issue the =compile= command. I
-don't even need a shell, really. But if I'm to pick one for Python, it will,
-obviously, be =ipython=.
+I also don't really need a shell (or REPL), since I'm not used to interpreters.
+But if I'm to pick one for Python, it will, obviously, be =ipython=.
 
 #+BEGIN_SRC emacs-lisp
   (when (require 'python nil t)
@@ -588,16 +610,6 @@ gradually move things from this section to separate ones.
 
   ;; hippie-expand
   (require 'hippie-exp)
-
-  ;; compile
-  (when (require 'compile nil t)
-    (make-variable-buffer-local 'compile-command)
-
-    ;; those patterns are used by dmd compiler
-    (setq compilation-error-regexp-alist
-          (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
-                    ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
-                  compilation-error-regexp-alist)))
 
   ;; ibuffer
   (when (require 'ibuffer nil t)
