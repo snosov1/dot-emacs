@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: common copy constructor and assignment
+# key: copy_constructor
+# --
+$1::$1(const $1 &other)
+{
+    (*this) = other;
+}
+$1::$1& operator()(const $1 &other)
+{
+    if (this != &other)
+    {
+        memcpy(this, &other, sizeof($1));
+    }
+}
