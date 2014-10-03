@@ -1,2 +1,5 @@
 (defun sanitize-to-identifier (str)
   (mapconcat 'identity (split-string str "[][ ~`!@#$%^&*()+={}|\:;\"'<,>.?/]+") "_"))
+
+(defun simplify-nested-name (str)
+  (car (last (split-string str ":"))))

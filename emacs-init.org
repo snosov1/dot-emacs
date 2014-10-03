@@ -918,17 +918,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "\C-cl") (url-do-it "Lingvo" "http://lingvopro.abbyyonline.com/en/Translate/en-ru/" "Translate (using Lingvo)"))
   (global-set-key (kbd "\C-cu") (url-do-it "Urban Dictionary" "http://www.urbandictionary.com/define.php?term=" "Find a definition in Urban Dictionary for"))
 
-  (defun c-current-function-name ()
-    "Returns current function name in C-like
-  languages ('beginning-of-defun'-based)"
-    (save-excursion
-      (beginning-of-defun)
-      (skip-chars-forward "^(")
-      (skip-chars-backward "\s\n")
-      (setq defun-name-end (point))
-      (skip-chars-backward "^[:space:]")
-      (buffer-substring-no-properties (point) defun-name-end)))
-
   (defun increment-decimal-number-at-point (&optional arg)
     "Increment the number at point by `arg'."
     (interactive "p*")
