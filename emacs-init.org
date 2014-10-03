@@ -13,6 +13,7 @@ also works as an Emacs configuration file.
  - [[#dired][Dired]]
  - [[#better-buffer-names][Better buffer names]]
  - [[#a-student-has-become-a-pupil][A student has become a pupil]]
+ - [[#spelling-fly][Spelling fly]]
  - [[#string-edit][String edit]]
  - [[#images-in-the-same-directory][Images in the same directory]]
  - [[#unstructured-configuration][Unstructured configuration]]
@@ -247,13 +248,14 @@ compression. Yes, there's a =Z= key for this, but
 - when multiple files are marked, each file is compressed to a separate archive,
   which is not what I want in 98.6% of cases
 
-For some reason Dired is not very customizable in that regard. Like, I couldn't
-find a way to alter its behavior without a complete rewrite of related function.
+For some reason Dired is not very customizable in that regard. At least, I
+couldn't find a way to alter its behavior without a complete rewrite of related
+functions.
 
-So, I ended up with a function which does what I want in 98.6% of cases. You
-press =z=, and it asks you for an output archive name. If multiple files are
-marked at the moment, it will compress those into a single archive. And it works
-for directories, too!
+So, I ended up with a small function which does what I want in 98.6% of cases.
+You press =z=, and it asks you for an output archive name. If multiple files are
+marked at the moment, it will compress those into a single archive. And,
+surprisingly, it works for directories, too!
 
 If I want to untar an archive, I simply use =&= which suggests untaring as a
 first guess.
@@ -425,6 +427,53 @@ indented, that I got used to this functionality even before I turned it on.
         (indent-region (region-beginning) (region-end) nil)))
 #+END_SRC
 
+* Spelling fly
+
+Can't tell it for sure, but I suspect that even the brightest spelling bee
+champions hit the wrong button once in a while. So, it's good to have an
+automated spell-checking in every text buffer you edit. It would be an overkill
+for editing source code, since everybody loves identifiers like "src", "lhs",
+"rhs", "ptr", "uniq", "img", "gl", "qq" and a gazillion of other pretty names.
+
+When the cursor is under the red-highlighted word, you can press =M-$= to look
+for alternative spellings.
+
+By default, only the words under the cursor are checked for correctness. So, if
+you want to spell check the whole buffer (or region), hit =C-x M-$=. To go to
+the next error, hit "C-,". To auto-correct the next word, hit =C-.=.
+
+I edit texts in both Russian and English languages and I have to spell check
+both of the languages. To toggle between those dictionaries I use =C-c M-$=. If
+you want to toggle (cycle, actually) between (through) other languages, you can
+customize the =ispell-common-dictionaries= variable.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'flyspell nil t)
+    (add-hook 'text-mode-hook 'flyspell-mode)
+    (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+    (defcustom ispell-common-dictionaries
+      '("en" "ru")
+      "List of dictionaries for common use")
+
+    (setq ispell-dictionary (car ispell-common-dictionaries))
+
+    (define-key flyspell-mode-map (kbd "C-c M-$")
+      (defun ispell-next-dictionary()
+        "Cycle through dictionaries in `ispell-common-dictionaries'"
+        (interactive)
+        (let* ((dic ispell-current-dictionary)
+               (next (cadr (member dic ispell-common-dictionaries)))
+               (change (if next next (car ispell-common-dictionaries))))
+          (ispell-change-dictionary change))))
+
+    (define-key flyspell-mode-map (kbd "C-x M-$")
+      (defun flyspell-buffer-or-region ()
+        (interactive)
+        (if (region-active-p)
+            (flyspell-region (region-beginning) (region-end))
+          (flyspell-buffer)))))
+#+END_SRC
 * String edit
 
 It is frustratingly difficult to follow special characters and sequences in
@@ -554,27 +603,6 @@ gradually move things from this section to separate ones.
     (add-hook 'ibuffer-mode-hook
               (lambda ()
                 (ibuffer-switch-to-saved-filter-groups "default"))))
-
-  (when (require 'flyspell nil t)
-    (add-hook 'text-mode-hook 'flyspell-mode)
-    (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
-    (defcustom ispell-common-dictionaries
-      '("en" "ru")
-      "List of dictionaries for common use")
-
-    (setq ispell-dictionary (car ispell-common-dictionaries))
-
-    (defun ispell-next-dictionary()
-      "Cycle through dictionaries in `ispell-common-dictionaries'"
-      (interactive)
-      (let* ((dic ispell-current-dictionary)
-             (next (cadr (member dic ispell-common-dictionaries)))
-             (change (if next next (car ispell-common-dictionaries))))
-        (ispell-change-dictionary change)))
-
-    (define-key flyspell-mode-map (kbd "C-x M-$") 'flyspell-buffer)
-    (define-key flyspell-mode-map (kbd "C-c M-$") 'ispell-next-dictionary))
 
   ;; ------------------------------------------------------------
   ;; PER-PACKAGE CONFIGURATION

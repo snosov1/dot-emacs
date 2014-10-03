@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: join list of strings
+# key: join
+# --
+(mapconcat 'identity $0 " ")
