@@ -16,6 +16,7 @@ also works as an Emacs configuration file.
  - [[#spelling-fly][Spelling fly]]
  - [[#string-edit][String edit]]
  - [[#images-in-the-same-directory][Images in the same directory]]
+ - [[#programming-languages][Programming languages]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -540,6 +541,35 @@ the current one.
         (next-image (if arg (- arg) -1)))))
 #+END_SRC
 
+* Programming languages
+** Python
+
+Probably, the most prominent package for Python development is =elpy=. At least
+it was, when I checked last time. It has all the "cool kids" features:
+auto-completion, refactoring, documentation access, etc.
+
+Personally, I don't find those features to be a big deal. So, when =elpy=
+explicitly refused to work on a remote python script, I removed it without
+second thought.
+
+All I really need for programming is =C-c C-c= to issue the =compile= command. I
+don't even need a shell, really. But if I'm to pick one for Python, it will,
+obviously, be =ipython=.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'python nil t)
+    (if (executable-find "ipython")
+        (setq
+         python-shell-interpreter "ipython"
+         python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+         python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "))
+
+    (add-hook 'python-mode-hook
+              '(lambda ()
+                 (define-key python-mode-map (kbd "\C-c\C-c") 'compile)
+                 (define-key python-mode-map (kbd "\C-c\C-e") 'python-shell-send-buffer))))
+#+END_SRC
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -558,20 +588,6 @@ gradually move things from this section to separate ones.
 
   ;; hippie-expand
   (require 'hippie-exp)
-
-  ;; python
-  (when (require 'python nil t)
-    (if (executable-find "ipython")
-        (setq
-         python-shell-interpreter "ipython"
-         python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-         python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "))
-
-    (add-hook 'python-mode-hook
-              '(lambda ()
-                 (define-key python-mode-map (kbd "\C-c\C-c") 'compile)
-                 (define-key python-mode-map (kbd "\C-c\C-e") 'python-shell-send-buffer)
-                 )))
 
   ;; compile
   (when (require 'compile nil t)
