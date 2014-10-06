@@ -278,7 +278,12 @@ first guess.
                         ".tar.gz")))
         (async-shell-command (concat
                               "tar -czvf "
-                              (dired-read-shell-command "Output file name for 'tar -czvf' on %s: " out-name files)
+                              (dired-mark-pop-up
+                               nil 'shell files
+                               'read-shell-command
+                               (format "Output file name for 'tar -czvf' on %s: "
+                                       (dired-mark-prompt current-prefix-arg files))
+                               out-name nil)
                               " "
                               (mapconcat 'identity files " "))))))
 #+END_SRC
