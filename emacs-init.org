@@ -419,7 +419,8 @@ one more time.
 ** Free advice
 
 It is so natural and convenient for the just yanked region to be properly
-indented, that I got used to this functionality even before I turned it on.
+indented, that I got used to this functionality even before I turned it on. On
+the rare occasions you can use universal argument to suppress auto indentation.
 
 #+BEGIN_SRC emacs-lisp
   (defadvice insert-for-yank-1 (after indent-region activate)
@@ -444,14 +445,14 @@ for editing source code, since everybody loves identifiers like "src", "lhs",
 When the cursor is under the red-highlighted word, you can press =M-$= to look
 for alternative spellings.
 
-By default, only the words under the cursor are checked for correctness. So, if
-you want to spell check the whole buffer (or region), hit =C-x M-$=. To go to
-the next error, hit "C-,". To auto-correct the next word, hit =C-.=.
+By default, only words under the cursor are checked for correctness. So, if you
+want to spell check the whole buffer (or region), hit =C-x M-$=. To go to the
+next error, hit "C-,". To auto-correct the next word, hit =C-.=.
 
-I edit texts in both Russian and English languages and I have to spell check
-both of the languages. To toggle between those dictionaries I use =C-c M-$=. If
-you want to toggle (cycle, actually) between (through) other languages, you can
-customize the =ispell-common-dictionaries= variable.
+I edit texts in both Russian and English and I have to spell check both of the
+languages. To toggle between those dictionaries I use =C-c M-$=. If you want to
+toggle (cycle, actually) between (through) other languages, you can customize
+the =ispell-common-dictionaries= variable.
 
 #+BEGIN_SRC emacs-lisp
   (when (require 'flyspell nil t)
@@ -549,15 +550,15 @@ the current one.
 * Programming languages
 ** Compile
 
-All I really need for programming is =C-c C-c= to issue the =compile= command.
-And being able to jump to the line with the error from the compilation buffer.
+All I really need for programming is =C-c C-c= to issue =compile= command and
+being able to jump to the line with the error from the compilation buffer.
 
-The only nifty trick I find particularly useful is to make the =compile-command=
-variable buffer-local. It means, that each buffer will remember what compilation
+The only nifty trick I find particularly useful is to make =compile-command=
+variable buffer-local. After that each buffer will remember what compilation
 command was issued from it and suggest it on the successive call.
 
-This replaces all the "project management utilities" nonsense for me. It's
-incredibly flexible, convenient and simple at the same time. Great stuff, truly.
+This replaces all the "project management" nonsense for me. It's incredibly
+flexible, convenient and simple at the same time. Truly, great stuff.
 
 #+BEGIN_SRC emacs-lisp
   (when (require 'compile nil t)
@@ -596,6 +597,72 @@ But if I'm to pick one for Python, it will, obviously, be =ipython=.
                  (define-key python-mode-map (kbd "\C-c\C-c") 'compile)
                  (define-key python-mode-map (kbd "\C-c\C-e") 'python-shell-send-buffer))))
 #+END_SRC
+
+** Markdown
+
+In my opinion, =markdown-mode= is somewhat overwhelming in its functionality. It
+binds too many combinations to the extent when it starts to feel obtrusive.
+
+If I were to implement a Markdown mode, I would try to mimic it as closely to
+=org-mode= as possible. But, apparently, =markdown-mode= authors have another
+point of view, so the mode is different in almost everything it does.
+
+So, the only things, that I actually use in this mode is syntax highlighting and
+a =markdown-export= function (=C-c C-e=).
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "markdown-mode-autoloads"
+    '(progn
+       (if (require 'markdown-mode nil t)
+           (progn
+             (setq auto-mode-alist (cons '("\\.md" . markdown-mode) auto-mode-alist))
+
+             (define-key markdown-mode-map (kbd "M-p") nil)
+             (define-key markdown-mode-map (kbd "M-n") nil)
+             (define-key markdown-mode-map (kbd "\C-c\C-c") nil)
+             (define-key markdown-mode-map (kbd "\C-c\C-e") 'markdown-export))
+         (message "WARNING: markdown-mode not found"))))
+#+END_SRC
+
+** Misc
+
+Nothing special, really.
+
+*** YAML
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "yaml-mode-autoloads"
+    '(progn
+       (if (require 'yaml-mode nil t)
+           (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+         (message "WARNING: yaml-mode not found"))))
+#+END_SRC
+
+*** CMake
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "cmake-mode-autoloads"
+    '(progn
+       (when (require 'cmake-mode nil t)
+         (setq auto-mode-alist
+               (append '(("CMakeLists\\.txt\\'" . cmake-mode)
+                         ("CMakeCache\\.txt\\'" . cmake-mode)
+                         ("\\.cmake\\'" . cmake-mode))
+                       auto-mode-alist)))))
+#+END_SRC
+
+*** DOS
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "dos-autoloads"
+    '(progn
+       (when (require 'dos nil t)
+         (setq auto-mode-alist
+               (append '(("\\.cmd\\'" . dos-mode)
+                         ("\\.bat\\'" . dos-mode))
+                       auto-mode-alist)))))
+#+END_SRC
+
 
 * Unstructured configuration
 
@@ -745,12 +812,6 @@ gradually move things from this section to separate ones.
                  (fill-paragraph 'nil 't))))
          (message "WARNING: unfill not found"))))
 
-  (eval-after-load "yaml-mode-autoloads"
-    '(progn
-       (if (require 'yaml-mode nil t)
-           (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-         (message "WARNING: yaml-mode not found"))))
-
   (eval-after-load "dummyparens-autoloads"
     '(progn
        (if (require 'dummyparens nil t)
@@ -771,24 +832,6 @@ gradually move things from this section to separate ones.
            (window-numbering-mode 1)
          (message "WARNING: window-numbering-mode not found"))))
 
-  (eval-after-load "markdown-mode-autoloads"
-    '(progn
-       (if (require 'markdown-mode nil t)
-           (progn
-             (setq auto-mode-alist (cons '("\\.md" . markdown-mode) auto-mode-alist))
-
-             (add-hook 'markdown-mode-hook
-                       '(lambda ()
-                          (define-key markdown-mode-map (kbd "M-p")
-                            nil)
-                          (define-key markdown-mode-map (kbd "M-n")
-                            nil)
-                          (define-key markdown-mode-map (kbd "\C-c\C-c")
-                            nil)
-                          (define-key markdown-mode-map (kbd "\C-c\C-e")
-                            'markdown-export))))
-         (message "WARNING: markdown-mode not found"))))
-
   (eval-after-load "magit-autoloads"
     '(progn
        (if (require 'magit nil t)
@@ -801,16 +844,6 @@ gradually move things from this section to separate ones.
               magit-revert-item-confirm nil
               magit-diff-refine-hunk t))
          (message "WARNING: magit not found"))))
-
-  ;; cmake-mode
-  (eval-after-load "cmake-mode-autoloads"
-    '(progn
-       (when (require 'cmake-mode nil t)
-         (setq auto-mode-alist
-               (append '(("CMakeLists\\.txt\\'" . cmake-mode)
-                         ("CMakeCache\\.txt\\'" . cmake-mode)
-                         ("\\.cmake\\'" . cmake-mode))
-                       auto-mode-alist)))))
 
   ;; d-mode
   ;; for the D programming language
@@ -917,16 +950,6 @@ gradually move things from this section to separate ones.
                    '(lambda ()
                       (define-key grep-mode-map "\C-c\C-c"
                         'wgrep-save-all-buffers))))))
-
-  ;; dos-mode
-  ;; for editing Windows .bat-files
-  (eval-after-load "dos-autoloads"
-    '(progn
-       (when (require 'dos nil t)
-         (setq auto-mode-alist
-               (append '(("\\.cmd\\'" . dos-mode)
-                         ("\\.bat\\'" . dos-mode))
-                       auto-mode-alist)))))
 
   (eval-after-load "yasnippet-autoloads"
     '(progn
