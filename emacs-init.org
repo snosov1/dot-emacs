@@ -626,6 +626,68 @@ a =markdown-export= function (=C-c C-e=).
          (message "WARNING: markdown-mode not found"))))
 #+END_SRC
 
+** D
+
+The only unusual thing about this mode is that it alters the default syntax
+indentation. It lines up the dots in situations, like
+
+#+BEGIN_SRC d
+  foreach (file; dirPath.expandTilde()
+                        .buildNormalizedPath()
+                        .dirEntries(SpanMode.shallow)()
+#+END_SRC
+
+There's kind of a funny story around this functionality. Somebody asked a
+[[https://stackoverflow.com/questions/25797945/adjusting-alignment-rules-for-ucfs-chains-in-d][question]] on StackOverflow about how you can achieve this. I got interested and
+started to dig.
+
+Surprisingly, there was a built-in function for that, called
+=c-lineup-cascaded-calls=, so you all you had to do is to put it in the right
+place. But where is that place?
+
+Turns out there's a =c-offsets-alist= variable, which contains the indentation
+rules in the following format: =(<applicable place> . <rule>)=. Here,
+=<applicable place>= stands for a keyword understood by the C indentation
+engine, like =statement-cont= (continuation of the statement).
+
+So far, so good. The =statement-cont= keyword worked like a charm. But it didn't
+work for the particular case from the question. Apparently, there was some other
+keyword for that place and I had to find out what it was.
+
+After a long trial and error session, I found out there's a variable
+=c-echo-syntactic-information-p=. One can set it to =t= and on every indentation
+call after that, the information about current position will be displayed in the
+echo area.
+
+The keyword I was looking for turned out to be =arglist-cont-nonempty=.
+
+But it was only a half of the problem. The =c-lineup-cascaded-calls= function
+didn't work in some important cases:
+
+- when function calls didn't have any parenthesis (which are optional in D)
+- when calling a function with compile-time parameters, e.g.
+  =func!(compiletime)(runtime)=
+
+I posted a dirty rewrite of =c-lineup-cascaded-calls= to the StackOverflow
+answer and it went right down to the =d-mode= repository, so I had to enable it
+in my setup. Not that I find this indentation strategy particularly useful, but
+I don't feel like dropping it after putting so much effort into it.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "d-mode-autoloads"
+    '(progn
+       (when (require 'd-mode nil t)
+         (when (fboundp 'd-lineup-cascaded-calls)
+           (add-hook 'd-mode-hook
+                     '(lambda ()
+                        (add-to-list 'c-offsets-alist '(arglist-cont-nonempty . d-lineup-cascaded-calls))
+                        (add-to-list 'c-offsets-alist '(statement-cont . d-lineup-cascaded-calls)))))
+         (setq auto-mode-alist
+               (append '(("\\.d\\'" . d-mode)
+                         ("\\.di\\'" . d-mode))
+                       auto-mode-alist)))))
+#+END_SRC
+
 ** Misc
 
 Nothing special, really.
@@ -846,21 +908,6 @@ gradually move things from this section to separate ones.
               magit-revert-item-confirm nil
               magit-diff-refine-hunk t))
          (message "WARNING: magit not found"))))
-
-  ;; d-mode
-  ;; for the D programming language
-  (eval-after-load "d-mode-autoloads"
-    '(progn
-       (when (require 'd-mode nil t)
-         (when (fboundp 'd-lineup-cascaded-calls)
-           (add-hook 'd-mode-hook
-                     '(lambda ()
-                        (add-to-list 'c-offsets-alist '(arglist-cont-nonempty . d-lineup-cascaded-calls))
-                        (add-to-list 'c-offsets-alist '(statement-cont . d-lineup-cascaded-calls)))))
-         (setq auto-mode-alist
-               (append '(("\\.d\\'" . d-mode)
-                         ("\\.di\\'" . d-mode))
-                       auto-mode-alist)))))
 
   ;; expand-region
   (eval-after-load "expand-region-autoloads"
