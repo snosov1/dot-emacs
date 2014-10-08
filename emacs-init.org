@@ -275,7 +275,7 @@ first guess.
       (let* ((files (dired-get-marked-files t current-prefix-arg))
              (out-name (concat
                         (if (equal (length files) 1)
-                            (file-name-sans-extension (car files))
+                            (file-name-nondirectory (car files))
                           (file-name-base (directory-file-name (expand-file-name default-directory))))
                         ".tar.gz")))
         (async-shell-command (concat
