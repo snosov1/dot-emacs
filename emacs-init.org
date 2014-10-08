@@ -117,17 +117,19 @@ the job done without over-complication on implementation or interface side.
 
 ** Dired jump
 To enable a convenient =C-x C-j= binding, we have to require the =dired-x=
-module. =C-x C-j= opens current directory in dired, when visiting a file or
-jumps to parent directory, when already in dired. With universal argument - =C-u
-C-x C-j= - it opens dired in other window.
+module. When visiting a file, =C-x C-j= opens current directory in dired. When
+already in dired, it jumps to the parent directory and it is also bound to a
+nice shortcut - =j=. With universal argument - =C-u C-x C-j= - it opens dired in
+other window.
 
 #+BEGIN_SRC emacs-lisp
   (when (require 'dired-x nil t)
-    (define-key global-map (vector 'remap 'dired-jump)
-      (defun dired-jump-universal-other (arg)
-        "Calls dired-jump. With prefix argument uses other window"
-        (interactive "P")
-        (dired-jump arg))))
+    (define-key dired-mode-map (kbd "j")
+      (define-key global-map (vector 'remap 'dired-jump)
+        (defun dired-jump-universal-other (arg)
+          "Calls dired-jump. With prefix argument uses other window"
+          (interactive "P")
+          (dired-jump arg)))))
 #+END_SRC
 
 ** Dired details
