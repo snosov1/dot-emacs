@@ -558,7 +558,7 @@ be one really hard.
 The thing is, I wanted a really simple auto-pairing functionality with only 2
 requirements:
 
-- after I press =(=, =[=, ="= and ={= it should behave, like I pressed the key
+- after I press =(=, =[=, ="= and ={= it should behave like if I pressed the key
   of the corresponding closing pair immediately
 - if the region is selected, when I press an opening symbol, it should be
   wrapped
@@ -588,17 +588,17 @@ Probably, after fighting long enough, I could make =autopair= work as I wanted
 it to. But why fight so hard, if I knew I could implement the desired
 functionality with much smaller effort?
 
-Before I did this, my last try was =smartparens=. It seemed like a nice idea,
-when I was reading the description. But the thing actually puts an overlay on
-braces, has some notion of state and prints messages to the echo area - all of
-this for a pair of braces.
+Before I did this, my last try was =smartparens=. The description was thoughtful
+and sensible. But when I tried it, I was horrified. The thing actually puts an
+overlay on braces, has some notion of state and prints messages to the echo
+area - all of this for a pair of braces.
 
 It was the point when I exclaimed "That does it! I'm writing my own auto-pairing
 mode! With blackjack and wrapping!"
 
 The key moments of the mode are:
 - It's under 100 lines of code.
-- When you press an open pair key it issues the exact same command as if the
+- When you press an opening pair key, it issues the exact same command as if the
   mode was off. Then it "presses" the closing pair key (i.e. issues the exact
   same command as if the mode was off)
 - If the region is selected - it is wrapped.
