@@ -18,6 +18,7 @@ also works as an Emacs configuration file.
  - [[#images-in-the-same-directory][Images in the same directory]]
  - [[#parenthesis-for-dummies][Parenthesis for Dummies]]
  - [[#programming-languages][Programming languages]]
+ - [[#magit][Magit]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -796,6 +797,32 @@ Nothing special, really.
                        auto-mode-alist)))))
 #+END_SRC
 
+* Magit
+
+There's not enough words in any human language to describe the brilliance of
+=magit=. So, let's simply take a minute and think about cosmic order of things
+in silence.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "magit-autoloads"
+    '(progn
+       (if (require 'magit nil t)
+           (progn
+             (require 'gitignore-mode nil t)
+             (require 'gitconfig-mode nil t)
+             (require 'gitattributes-mode nil t)
+
+             (setq
+              magit-revert-item-confirm nil
+              magit-diff-refine-hunk t)
+
+             (set-face-attribute 'magit-item-highlight nil
+                                 :background "black")
+
+             (global-set-key (kbd "\C-c m")      'magit-status)
+             (global-set-key (kbd "\C-c RET")    'magit-status))
+         (message "WARNING: magit not found"))))
+#+END_SRC
 
 * Unstructured configuration
 
@@ -958,19 +985,6 @@ gradually move things from this section to separate ones.
        (if (require 'window-numbering nil t)
            (window-numbering-mode 1)
          (message "WARNING: window-numbering-mode not found"))))
-
-  (eval-after-load "magit-autoloads"
-    '(progn
-       (if (require 'magit nil t)
-           (progn
-             (require 'gitignore-mode nil t)
-             (require 'gitconfig-mode nil t)
-             (require 'gitattributes-mode nil t)
-
-             (setq
-              magit-revert-item-confirm nil
-              magit-diff-refine-hunk t))
-         (message "WARNING: magit not found"))))
 
   ;; expand-region
   (eval-after-load "expand-region-autoloads"
@@ -1592,7 +1606,6 @@ gradually move things from this section to separate ones.
    '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))) t)
    '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))) t)
    '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black"))) t)
-   '(magit-item-highlight ((t (:background "black"))))
    '(term-color-black ((t (:background "#1d1f21" :foreground "#1d1f21"))))
    '(term-color-blue ((t (:background "#81a2be" :foreground "#81a2be"))))
    '(term-color-green ((t (:background "firebrick" :foreground "firebrick"))))
@@ -1618,8 +1631,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "M-n")         'move-text-down)
   (global-set-key (kbd "M-P")         'scroll-down-line)
   (global-set-key (kbd "M-N")         'scroll-up-line)
-  (global-set-key (kbd "\C-c m")      'magit-status)
-  (global-set-key (kbd "\C-c RET")    'magit-status)
   (global-set-key (kbd "\C-c s")      'swap-buffers-in-windows)
   (global-set-key (kbd "\C-c\C-s")    'swap-buffers-in-windows)
   (global-set-key (kbd "M-\"")        'double-quote-word)
