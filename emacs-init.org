@@ -16,6 +16,7 @@ also works as an Emacs configuration file.
  - [[#spelling-fly][Spelling fly]]
  - [[#string-edit][String edit]]
  - [[#images-in-the-same-directory][Images in the same directory]]
+ - [[#parenthesis-for-dummies][Parenthesis for Dummies]]
  - [[#programming-languages][Programming languages]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -549,6 +550,74 @@ the current one.
         (next-image (if arg (- arg) -1)))))
 #+END_SRC
 
+* Parenthesis for Dummies
+
+I'm kind of ashamed to be the author of =dummyparens= mode. But I tried not to
+be one really hard.
+
+The thing is, I wanted a really simple auto-pairing functionality with only 2
+requirements:
+
+- after I press =(=, =[=, ="= and ={= it should behave, like I pressed the key
+  of the corresponding closing pair immediately
+- if the region is selected, when I press an opening symbol, it should be
+  wrapped
+
+Simple as that. Easiest thing in the world. But not only I didn't find a
+built-in solution for that, I didn't find a decent solution at all!
+
+The first option is, obviously, =electric-pair=. It's built-in and lightweight -
+great. But for some reason it doesn't insert the closing pair if the following
+character is non-whitespace. It also doesn't support wrapping.
+
+The next promising candidate was =autopair= supporting both auto-pairing and
+wrapping. It was "almost there", but there were 2 reasons why I couldn't live
+with it:
+
+- It uses =insert= function to insert symbols and, generally speaking, it is not
+  quite correct to do so. Like, for example, =cc-mode= has it's own binding for
+  opening parenthesis - =c-electric-paren=, which sometimes indents the current
+  line among other things. So, if you're using =autopair=, you're losing this
+  behavior.
+- But worse than that - =autopair= was doing a lot of fancy stuff out-of-the-box
+  and I constantly had to fight my way through to make it as unobtrusive as
+  possible. And still, I kept encountering corner cases, when it tried to be
+  smarter than it should.
+
+Probably, after fighting long enough, I could make =autopair= work as I wanted
+it to. But why fight so hard, if I knew I could implement the desired
+functionality with much smaller effort?
+
+Before I did this, my last try was =smartparens=. It seemed like a nice idea,
+when I was reading the description. But the thing actually puts an overlay on
+braces, has some notion of state and prints messages to the echo area - all of
+this for a pair of braces.
+
+It was the point when I exclaimed "That does it! I'm writing my own auto-pairing
+mode! With blackjack and wrapping!"
+
+The key moments of the mode are:
+- It's under 100 lines of code.
+- When you press an open pair key it issues the exact same command as if the
+  mode was off. Then it "presses" the closing pair key (i.e. issues the exact
+  same command as if the mode was off)
+- If the region is selected - it is wrapped.
+- Optionally, it runs a "post-handler" hook, which can be any function you want.
+  Personally, I have a single hook, enabled for curly braces (={=). It indents
+  the just wrapped region - very convenient for the C-family languages.
+
+I could easily fit these 100 lines of code in the configuration file. But I want
+to believe, that I'm not mad. That somebody else might find this functionality
+useful as well.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "dummyparens-autoloads"
+    '(progn
+       (if (require 'dummyparens nil t)
+           (global-dummyparens-mode)
+         (message "WARNING: dummyparens not found"))))
+#+END_SRC
+
 * Programming languages
 ** Compile
 
@@ -875,12 +944,6 @@ gradually move things from this section to separate ones.
                      (unfill-paragraph))
                  (fill-paragraph 'nil 't))))
          (message "WARNING: unfill not found"))))
-
-  (eval-after-load "dummyparens-autoloads"
-    '(progn
-       (if (require 'dummyparens nil t)
-           (global-dummyparens-mode)
-         (message "WARNING: dummyparens not found"))))
 
   (eval-after-load "smex-autoloads"
     '(progn
