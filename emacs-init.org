@@ -19,6 +19,7 @@ also works as an Emacs configuration file.
  - [[#parenthesis-for-dummies][Parenthesis for Dummies]]
  - [[#programming-languages][Programming languages]]
  - [[#magit][Magit]]
+ - [[#i-do][I do]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -559,8 +560,8 @@ be one really hard.
 The thing is, I wanted a really simple auto-pairing functionality with only 2
 requirements:
 
-- after I press =(=, =[=, ="= and ={= it should behave like if I pressed the key
-  of the corresponding closing pair immediately
+- after I press =(=, =[=, " or ={= it should behave like if I pressed the key of
+  the corresponding closing pair immediately
 - if the region is selected, when I press an opening symbol, it should be
   wrapped
 
@@ -824,6 +825,96 @@ in silence.
          (message "WARNING: magit not found"))))
 #+END_SRC
 
+* I do
+
+As software evolution goes, certain designs tend to become some kind of a
+standard. They turn out to be such a huge success, that, basically, everybody
+employ it. And when sometimes you see a different solution - you feel awkward,
+at least.
+
+Like, for example, it's not that easy to find a modern widespread editor without
+"tabs", i.e. some kind of bookmarks at the top for different files. Also, every
+desktop browser, that I know of, uses this "tabs" design to allow switching
+among different pages.
+
+So, Emacs windows and buffers system looked like an ancient design to me,
+serving the same goals as the "tabs" design. It is always interesting to see
+those designs, and The more I used it, the more I realized, that it was a way
+better design for what it does.
+
+But I was feeling awkward using it. And =ido= made this awkwardness feel really
+pleasant. Now I'll give it away only when you pry it from my cold, dead hands.
+
+For me, it works great as-is with flexible matching enabled. Personally, I don't
+see the point of =ido-flx= and relatives. I really don't get what problems those
+are trying to solve. Also, I like the vanilla "horizontal" ido more, not the
+"vertical" modification.
+
+So, the only interesting thing I can tell about my =ido= setup is that buffer
+switching is bound to =C-TAB=. The idea came from desktop browsers and one
+thing - it's a shorter and easier alternative to =C-x b=. And another thing,
+which was a nice surprise to me, but may be a controversy to others - it is not
+representable by an ASCII sequence, so it won't work in a terminal.
+
+You may ask why is this a good thing? Because if I use terminal, I use it inside
+Emacs via =ansi-term= most of the time. If the sequence would've been ASCII one,
+then it would be sent to terminal and Emacs command wouldn't be executed.
+
+It works for =C-x b= (which is an ASCII sequence), because =C-x= is handled
+specially in =term= mode. So, any sequence starting with =C-x= would also work,
+but those are not as convenient as =C-TAB=.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'ido nil t)
+    (setq ido-enable-flex-matching t
+          ido-mode (quote both))
+
+    (global-set-key [C-tab] 'ido-switch-buffer))
+#+END_SRC
+
+There are some modes, like, =ido-ubiquitous=, which enable =ido= in almost every
+"completing situation". But I find that =ido= doesn't really shine in a lot of
+other situations, so I prefer using it only for buffers, files and =M-x=
+completions. For the latter I use =smex=, because it does it right.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "smex-autoloads"
+    '(progn
+       (if (require 'smex nil t)
+           (progn
+             (smex-initialize)
+             (global-set-key (kbd "M-x") 'smex))
+         (message "WARNING: smex not found"))))
+#+END_SRC
+
+Not many people know, but the trend to add "i"s to words to make them look iCool
+was popular in Emacs long before Apple has come about. Behold another precedent:
+Ibuffer. Honestly, I don't use it much, but it's really kind of nice to have it
+when you do need it.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'ibuffer nil t)
+    ;; ibuffer groups
+    (setq ibuffer-saved-filter-groups
+          (quote (("default"
+                   ("org"  (mode . org-mode))
+                   ("dired" (mode . dired-mode))
+                   ("D" (mode . d-mode))
+                   ("C/C++" (or
+                             (mode . cc-mode)
+                             (mode . c-mode)
+                             (mode . c++-mode)))
+                   ("magit" (name . "^\\*magit"))
+                   ("Markdown" (mode . markdown-mode))
+                   ("emacs" (name . "^\\*Messages\\*$"))
+                   ("shell commands" (name . "^\\*.*Shell Command\\*"))))))
+    (add-hook 'ibuffer-mode-hook
+              (lambda ()
+                (ibuffer-switch-to-saved-filter-groups "default")))
+
+    (global-set-key (kbd "\C-x \C-b") 'ibuffer))
+#+END_SRC
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -842,27 +933,6 @@ gradually move things from this section to separate ones.
 
   ;; hippie-expand
   (require 'hippie-exp)
-
-  ;; ibuffer
-  (when (require 'ibuffer nil t)
-    ;; ibuffer groups
-    (setq ibuffer-saved-filter-groups
-          (quote (("default"
-                   ("org"  (mode . org-mode))
-                   ("dired" (mode . dired-mode))
-                   ("D" (mode . d-mode))
-                   ("C/C++" (or
-                             (mode . cc-mode)
-                             (mode . c-mode)
-                             (mode . c++-mode)))
-                   ("magit" (name . "^\\*magit"))
-                   ("Markdown" (mode . markdown-mode))
-                   ("emacs" (name . "^\\*Messages\\*$"))
-                   ("shell commands" (name . "^\\*.*Shell Command\\*"))
-                   ))))
-    (add-hook 'ibuffer-mode-hook
-              (lambda ()
-                (ibuffer-switch-to-saved-filter-groups "default"))))
 
   ;; ------------------------------------------------------------
   ;; PER-PACKAGE CONFIGURATION
@@ -971,14 +1041,6 @@ gradually move things from this section to separate ones.
                      (unfill-paragraph))
                  (fill-paragraph 'nil 't))))
          (message "WARNING: unfill not found"))))
-
-  (eval-after-load "smex-autoloads"
-    '(progn
-       (if (require 'smex nil t)
-           (progn
-             (smex-initialize)
-             (global-set-key (kbd "M-x") 'smex))
-         (message "WARNING: smex not found"))))
 
   (eval-after-load "window-numbering-autoloads"
     '(progn
@@ -1553,8 +1615,6 @@ gradually move things from this section to separate ones.
    '(frame-background-mode (quote dark))
    '(grep-find-command (quote ("find . -type f -exec grep -nHi -e  {} +" . 35)))
    '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill)))
-   '(ido-enable-flex-matching t)
-   '(ido-mode (quote both) nil (ido))
    '(indent-tabs-mode nil)
    '(initial-major-mode (quote emacs-lisp-mode))
    '(initial-scratch-message nil)
@@ -1619,14 +1679,11 @@ gradually move things from this section to separate ones.
 
   ;; global
   (global-set-key (kbd "C-x f")       'find-file)
-  (global-set-key [C-tab]             'ido-switch-buffer)
   (global-set-key (kbd "C-x C-q")     'view-mode)
   (global-set-key (kbd "C-M-p")       'backward-paragraph)
   (global-set-key (kbd "C-M-n")       'forward-paragraph)
   (global-set-key (kbd "\C-c c")      'org-capture)
   (global-set-key (kbd "\C-c a")      'org-agenda)
-  (global-set-key (kbd "\C-x \C-b")   'ibuffer)
-  (global-set-key (kbd "\C-x b")      'ibuffer)
   (global-set-key (kbd "M-p")         'move-text-up)
   (global-set-key (kbd "M-n")         'move-text-down)
   (global-set-key (kbd "M-P")         'scroll-down-line)
