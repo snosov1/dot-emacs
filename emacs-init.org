@@ -20,6 +20,7 @@ also works as an Emacs configuration file.
  - [[#programming-languages][Programming languages]]
  - [[#magit][Magit]]
  - [[#i-do][I do]]
+ - [[#consult-an-authority][Consult an authority]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -915,6 +916,36 @@ when you do need it.
     (global-set-key (kbd "\C-x \C-b") 'ibuffer))
 #+END_SRC
 
+* Consult an authority
+
+Googling today became so common, that the corresponding word became an official
+English word according to the Oxford dictionary. Now, we take it to another
+level, and add an Emacs keybinding to google even faster!
+
+If the region is selected, when you press =C-c g=, it will google it. Otherwise,
+it will query for the text to be googled.
+
+Similarly, you can use =C-c l= to lingvo something (translate from Russian to
+English or vice versa) and =C-c u= to Urban Dictionary something.
+
+#+BEGIN_SRC emacs-lisp
+  (defmacro url-do-it (backend-name query-beginning docstring)
+    `(defun ,(intern (format "%s-it" (mapconcat 'identity (split-string (downcase backend-name)) "-"))) ()
+       ,(format "%s the selected region if any, display a query prompt otherwise" docstring)
+       (interactive)
+       (browse-url
+        (concat
+         ,query-beginning
+         (url-hexify-string (if mark-active
+                                (buffer-substring (region-beginning) (region-end))
+                              (read-string (concat ,backend-name ": "))))))))
+
+  (global-set-key (kbd "\C-cg") (url-do-it "Google" "http://www.google.com/search?ie=utf-8&oe=utf-8&q=" "Google"))
+  (global-set-key (kbd "\C-cl") (url-do-it "Lingvo" "http://lingvopro.abbyyonline.com/en/Translate/en-ru/" "Translate (using Lingvo)"))
+  (global-set-key (kbd "\C-cu") (url-do-it "Urban Dictionary" "http://www.urbandictionary.com/define.php?term=" "Find a definition in Urban Dictionary for"))
+
+#+END_SRC
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -1174,21 +1205,6 @@ gradually move things from this section to separate ones.
 
   ;; ------------------------------------------------------------
   ;; DEFUNS
-
-  (defmacro url-do-it (backend-name query-beginning docstring)
-    `(defun ,(intern (format "%s-it" (mapconcat 'identity (split-string (downcase backend-name)) "-"))) ()
-       ,(format "%s the selected region if any, display a query prompt otherwise" docstring)
-       (interactive)
-       (browse-url
-        (concat
-         ,query-beginning
-         (url-hexify-string (if mark-active
-                                (buffer-substring (region-beginning) (region-end))
-                              (read-string (concat ,backend-name ": "))))))))
-
-  (global-set-key (kbd "\C-cg") (url-do-it "Google" "http://www.google.com/search?ie=utf-8&oe=utf-8&q=" "Google"))
-  (global-set-key (kbd "\C-cl") (url-do-it "Lingvo" "http://lingvopro.abbyyonline.com/en/Translate/en-ru/" "Translate (using Lingvo)"))
-  (global-set-key (kbd "\C-cu") (url-do-it "Urban Dictionary" "http://www.urbandictionary.com/define.php?term=" "Find a definition in Urban Dictionary for"))
 
   (defun increment-decimal-number-at-point (&optional arg)
     "Increment the number at point by `arg'."
