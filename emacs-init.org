@@ -621,6 +621,20 @@ useful as well.
          (message "WARNING: dummyparens not found"))))
 #+END_SRC
 
+For the opposite functionality - removing parenthesis in pair - I use the
+=C-S-h= binding, backed by the =paredit= mode. It has far more features and,
+actually, provides a somewhat revolutionary way to edit Abstract Syntax Trees
+(AST) directly. But I don't write a lot of Lisp. I even don't write a lot of
+HTML. So, I don't have a strong need for that kind of editing power.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "paredit-autoloads"
+    '(progn
+       (when (require 'paredit nil t)
+         (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))))
+#+END_SRC
+
+
 * Programming languages
 ** Compile
 
@@ -890,8 +904,8 @@ completions. For the latter I use =smex=, because it does it right.
 
 Not many people know, but the trend to add "i"s to words to make them look iCool
 was popular in Emacs long before Apple has come about. Behold another precedent:
-Ibuffer. Honestly, I don't use it much, but it's really kind of nice to have it
-when you do need it.
+Ibuffer. Honestly, I don't use it much, but it's really nice to have when you
+need it.
 
 #+BEGIN_SRC emacs-lisp
   (when (require 'ibuffer nil t)
@@ -943,7 +957,6 @@ English or vice versa) and =C-c u= to Urban Dictionary something.
   (global-set-key (kbd "\C-cg") (url-do-it "Google" "http://www.google.com/search?ie=utf-8&oe=utf-8&q=" "Google"))
   (global-set-key (kbd "\C-cl") (url-do-it "Lingvo" "http://lingvopro.abbyyonline.com/en/Translate/en-ru/" "Translate (using Lingvo)"))
   (global-set-key (kbd "\C-cu") (url-do-it "Urban Dictionary" "http://www.urbandictionary.com/define.php?term=" "Find a definition in Urban Dictionary for"))
-
 #+END_SRC
 
 * Unstructured configuration
@@ -1153,12 +1166,6 @@ gradually move things from this section to separate ones.
          (define-key browse-kill-ring-mode-map (kbd "C-x C-k") 'browse-kill-ring-quit)
          (define-key browse-kill-ring-mode-map (kbd "C-x k") 'browse-kill-ring-quit)
          (setq browse-kill-ring-quit-action 'save-and-restore))))
-
-  ;; paredit
-  (eval-after-load "paredit-autoloads"
-    '(progn
-       (when (require 'paredit nil t)
-         (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))))
 
   ;; wgrep
   (eval-after-load "wgrep-autoloads"
