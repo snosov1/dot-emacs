@@ -6,7 +6,7 @@
 This is a little novel for casual reading about a text editor. Incidentally, it
 also works as an Emacs configuration file.
 
-* Contents                                                              :TOC@1:
+* Contents                                                              :TOC_1:
  - [[#foreword][Foreword]]
  - [[#ui-customization][UI customization]]
  - [[#abbreviations][Abbreviations]]
