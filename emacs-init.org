@@ -634,7 +634,6 @@ HTML. So, I don't have a strong need for that kind of editing power.
          (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))))
 #+END_SRC
 
-
 * Programming languages
 ** Compile
 
@@ -881,9 +880,8 @@ but those are not as convenient as =C-TAB=.
 
 #+BEGIN_SRC emacs-lisp
   (when (require 'ido nil t)
-    (setq ido-enable-flex-matching t
-          ido-mode (quote both))
-
+    (ido-mode 1)
+    (setq ido-enable-flex-matching t)
     (global-set-key [C-tab] 'ido-switch-buffer))
 #+END_SRC
 
