@@ -444,18 +444,20 @@ the rare occasions you can use universal argument to suppress auto indentation.
 
 Can't tell it for sure, but I suspect that even the brightest spelling bee
 champions hit the wrong button once in a while. So, it's good to have an
-automated spell-checking in every text buffer you edit. It would be an overkill
-for editing source code, since everybody loves identifiers like "src", "lhs",
-"rhs", "ptr", "uniq", "img", "gl", "qq" and a gazillion of other pretty names.
+automated spell-checking in every text buffer you edit.
 
-When the cursor is under the red-highlighted word, you can press =M-$= to look
-for alternative spellings.
+It would be an overkill for editing source code, since everybody loves
+identifiers like "src", "lhs", "rhs", "ptr", "uniq", "img", "gl", "qq" and a
+gazillion of other pretty names. But, for that, we have a =flyspell-prog-mode=
+which checks spelling only in strings and comments.
 
 By default, only words under the cursor are checked for correctness. So, if you
-want to spell check the whole buffer (or region), hit =C-x M-$=. To go to the
-next error, hit "C-,". To auto-correct the next word, hit =C-.=.
+want to spell check the whole buffer (or region), hit =C-x M-$=. When the cursor
+is under the red-highlighted word, you can press =M-$= to look for alternative
+spellings. To go to the next error, hit "C-,". To auto-correct the next word,
+hit =C-.=.
 
-I edit texts in both Russian and English and I have to spell check both of the
+I edit texts in both Russian and English and I have to spell-check both of the
 languages. To toggle between those dictionaries I use =C-c M-$=. If you want to
 toggle (cycle, actually) between (through) other languages, you can customize
 the =ispell-common-dictionaries= variable.
@@ -569,9 +571,9 @@ requirements:
 Simple as that. Easiest thing in the world. But not only I didn't find a
 built-in solution for that, I didn't find a decent solution at all!
 
-The first option is, obviously, =electric-pair=. It's built-in and lightweight -
-great. But for some reason it doesn't insert the closing pair if the following
-character is non-whitespace. It also doesn't support wrapping.
+The first option was, obviously, =electric-pair=. It's built-in and
+lightweight - great. But for some reason it doesn't insert the closing pair if
+the following character is non-whitespace. It also doesn't support wrapping.
 
 The next promising candidate was =autopair= supporting both auto-pairing and
 wrapping. It was "almost there", but there were 2 reasons why I couldn't live
@@ -582,19 +584,19 @@ with it:
   opening parenthesis - =c-electric-paren=, which sometimes indents the current
   line among other things. So, if you're using =autopair=, you're losing this
   behavior.
-- But worse than that - =autopair= was doing a lot of fancy stuff out-of-the-box
-  and I constantly had to fight my way through to make it as unobtrusive as
-  possible. And still, I kept encountering corner cases, when it tried to be
-  smarter than it should.
+- And, kind of a follow-up, =autopair= was doing a lot of fancy stuff
+  out-of-the-box and I constantly had to fight my way through to make it as
+  unobtrusive as possible. And still, I kept encountering corner cases, when it
+  tried to be smarter than it should.
 
 Probably, after fighting long enough, I could make =autopair= work as I wanted
 it to. But why fight so hard, if I knew I could implement the desired
 functionality with much smaller effort?
 
-Before I did this, my last try was =smartparens=. The description was thoughtful
-and sensible. But when I tried it, I was horrified. The thing actually puts an
-overlay on braces, has some notion of state and prints messages to the echo
-area - all of this for a pair of braces.
+Before I went on with =dummyparens=, my last try was =smartparens=. The
+description was thoughtful and sensible. But when I tried it... the thing
+actually puts an overlay on braces, has some notion of state and prints messages
+to the echo area - and all of this for a pair of braces.
 
 It was the point when I exclaimed "That does it! I'm writing my own auto-pairing
 mode! With blackjack and wrapping!"
