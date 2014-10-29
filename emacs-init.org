@@ -1189,6 +1189,10 @@ gradually move things from this section to separate ones.
   ;; export .org files as reveal.js presentations (https://github.com/hakimel/reveal.js/)
   (require 'ox-reveal nil t)
 
+  (when (require 'ert nil t)
+    (define-key ert-results-mode-map "g"
+      'ert-results-rerun-all-tests))
+
   ;; ------------------------------------------------------------
   ;; MATH DEFUNS
 

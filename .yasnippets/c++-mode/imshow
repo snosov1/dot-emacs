@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: imshow
+# key: imshow
+# --
+cv::imshow("$1", $1);
+cv::waitKey(0$0);
