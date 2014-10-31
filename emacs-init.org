@@ -6,7 +6,7 @@
 This is a little novel for casual reading about a text editor. Incidentally, it
 also works as an Emacs configuration file.
 
-* Contents                                                              :TOC_1:
+* Contents                                                   :noexport:TOC@1:
  - [[#foreword][Foreword]]
  - [[#ui-customization][UI customization]]
  - [[#abbreviations][Abbreviations]]
@@ -22,6 +22,7 @@ also works as an Emacs configuration file.
  - [[#i-do][I do]]
  - [[#consult-an-authority][Consult an authority]]
  - [[#window-management][Window management]]
+ - [[#field-applications][Field applications]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -1010,6 +1011,77 @@ A very nice mode.
          (message "WARNING: window-numbering-mode not found"))))
 #+END_SRC
 
+* Field applications
+** Field of view to focal length
+
+There was a period of my work, when I was implementing a computer vision
+algorithm. To test and improve it, I had to generate a 3D scene and experiment
+with different camera positions and fields of view. For example, I had to figure
+out something like: "Do we get a good quality if we use four 55 degrees cameras
+and place them like that?"
+
+After I generate the images of a 3D scene, I have to process those. And as you
+may know, for a computer vision application, the most common representation of
+the camera intrinsic parameters is /camera matrix/. It's a 3x3 matrix of the
+following form:
+
+| $f_x$ |     0 | $p_x$ |
+|     0 | $f_y$ | $p_y$ |
+|     0 |     0 | 1     |
+
+where $f_x$ and $f_y$ are the /focal lengths/ in $x$ and $y$ dimensions.
+
+Focal length can be unambiguously evaluated given the field-of-view of the
+camera: $focal = tan^{-1}(fov / 2)$. Of course, you can make a conversion in
+the opposite direction: $fov = 2 atan(focal^{-1})$.
+
+This is not quantum physics, by all means. But I used this formulas rare enough,
+that I needed to look them up every time, and often enough to be annoyed by this
+every time. Add to the annoyance, that after you find the formula, you have to
+perform something like 5 operations in =calc= to evaluate it (including
+conversion from degrees to radians).
+
+And at some point it struck me, that I'm using Emacs, whose primary goal is to
+allow me to build the best working environment just for me. Just for me, you
+know? It's not that some guy or a big company is sitting somewhere trying to
+think of everything I might need. It cannot ever work like that. Because how
+should they know that I need those formulas? If I was working in some other
+place - I wouldn't need those formulas. Or, more likely, I would need some other
+formulas.
+
+And maybe not even formulas, but something else. Like, just now, while I was
+writing this, a colleague of mine asked me "How you can take 2 videos and stack
+them vertically?". I wrote =ffmpeg-top-bottom= and hit =M-/=, which gave me the
+command from my =.abbrev_defs= file and I sent it to her.
+
+She remembered, that I had already sent her this command before, but she
+couldn't find it anywhere. I smiled about it and told her that she can ask me as
+many times as needed, because I always have it in one place.
+
+Anyway, that time I was thinking of focal lengths was the time when I really
+appreciated the "extensibility" part of Emacs. So, I've put the following
+functions to my init file and moved on enlightened. From that moment, when I
+need a conversion I just write something like =(fov2focal (deg2rad 55))= and hit
+=C-x C-e=. Voila!
+
+#+BEGIN_SRC emacs-lisp
+  (defun deg2rad (x)
+    "Converts degrees to radians"
+    (/ (* x float-pi) 180.0))
+
+  (defun rad2deg (x)
+    "Converts radians to degrees"
+    (/ (* x 180.0) float-pi))
+
+  (defun fov2focal (fov)
+    "Evaluates dimensionless focal length given fov in radians"
+    (/ 1.0 (tan (/ fov 2.0))))
+
+  (defun focal2fov (focal)
+    "Evaluates fov in radians given dimensionless focal length"
+    (* 2.0 (atan (/ 1.0 focal))))
+#+END_SRC
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -1239,25 +1311,6 @@ gradually move things from this section to separate ones.
   (when (require 'ert nil t)
     (define-key ert-results-mode-map "g"
       'ert-results-rerun-all-tests))
-
-  ;; ------------------------------------------------------------
-  ;; MATH DEFUNS
-
-  (defun deg2rad (x)
-    "Converts degrees to radians"
-    (/ (* x float-pi) 180.0))
-
-  (defun rad2deg (x)
-    "Converts radians to degrees"
-    (/ (* x 180.0) float-pi))
-
-  (defun fov2focal (fov)
-    "Evaluates dimensionless focal length given fov in radians"
-    (/ 1.0 (tan (/ fov 2.0))))
-
-  (defun focal2fov (fov)
-    "Evaluates fov in radians given dimensionless focal length"
-    (* 2.0 (atan (/ 1.0 fov))))
 
   ;; ------------------------------------------------------------
   ;; DEFUNS
