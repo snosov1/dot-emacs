@@ -1025,15 +1025,15 @@ may know, for a computer vision application, the most common representation of
 the camera intrinsic parameters is /camera matrix/. It's a 3x3 matrix of the
 following form:
 
-| f_x |   0 | p_x |
-|   0 | f_y | p_y |
-|   0 |   0 | 1   |
+| fx |  0 | px |
+|  0 | fy | py |
+|  0 |  0 | 1  |
 
 where f_x and f_y are the /focal lengths/ in x and y dimensions.
 
 Focal length can be unambiguously evaluated given the field-of-view of the
-camera: =focal = tan^{-1}(fov / 2)=. Of course, you can make a conversion in
-the opposite direction: =fov = 2 atan(focal^{-1})=.
+camera: focal = tan^{-1}(fov / 2). Of course, you can make a conversion in
+the opposite direction: fov = 2 atan(focal^{-1}).
 
 This is not quantum physics, by all means. But I used this formulas rare enough,
 that I needed to look them up every time, and often enough to be annoyed by this
