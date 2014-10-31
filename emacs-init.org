@@ -21,6 +21,7 @@ also works as an Emacs configuration file.
  - [[#magit][Magit]]
  - [[#i-do][I do]]
  - [[#consult-an-authority][Consult an authority]]
+ - [[#window-management][Window management]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -594,7 +595,7 @@ it to. But why fight so hard, if I knew I could implement the desired
 functionality with much smaller effort?
 
 Before I went on with =dummyparens=, my last try was =smartparens=. The
-description was thoughtful and sensible. But when I tried it... the thing
+description was thoughtful and sensible. But when I tried it... The thing
 actually puts an overlay on braces, has some notion of state and prints messages
 to the echo area - and all of this for a pair of braces.
 
@@ -626,7 +627,7 @@ useful as well.
 For the opposite functionality - removing parenthesis in pair - I use the
 =C-S-h= binding, backed by the =paredit= mode. It has far more features and,
 actually, provides a somewhat revolutionary way to edit Abstract Syntax Trees
-(AST) directly. But I don't write a lot of Lisp. I even don't write a lot of
+(AST) directly. But I don't write a lot of Lisp and I even don't write a lot of
 HTML. So, I don't have a strong need for that kind of editing power.
 
 #+BEGIN_SRC emacs-lisp
@@ -957,6 +958,58 @@ English or vice versa) and =C-c u= to Urban Dictionary something.
   (global-set-key (kbd "\C-cu") (url-do-it "Urban Dictionary" "http://www.urbandictionary.com/define.php?term=" "Find a definition in Urban Dictionary for"))
 #+END_SRC
 
+* Window management
+
+For some reason, Emacs has at least 4 different bindings to provide a prefix
+argument to a function:
+1. =C-u <argument> <command>=
+2. =C-<argument> <command>=
+3. =M-<argument> <command>=
+4. =C-M-<argument> <command>=
+
+I can more or less understand why you need an alternative to the first option.
+But why do you need all 2-3-4, which are about the same? Especially, given those
+bindings are quite good bindings - brief and convenient. Something you have a
+shortage of in Emacs.
+
+So, it's obvious, we should bind 2 of those to something else. We only have to
+find an appropriate functionality. And the =window-numbering= mode author has a
+brilliant idea for third option rebinding.
+
+My only way of windows switching was to use the =C-x o= binding, which works
+fine, when you have only 2 windows. Admittedly, it is the case for me 95% of the
+time. I was struggling during the last 5% of the time, but thought, that it's
+something I can live with.
+
+And then I came across the =window-numbering= mode which made a lot of sense to
+me. Using =M-<number>= to switch between windows is a perfect crime.
+
+At first, I didn't use it that much, because of the habit. But every time I was
+in the "5% zone" I immediately remembered about this mode and used it happily.
+Now, having this mode around for quite some time already, I find myself using it
+more and more often. 95/5 became more like 60/40 over time. And I think it's not
+an end.
+
+In fact, this mode makes so much sense to me, that when I advertise Emacs to
+others, I present =window-numbering= way of windows switching as the default
+one. And I didn't yet see anybody to have any issues with that.
+
+The last thing I should say about is that =M-0= takes you to minibuffer by
+default, which is also very handy.
+
+A very nice mode.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "window-numbering-autoloads"
+    '(progn
+       (if (require 'window-numbering nil t)
+           (progn
+             (window-numbering-mode 1)
+             (add-hook 'minibuffer-setup-hook
+                       'window-numbering-update))
+         (message "WARNING: window-numbering-mode not found"))))
+#+END_SRC
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -1083,12 +1136,6 @@ gradually move things from this section to separate ones.
                      (unfill-paragraph))
                  (fill-paragraph 'nil 't))))
          (message "WARNING: unfill not found"))))
-
-  (eval-after-load "window-numbering-autoloads"
-    '(progn
-       (if (require 'window-numbering nil t)
-           (window-numbering-mode 1)
-         (message "WARNING: window-numbering-mode not found"))))
 
   ;; expand-region
   (eval-after-load "expand-region-autoloads"
