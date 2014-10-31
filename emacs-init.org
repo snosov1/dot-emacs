@@ -1029,7 +1029,7 @@ following form:
 |  0 | fy | py |
 |  0 |  0 | 1  |
 
-where f_x and f_y are the /focal lengths/ in x and y dimensions.
+where fx and fy are the /focal lengths/ in x and y dimensions.
 
 Focal length can be unambiguously evaluated given the field-of-view of the
 camera: focal = tan^{-1}(fov / 2). Of course, you can make a conversion in
