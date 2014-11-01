@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: fetch github pull requests
+# key: pull
+# --
+fetch = +refs/pull/*/head:refs/remotes/origin/pull/*
