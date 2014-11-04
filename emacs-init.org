@@ -1029,7 +1029,8 @@ following form:
 |  0 | fy | py |
 |  0 |  0 | 1  |
 
-where fx and fy are the /focal lengths/ in x and y dimensions.
+where fx and fy are the /focal lengths/ in x and y dimensions. This matrix is
+used to convert image coordinates to camera world coordinates (and visa-versa).
 
 Focal length can be unambiguously evaluated given the field-of-view of the
 camera: focal = tan^{-1}(fov / 2). Of course, you can make a conversion in
@@ -1041,28 +1042,33 @@ every time. Add to the annoyance, that after you find the formula, you have to
 perform something like 5 operations in =calc= to evaluate it (including
 conversion from degrees to radians).
 
-And at some point it struck me, that I'm using Emacs, whose primary goal is to
-allow me to build the best working environment just for me. Just for me, you
-know? It's not that some guy or a big company is sitting somewhere trying to
-think of everything I might need. It cannot ever work like that. Because how
-should they know that I need those formulas? If I was working in some other
-place - I wouldn't need those formulas. Or, more likely, I would need some other
-formulas.
+And at some point it struck me, that I'm using Emacs. A text editor with a
+primary goal to allow me to build the best working environment for myself. Just
+for me, you know? It's not that some guy or a big company is sitting somewhere
+trying to think of everything I might need. It cannot ever work like that.
+Because how should they know that I need those formulas? If I was working in
+some other place - I wouldn't need those formulas. Or, more likely, I would need
+some other ones.
 
 And maybe not even formulas, but something else. Like, just now, while I was
 writing this, a colleague of mine asked me "How you can take 2 videos and stack
-them vertically?". I wrote =ffmpeg-top-bottom= and hit =M-/=, which gave me the
-command from my =.abbrev_defs= file and I sent it to her.
+them vertically?". I wrote =ffmpeg-top-bottom= and hit =M-/=, it expanded to a
+command found in my =.abbrev_defs= file and then I sent it to her.
 
 She remembered, that I had already sent her this command before, but she
 couldn't find it anywhere. I smiled about it and told her that she can ask me as
-many times as needed, because I always have it in one place.
+many times as needed, because I always have it at hand.
 
-Anyway, that time I was thinking of focal lengths was the time when I really
-appreciated the "extensibility" part of Emacs. So, I've put the following
-functions to my init file and moved on enlightened. From that moment, when I
-need a conversion I just write something like =(fov2focal (deg2rad 55))= and hit
-=C-x C-e=. Voila!
+Anyway, long story short. That time I was thinking of focal lengths was the time
+when I really appreciated the "extensibility" part of Emacs. I wasn't too
+thrilled about it when I just started using it. I was always, like, "Somebody
+else must have already build a perfect environment. I should simply find it and
+use it".
+
+But at that day I put the following functions to my init file and moved on
+enlightened. From that moment, when I need a conversion I just write something
+like =(fov2focal (deg2rad 55))= and hit =C-x C-e=. At that day I became a tiny
+bit closer to a perfect working environment.
 
 #+BEGIN_SRC emacs-lisp
   (defun deg2rad (x)
