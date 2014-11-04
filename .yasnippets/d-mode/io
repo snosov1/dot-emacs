@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name : import std.stdio;
+# key: io
+# --
+import std.stdio;
