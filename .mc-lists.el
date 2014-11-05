@@ -14,6 +14,7 @@
         c-electric-star
         c-indent-line-or-region
         capitalize-dispatch
+        comment-dwim
         delete-indentation
         dired-jump-to-top
         dired-next-line
