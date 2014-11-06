@@ -617,6 +617,16 @@ I could easily fit these 100 lines of code in the configuration file. But I want
 to believe, that I'm not mad. That somebody else might find this functionality
 useful as well.
 
+P.S. I have found more or less decent built-in solution after using
+=dummyparens= for about 2 years. The solution was to use the
+=skeleton-pair-insert-maybe= function. Unfortunately (or luckily), it fails
+short the same way =autopair= does. It doesn't exactly "press" the keys, but
+rather uses =self-insert-command=, which is not correct in general case. Also,
+it has an annoying half-of-a-second delay after inserting the closing pair. And
+it doesn't have the shiny auto-indentation functionality for ={=, which I became
+addicted to over the years! And also... forget it, simply use =dummyparens= -
+this whole topic isn't worth so many words. AND I'M NOT MAD!
+
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "dummyparens-autoloads"
     '(progn
