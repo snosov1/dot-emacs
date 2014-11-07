@@ -1279,6 +1279,9 @@ gradually move things from this section to separate ones.
                       (setq-local er/try-expand-list (remove 'er/mark-text-sentence er/try-expand-list)))
                    t)
 
+         (when (require 'd-mode nil t)
+           (er/enable-mode-expansions 'd-mode 'er/add-cc-mode-expansions))
+
          (global-set-key (kbd "C-=") 'er/expand-region)
          (setq expand-region-fast-keys-enabled nil))))
 
