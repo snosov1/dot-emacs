@@ -912,9 +912,9 @@ completions. For the latter I use =smex=, because it does it right.
          (message "WARNING: smex not found"))))
 #+END_SRC
 
-Not many people know it, but the trend to add "i"s to words to make them look
-iCool was popular in Emacs long before Apple has come about. Behold another
-precedent: Ibuffer. Honestly, I don't use it much, but it's really nice to have
+Not a lot of people know this, but the trend to add "i"s to words to make them
+look iCool was popular in Emacs long before Apple had came about. Behold another
+precedent: Ibuffer. Frankly, I don't use it much, but it's kind of nice to have
 when you need it.
 
 #+BEGIN_SRC emacs-lisp
@@ -971,6 +971,8 @@ English or vice versa) and =C-c u= to Urban Dictionary something.
 
 * Window management
 
+** Selecting windows
+
 For some reason, Emacs has at least 4 different bindings to provide a prefix
 argument to a function:
 1. =C-u <argument> <command>=
@@ -998,12 +1000,11 @@ me. Using =M-<number>= to switch between windows is a perfect crime.
 At first, I didn't use it that much, because of the habit. But every time I was
 in the "5% zone" I immediately remembered about this mode and used it happily.
 Now, having this mode around for quite some time already, I find myself using it
-more and more often. 95/5 became more like 60/40 over time. And I think it's not
-an end.
+more and more often.
 
 In fact, this mode makes so much sense to me, that when I advertise Emacs to
 others, I present =window-numbering= way of windows switching as the default
-one. And I didn't yet see anybody to have any issues with that.
+one. And I haven't yet seen anybody to have issues with that.
 
 The last thing I should say about is that =M-0= takes you to minibuffer by
 default, which is also very handy.
@@ -1021,8 +1022,66 @@ A very nice mode.
          (message "WARNING: window-numbering-mode not found"))))
 #+END_SRC
 
+** Messing around
+
+As I've said, I use 2 buffers almost all the time. And I have 2 handy functions
+for that case.
+
+1. Toggle window split
+
+   #+BEGIN_SRC emacs-lisp
+     (define-key global-map (kbd "\C-c f")
+       (defun toggle-window-split ()
+         "Switches from a horizontal split to a vertical split and visa versa."
+         (interactive)
+         (if (= (count-windows) 2)
+             (let* ((this-win-buffer (window-buffer))
+                    (next-win-buffer (window-buffer (next-window)))
+                    (this-win-edges (window-edges (selected-window)))
+                    (next-win-edges (window-edges (next-window)))
+                    (this-win-2nd (not (and (<= (car this-win-edges)
+                                                (car next-win-edges))
+                                            (<= (cadr this-win-edges)
+                                                (cadr next-win-edges)))))
+                    (splitter
+                     (if (= (car this-win-edges)
+                            (car (window-edges (next-window))))
+                         'split-window-horizontally
+                       'split-window-vertically)))
+               (delete-other-windows)
+               (let ((first-win (selected-window)))
+                 (funcall splitter)
+                 (if this-win-2nd (other-window 1))
+                 (set-window-buffer (selected-window) this-win-buffer)
+                 (set-window-buffer (next-window) next-win-buffer)
+                 (select-window first-win)
+                 (if this-win-2nd (other-window 1)))))))
+
+   #+END_SRC
+
+2. Swap buffers in windows
+
+   #+BEGIN_SRC emacs-lisp
+     (define-key global-map (kbd "\C-c s")
+       (defun swap-buffers-in-windows ()
+         "Put the buffer from the selected window in next window"
+         (interactive)
+         (let* ((this (selected-window))
+                (other (next-window))
+                (this-buffer (window-buffer this))
+                (other-buffer (window-buffer other)))
+           (set-window-buffer other this-buffer)
+           (set-window-buffer this other-buffer)
+           ;; comment next call to stay in current window
+           (select-window other))))
+   #+END_SRC
+
+   Note, this function can be used not only for swapping 2 buffers, but also for
+   "dragging" the current buffer to some other window, when there's more than 2
+   of those. Similar to how you can use consecutive invocations of
+   =transpose-words= to "drag" the word forward.
+
 * Field applications
-** Field of view to focal length
 
 There was a period of my work, when I was implementing a computer vision
 algorithm. To test and improve it, I had to generate a 3D scene and experiment
@@ -1040,7 +1099,7 @@ following form:
 |  0 |  0 | 1  |
 
 where fx and fy are the /focal lengths/ in x and y dimensions. This matrix is
-used to convert image coordinates to camera world coordinates (and visa-versa).
+used to convert image coordinates to camera world coordinates and visa-versa.
 
 Focal length can be unambiguously evaluated given the field-of-view of the
 camera: focal = tan^{-1}(fov / 2). Of course, you can make a conversion in
@@ -1072,7 +1131,7 @@ many times as needed, because I always have it at hand.
 Anyway, long story short. That time I was thinking of focal lengths was the time
 when I really appreciated the "extensibility" part of Emacs. I wasn't too
 thrilled about it when I just started using it. I was always, like, "Somebody
-else must have already build a perfect environment. I should simply find it and
+else must have already built a perfect environment. I should simply find it and
 use it".
 
 But at that day I put the following functions to my init file and moved on
@@ -1495,6 +1554,7 @@ gradually move things from this section to separate ones.
 
     (defcustom ssh-config-filename "~/.ssh/config"
       "ssh config filename")
+
     (defun term-parse-ssh-config ()
       "Parse `ssh-config-filename' to provide `remote-term'
   completion capabilities."
@@ -1544,19 +1604,6 @@ gradually move things from this section to separate ones.
   (defun ediff-restore-window-configuration ()
     (jump-to-register ?E))
 
-  (defun swap-buffers-in-windows ()
-    "Put the buffer from the selected window in next window"
-    (interactive)
-    (let* ((this (selected-window))
-           (other (next-window))
-           (this-buffer (window-buffer this))
-           (other-buffer (window-buffer other)))
-      (set-window-buffer other this-buffer)
-      (set-window-buffer this other-buffer)
-      (select-window other)               ;; comment to stay in current window
-      )
-    )
-
   (defun double-quote-word ()
     "Put word at point in double quotes"
     (interactive)
@@ -1582,32 +1629,6 @@ gradually move things from this section to separate ones.
         (if (looking-at-p "\\s-*$") ;; how in earth does this work?
             (newline arg)
           (newline-and-indent)))))
-
-  (defun toggle-window-split ()
-    "Switches from a horizontal split to a vertical split and vice versa."
-    (interactive)
-    (if (= (count-windows) 2)
-        (let* ((this-win-buffer (window-buffer))
-               (next-win-buffer (window-buffer (next-window)))
-               (this-win-edges (window-edges (selected-window)))
-               (next-win-edges (window-edges (next-window)))
-               (this-win-2nd (not (and (<= (car this-win-edges)
-                                           (car next-win-edges))
-                                       (<= (cadr this-win-edges)
-                                           (cadr next-win-edges)))))
-               (splitter
-                (if (= (car this-win-edges)
-                       (car (window-edges (next-window))))
-                    'split-window-horizontally
-                  'split-window-vertically)))
-          (delete-other-windows)
-          (let ((first-win (selected-window)))
-            (funcall splitter)
-            (if this-win-2nd (other-window 1))
-            (set-window-buffer (selected-window) this-win-buffer)
-            (set-window-buffer (next-window) next-win-buffer)
-            (select-window first-win)
-            (if this-win-2nd (other-window 1))))))
 
   (defun notify-send (title msg &optional icon)
     "Show a popup; TITLE is the title of the message, MSG is the
@@ -1877,15 +1898,11 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "M-n")         'move-text-down)
   (global-set-key (kbd "M-P")         'scroll-down-line)
   (global-set-key (kbd "M-N")         'scroll-up-line)
-  (global-set-key (kbd "\C-c s")      'swap-buffers-in-windows)
-  (global-set-key (kbd "\C-c\C-s")    'swap-buffers-in-windows)
   (global-set-key (kbd "M-\"")        'double-quote-word)
   (global-set-key (kbd "\C-c w")      'show-file-name)
   (global-set-key (kbd "\C-x v a")    'vc-annotate)
   (global-set-key (kbd "\C-x v b")    'vc-annotate)
   (global-set-key (kbd "<f5>")        'revert-buffer)
-  (global-set-key (kbd "\C-c f")      'toggle-window-split)
-  (global-set-key (kbd "\C-c\C-f")    'toggle-window-split)
   (global-set-key [(control shift f)] 'grep-dispatch)
   (global-set-key (kbd "\C-x\C-e")    'eval-dispatch)
   (global-set-key (kbd "M-\\")        'fixup-whitespace)
