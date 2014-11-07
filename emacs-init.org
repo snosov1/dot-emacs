@@ -1229,9 +1229,48 @@ gradually move things from this section to separate ones.
   (eval-after-load "expand-region-autoloads"
     '(progn
        (when (require 'expand-region nil t)
+
+         (defun er/mark-inside-pairs ()
+           (interactive)
+           (ignore-errors
+             (backward-up-list)
+             (set-mark (save-excursion
+                         (forward-char 1)
+                         (skip-chars-forward er--space-str)
+                         (point)))
+             (forward-sexp)
+             (backward-char)
+             (skip-chars-backward er--space-str)
+             (exchange-point-and-mark)))
+
+         (defun er/mark-outside-pairs ()
+           "Mark pairs (as defined by the mode), including the pair chars."
+           (interactive)
+           (if (er/looking-back-on-line "\\s)+\\=")
+               (ignore-errors (backward-list 1))
+             (skip-chars-forward er--space-str))
+           (when (or (not (er--looking-at-pair))
+                     (er--looking-at-marked-pair))
+             (backward-up-list))
+           (when (er--looking-at-pair)
+             (set-mark (point))
+             (forward-list)
+             (exchange-point-and-mark)))
+
+         (setq er/try-expand-list
+               '(er/mark-word
+                 er/mark-symbol
+                 er/mark-inside-quotes
+                 er/mark-outside-quotes
+                 er/mark-inside-pairs
+                 er/mark-outside-pairs
+                 er/mark-comment
+                 er/mark-url
+                 er/mark-email
+                 er/mark-defun))
+
          (add-hook 'text-mode-hook
                    '(lambda ()
-                      (setq-local er/try-expand-list (remove 'er/mark-method-call er/try-expand-list))
                       (setq-local er/try-expand-list (remove 'er/mark-text-sentence er/try-expand-list)))
                    t)
          (add-hook 'org-mode-hook
