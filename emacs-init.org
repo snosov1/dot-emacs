@@ -1157,6 +1157,37 @@ bit closer to a perfect working environment.
     (* 2.0 (atan (/ 1.0 focal))))
 #+END_SRC
 
+* Upcoming sections
+** Grepping
+** Auto-completion
+*** Overview
+*** hippie-expand
+*** auto-complete
+*** abbrev/yasnippet
+** Org
+*** org-toc
+*** reveal.js
+** Term
+** Text manipulations
+*** Move text
+*** Fill/unfill
+*** Upcase/Lowercase/Capitalize
+*** zap-up-to-char
+*** join following line
+*** backspace
+** View mode
+** Subword
+** Nifty tricks
+*** show-file-name, replace-path-with-truename
+*** double-quote-word?
+** Hide/show blocks
+** Eval and replace
+** Expand region
+** Multiple cursors
+** Browse kill ring
+** Sudo edit
+** Tags
+** Ediff
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
