@@ -1080,6 +1080,77 @@ for that case.
    "dragging" the current buffer to some other window, when there's more than 2
    of those. Similar to how you can use consecutive invocations of
    =transpose-words= to "drag" the word forward.
+* Eval and replace
+
+One particularly unusual thing about Emacs for somebody coming from a "common"
+development environment is that you always have an executable language right
+under your cursor.
+
+It is difficult to acknowledge this properly until you get used to the elisp
+language. But once you're at the level, where you can write a small elisp
+function, you will find yourself using it more and more often in a variety of
+cases.
+
+Emacs has a built-in binding =C-x C-e=, which evaluates the elisp form on the
+left from the cursor (i.e. previous form). The default functionality prints the
+result to the echo area, leaving the form as is. But quite often it is pretty
+useful to write some small form in non-elisp buffer, evaluate it and paste the
+result into the buffer instead of the form.
+
+E.g. you're writing a technical article, and at some point you need a value for
+a quarter of Pi. Probably, a lot of people know several digits of the Pi value.
+That's how many I know by heart - =3.14159265358=. Probably, a lot of people
+also know some digits of half-Pi and twice-Pi. For me, it's just 3 digits in
+both cases - =1.57= and =6.28=. But do a lot of people remember what is the
+quarter of Pi? I can't name a single digit (except for the leading zero) without
+performing an evaluation.
+
+But why bother at all, when you can write =(/ 3.1415 4)=, hit =C-x C-e= and it
+will be replaced with =0.785375=. Of course, you can also write =(/ float-pi
+4)=. You can also apply any other functions you might need.
+
+And, obviously, you can use not only mathematical functions, but any of the
+variety of different elisp functions. At the time of writing I have as much as
+=18272= functions available. Not all of them are particularly useful for that
+kind of usage, but still it gives you the perspective.
+
+The examples from my daily job include:
+
+1. Evaluate simple mathematical forms: =(+ 1 2 -9 16.16)=, =(sin (/ float-pi 2))=
+2. Get current date: =(format-time-string "%b %d, %Y")=
+3. Add leading zeros: =(format "%04d" 4)=
+
+If you want the form to stay in place and simply print the result to the echo
+area, then you should select it with a region before pressing =C-x C-e=.
+
+You can also evaluate the region in debugging mode - use the universal argument
+for that - =C-u C-x C-e=. If there's a function definition inside the selected
+region, then successive calls to that function will also happen in debug mode.
+To cancel this behavior, simply evaluate the respective functions without a
+universal argument. This is similar to =C-M-x= / =C-u C-M-x= behavior in
+=emacs-lisp-mode=.
+
+#+BEGIN_SRC emacs-lisp
+  (defun eval-and-replace ()
+    "Replace the preceding sexp with its value."
+    (interactive)
+    (backward-kill-sexp)
+    (condition-case nil
+        (prin1 (eval (read (current-kill 0)))
+               (current-buffer))
+      (error (message "Invalid expression")
+             (insert (current-kill 0)))))
+
+  (defun eval-dispatch (arg)
+    "Evaluate previous sexp or region"
+    (interactive "P")
+    (if (region-active-p)
+        (let ((edebug-all-forms arg))
+          (eval-region (region-beginning) (region-end) t))
+      (eval-and-replace)))
+
+  (global-set-key (kbd "\C-x\C-e")    'eval-dispatch)
+#+END_SRC
 
 * Field applications
 
@@ -1181,7 +1252,6 @@ bit closer to a perfect working environment.
 *** show-file-name, replace-path-with-truename
 *** double-quote-word?
 ** Hide/show blocks
-** Eval and replace
 ** Expand region
 ** Multiple cursors
 ** Browse kill ring
@@ -1234,7 +1304,6 @@ gradually move things from this section to separate ones.
          (ac-flyspell-workaround)
          (setq-default ac-use-comphist nil)
          (define-key ac-completing-map [tab] 'ac-expand-no-next)
-                                          ;(define-key ac-completing-map "\r" nil)
 
          (defun ac-yasnippet-candidates-sorted-by-length ()
            "Sorts yasnippet candidates by length."
@@ -1712,16 +1781,6 @@ gradually move things from this section to separate ones.
         (hs-hide-level arg)
       (hs-show-all)))
 
-  (defun eval-and-replace ()
-    "Replace the preceding sexp with its value."
-    (interactive)
-    (backward-kill-sexp)
-    (condition-case nil
-        (prin1 (eval (read (current-kill 0)))
-               (current-buffer))
-      (error (message "Invalid expression")
-             (insert (current-kill 0)))))
-
   (defmacro action-dispatch (action)
     `(defun ,(intern (format "%s-dispatch" action)) (arg)
        "Perform action on word or region."
@@ -1733,14 +1792,6 @@ gradually move things from this section to separate ones.
   (define-key global-map [remap upcase-word]     (action-dispatch upcase))
   (define-key global-map [remap downcase-word]   (action-dispatch downcase))
   (define-key global-map [remap capitalize-word] (action-dispatch capitalize))
-
-  (defun eval-dispatch (arg)
-    "Evaluate previous sexp or region"
-    (interactive "P")
-    (if (region-active-p)
-        (let ((edebug-all-forms arg))
-          (eval-region (region-beginning) (region-end) t))
-      (eval-and-replace)))
 
   ;; move text
   (defun move-text-internal (arg)
@@ -1935,7 +1986,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "\C-x v b")    'vc-annotate)
   (global-set-key (kbd "<f5>")        'revert-buffer)
   (global-set-key [(control shift f)] 'grep-dispatch)
-  (global-set-key (kbd "\C-x\C-e")    'eval-dispatch)
   (global-set-key (kbd "M-\\")        'fixup-whitespace)
   (global-set-key (kbd "C-M-h")       'backward-kill-word)
   (global-set-key (kbd "M-h")         'backward-kill-word)
