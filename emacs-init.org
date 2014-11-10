@@ -1257,16 +1257,11 @@ When you find what you need, simply press =C-m= (=Enter=) and that's it.
 #+END_SRC
 
 * Upcoming sections
-** Grepping
-** Auto-completion
-*** Overview
-*** hippie-expand
-*** auto-complete
-*** abbrev/yasnippet
-** Org
-*** org-toc
-*** reveal.js
-** Term
+** View mode
+** Subword
+** Nifty tricks
+*** show-file-name, replace-path-with-truename
+*** double-quote-word?
 ** Text manipulations
 *** Move text
 *** Fill/unfill
@@ -1274,17 +1269,22 @@ When you find what you need, simply press =C-m= (=Enter=) and that's it.
 *** zap-up-to-char
 *** join following line
 *** backspace
-** View mode
-** Subword
-** Nifty tricks
-*** show-file-name, replace-path-with-truename
-*** double-quote-word?
-** Hide/show blocks
-** Expand region
 ** Multiple cursors
 ** Sudo edit
-** Tags
 ** Ediff
+** Term
+** Hide/show blocks
+** Org
+*** org-toc
+*** reveal.js
+** Grepping
+** Expand region
+** Tags
+** Auto-completion
+*** Overview
+*** hippie-expand
+*** auto-complete
+*** abbrev/yasnippet
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
