@@ -12,17 +12,20 @@ also works as an Emacs configuration file.
  - [[#abbreviations][Abbreviations]]
  - [[#dired][Dired]]
  - [[#better-buffer-names][Better buffer names]]
- - [[#a-student-has-become-a-pupil][A student has become a pupil]]
+ - [[#smarter-alternatives-to-built-in-functions]["Smarter" alternatives to built-in functions]]
  - [[#spelling-fly][Spelling fly]]
- - [[#string-edit][String edit]]
+ - [[#fighting-escape-sequences-in-strings][Fighting escape sequences in strings]]
  - [[#images-in-the-same-directory][Images in the same directory]]
  - [[#parenthesis-for-dummies][Parenthesis for Dummies]]
  - [[#programming-languages][Programming languages]]
  - [[#magit][Magit]]
- - [[#i-do][I do]]
- - [[#consult-an-authority][Consult an authority]]
+ - [[#ido-selection][Ido selection]]
+ - [[#using-external-websites][Using external websites]]
  - [[#window-management][Window management]]
+ - [[#embedded-lisp-evaluation][Embedded lisp evaluation]]
  - [[#field-applications][Field applications]]
+ - [[#browse-kill-ring][Browse kill ring]]
+ - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -296,7 +299,6 @@ first guess.
                               (mapconcat 'identity files " "))))))
 #+END_SRC
 * Better buffer names
-
 ** Default uniquification
 
 If you open several files with the same name, then a good way to distinguish
@@ -342,11 +344,10 @@ pressing =C-x C-r=.
   (global-set-key (kbd "\C-x\C-r") 'rename-buffer)
 #+END_SRC
 
-* A student has become a pupil
+* "Smarter" alternatives to built-in functions
 
-There's a couple of alternatives to the built-in functions of Emacs, that try to
-be smarter about what they do, while closely maintaining the original intent and
-implementation.
+The following functions tries to be smarter about what they do, while closely
+maintaining the original intent and implementation.
 
 ** Searching
 
@@ -491,7 +492,7 @@ the =ispell-common-dictionaries= variable.
             (flyspell-region (region-beginning) (region-end))
           (flyspell-buffer)))))
 #+END_SRC
-* String edit
+* Fighting escape sequences in strings
 
 It is frustratingly difficult to follow special characters and sequences in
 strings. Especially, in regular expressions, where you have 2 levels deep
@@ -853,7 +854,7 @@ in silence.
          (message "WARNING: magit not found"))))
 #+END_SRC
 
-* I do
+* Ido selection
 
 As software evolution goes, certain designs tend to become some kind of a
 standard. They turn out to be such a huge success, that, basically, everybody
@@ -940,7 +941,7 @@ when you need it.
     (global-set-key (kbd "\C-x \C-b") 'ibuffer))
 #+END_SRC
 
-* Consult an authority
+* Using external websites
 
 Googling today became so common, that the corresponding word became an official
 English word according to the Oxford dictionary. Now, we take it to another
@@ -970,7 +971,6 @@ English or vice versa) and =C-c u= to Urban Dictionary something.
 #+END_SRC
 
 * Window management
-
 ** Selecting windows
 
 For some reason, Emacs has at least 4 different bindings to provide a prefix
@@ -1080,7 +1080,7 @@ for that case.
    "dragging" the current buffer to some other window, when there's more than 2
    of those. Similar to how you can use consecutive invocations of
    =transpose-words= to "drag" the word forward.
-* Eval and replace
+* Embedded lisp evaluation
 
 One particularly unusual thing about Emacs for somebody coming from a "common"
 development environment is that you always have an executable language right
