@@ -12,7 +12,7 @@ also works as an Emacs configuration file.
  - [[#abbreviations][Abbreviations]]
  - [[#dired][Dired]]
  - [[#better-buffer-names][Better buffer names]]
- - [[#smarter-alternatives-to-built-in-functions]["Smarter" alternatives to built-in functions]]
+ - [[#smarter-alternatives-to-built-in-functionality]["Smarter" alternatives to built-in functionality]]
  - [[#spelling-fly][Spelling fly]]
  - [[#fighting-escape-sequences-in-strings][Fighting escape sequences in strings]]
  - [[#images-in-the-same-directory][Images in the same directory]]
@@ -344,9 +344,9 @@ pressing =C-x C-r=.
   (global-set-key (kbd "\C-x\C-r") 'rename-buffer)
 #+END_SRC
 
-* "Smarter" alternatives to built-in functions
+* "Smarter" alternatives to built-in functionality
 
-The following functions tries to be smarter about what they do, while closely
+The following functions try to be smarter about what they do, while closely
 maintaining the original intent and implementation.
 
 ** Searching
@@ -443,6 +443,37 @@ the rare occasions you can use universal argument to suppress auto indentation.
         (indent-region (region-beginning) (region-end) nil)))
 #+END_SRC
 
+** View mode
+
+Emacs has a strange convention for binding =C-x C-q= to toggle a read-only
+state. It's not ubiquitous, but it's definitely the most common binding. So, I
+try to follow it wherever it makes sense and customize the modes that don't
+follow it.
+
+However, I find that =view-mode= for most of the buffers provides a better
+alternative to simple read-only toggle. It has some additional navigation
+functions, and also, you can use shorter bindings (without =C-= modifier) for
+common operations.
+
+There's some kind of Vimy flavor to it and, eventually, when I use it I find
+myself thinking "How can those Vim people live switching between editing and
+viewing modes all the time? Wierd guys."
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x C-q") 'view-mode)
+
+  (add-hook 'view-mode-hook
+            '(lambda ()
+               ;; simpler navigation
+               (define-key view-mode-map "p" 'previous-line)
+               (define-key view-mode-map "n" 'next-line)
+               (define-key view-mode-map "f" 'forward-char)
+               (define-key view-mode-map "b" 'backward-char)
+               (define-key view-mode-map "l" 'recenter-top-bottom)
+               (define-key view-mode-map "e" 'move-end-of-line)
+               (define-key view-mode-map "a" 'smart-beginning-of-line)
+               (define-key view-mode-map "v" 'scroll-up-command)))
+#+END_SRC
 * Spelling fly
 
 Can't tell it for sure, but I suspect that even the brightest spelling bee
@@ -1257,7 +1288,6 @@ When you find what you need, simply press =C-m= (=Enter=) and that's it.
 #+END_SRC
 
 * Upcoming sections
-** View mode
 ** Subword
 ** Nifty tricks
 *** show-file-name, replace-path-with-truename
@@ -1988,7 +2018,6 @@ gradually move things from this section to separate ones.
 
   ;; global
   (global-set-key (kbd "C-x f")       'find-file)
-  (global-set-key (kbd "C-x C-q")     'view-mode)
   (global-set-key (kbd "C-M-p")       'backward-paragraph)
   (global-set-key (kbd "C-M-n")       'forward-paragraph)
   (global-set-key (kbd "C-M-l")       'recenter-top-bottom)
@@ -2057,26 +2086,6 @@ gradually move things from this section to separate ones.
                  'org-time-stamp-inactive)
                (define-key org-mode-map (kbd "C-c !")
                  'org-time-stamp)))
-
-  (add-hook 'view-mode-hook
-            '(lambda ()
-               ;; simpler navigation
-               (define-key view-mode-map "p"
-                 'previous-line)
-               (define-key view-mode-map "n"
-                 'next-line)
-               (define-key view-mode-map "f"
-                 'forward-char)
-               (define-key view-mode-map "b"
-                 'backward-char)
-               (define-key view-mode-map "l"
-                 'recenter-top-bottom)
-               (define-key view-mode-map "e"
-                 'move-end-of-line)
-               (define-key view-mode-map "a"
-                 'smart-beginning-of-line)
-               (define-key view-mode-map "v"
-                 'scroll-up-command)))
 
   (add-hook 'conf-mode-hook
             '(lambda ()
