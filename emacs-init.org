@@ -25,6 +25,8 @@ also works as an Emacs configuration file.
  - [[#embedded-lisp-evaluation][Embedded lisp evaluation]]
  - [[#field-applications][Field applications]]
  - [[#browse-kill-ring][Browse kill ring]]
+ - [[#navigate-to-previous-position][Navigate to previous position]]
+ - [[#get-full-path][Get full path]]
  - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -1287,11 +1289,85 @@ When you find what you need, simply press =C-m= (=Enter=) and that's it.
          (setq browse-kill-ring-quit-action 'save-and-restore))))
 #+END_SRC
 
+* Navigate to previous position
+
+Oddly enough, Emacs doesn't really have a solid functionality to jump to a
+previous editing position. The closest solution is to use =C-u C-SPC= to jump to
+a previous mark in the current buffer and =C-x C-SPC= to jump to a previous mark
+across buffers. It's not great, but a small fish is better than an empty dish.
+
+The only thing is that quite often you have a lot of duplicate marks in the ring
+and it's tedious to pop those by one. So, I bind a simple wrapper to =C-M-\= -
+it works as =C-u C-SPC=, but ignores duplicate marks. And it works as =C-x
+C-SPC= when used with a universal argument =C-u C-M-\=.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map (kbd "C-M-\\")
+    (defun pop-mark-jump (arg)
+      "Jump to the mark "
+      (interactive "P")
+      (if arg
+          (pop-global-mark)
+        (setq mark-ring (remove-duplicates mark-ring :test 'equal))
+        (set-mark-command '(4)))))
+#+END_SRC
+* Get full path
+
+Quite often you need a full path to some file, and there's a plenty of ways to
+get it.
+
+- First, obviously, you can press =C-x C-f= and find your file there.
+- Then, in Dired you can press =w= to get only the name or =C-0 w= to get the
+  full path.
+- Also, you can use the =C-c w= binding to get full path to the current file
+  #+BEGIN_SRC emacs-lisp
+    (define-key global-map (kbd "\C-c w")
+      (defun show-file-name ()
+        "Show the full path file name in the minibuffer and add it to kill ring"
+        (interactive)
+        (message (buffer-file-name))
+        (kill-new (buffer-file-name))))
+  #+END_SRC
+- And the last, but not least, if you have a short path around point, you can
+  use =C-x /= to expand it to a full path. I use this quite often in conjunction
+  with buffer-local =compile-command= setting. If I have a script that I want to
+  run using =compile=, I do the following:
+  - open the script (say, "build-and-run.bash") and press =C-c C-c=
+  - then write "cd ."
+  - press =C-x /= to expand the dot (say, "cd /home/sergei/project/build")
+  - append script execution - "cd /home/sergei/project/build && bash
+    build-and-run.bash"
+
+  Now I can switch to another buffer, press =M-p= after =C-c C-c= and use the
+  same compile command, because the path is absolute.
+
+  #+BEGIN_SRC emacs-lisp
+    (define-key global-map (kbd "C-x /")
+      (defun replace-path-with-truename ()
+        "Replaces the region or the path around point with its true name.
+
+    To get the true name it follows the symbolic links and converts
+    relative paths to absolute."
+        (interactive)
+        (let (bds p1 p2 inputStr resultStr)
+          ;; get current selection or filename
+          (if (region-active-p)
+              (setq bds (cons (region-beginning) (region-end) ))
+            (setq bds (bounds-of-thing-at-point 'filename)))
+          (setq p1 (car bds))
+          (setq p2 (cdr bds))
+
+          ;; grab the string
+          (setq fn (buffer-substring-no-properties p1 p2)  )
+
+          (if (file-exists-p fn)
+              (progn
+                (delete-region p1 p2 )
+                (insert (file-truename fn)))
+            (message "Path \"%s\" doesn't exist" fn)))))
+  #+END_SRC
+
 * Upcoming sections
-** Subword
-** Nifty tricks
-*** show-file-name, replace-path-with-truename
-*** double-quote-word?
 ** Text manipulations
 *** Move text
 *** Fill/unfill
@@ -1299,6 +1375,7 @@ When you find what you need, simply press =C-m= (=Enter=) and that's it.
 *** zap-up-to-char
 *** join following line
 *** backspace
+*** subword
 ** Multiple cursors
 ** Sudo edit
 ** Ediff
@@ -1751,22 +1828,6 @@ gradually move things from this section to separate ones.
   (defun ediff-restore-window-configuration ()
     (jump-to-register ?E))
 
-  (defun double-quote-word ()
-    "Put word at point in double quotes"
-    (interactive)
-    (setq boundaries (bounds-of-thing-at-point 'word))
-    (save-excursion
-      (goto-char (car boundaries))
-      (insert ?\")
-      (goto-char (+ 1 (cdr boundaries)))
-      (insert ?\")))
-
-  (defun show-file-name ()
-    "Show the full path file name in the minibuffer and add it to kill ring"
-    (interactive)
-    (message (buffer-file-name))
-    (kill-new (buffer-file-name)))
-
   (define-key global-map [remap open-line]
     (defun open-line-indent (arg)
       "Use newline-and-indent in open-line command if there are
@@ -1895,29 +1956,6 @@ gradually move things from this section to separate ones.
         (window-configuration-to-register pop-predefined-register))
       (jump-to-register register delete)))
 
-  (defun replace-path-with-truename ()
-    "Replaces the region or the path around point with its true name.
-
-  To get the true name it follows the symbolic links and converts
-  relative paths to absolute."
-    (interactive)
-    (let (bds p1 p2 inputStr resultStr)
-      ;; get current selection or filename
-      (if (region-active-p)
-          (setq bds (cons (region-beginning) (region-end) ))
-        (setq bds (bounds-of-thing-at-point 'filename)))
-      (setq p1 (car bds))
-      (setq p2 (cdr bds))
-
-      ;; grab the string
-      (setq fn (buffer-substring-no-properties p1 p2)  )
-
-      (if (file-exists-p fn)
-          (progn
-            (delete-region p1 p2 )
-            (insert (file-truename fn)))
-        (message "Path \"%s\" doesn't exist" fn))))
-
   (defun find-function-push-tag (function)
     "This function is meant as a drop-in replacement for find-tag
   in emacs-lisp-mode. It calls find-function and inserts current
@@ -2028,7 +2066,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "M-P")         'scroll-down-line)
   (global-set-key (kbd "M-N")         'scroll-up-line)
   (global-set-key (kbd "M-\"")        'double-quote-word)
-  (global-set-key (kbd "\C-c w")      'show-file-name)
   (global-set-key (kbd "\C-x v a")    'vc-annotate)
   (global-set-key (kbd "\C-x v b")    'vc-annotate)
   (global-set-key (kbd "<f5>")        'revert-buffer)
@@ -2047,7 +2084,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "\C-x!")       'sudo-edit-current-file)
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
   (global-set-key (kbd "C-z")         'undo)
-  (global-set-key (kbd "C-x /")       'replace-path-with-truename)
   (global-set-key [escape]            'keyboard-escape-quit)
   (global-set-key "\C-x\C-u"          'update-tags-file)
   (global-set-key "\C-x\C-v"          'visit-tags-table)
