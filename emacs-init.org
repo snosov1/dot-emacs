@@ -1991,6 +1991,7 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "C-x C-q")     'view-mode)
   (global-set-key (kbd "C-M-p")       'backward-paragraph)
   (global-set-key (kbd "C-M-n")       'forward-paragraph)
+  (global-set-key (kbd "C-M-l")       'recenter-top-bottom)
   (global-set-key (kbd "\C-c c")      'org-capture)
   (global-set-key (kbd "\C-c a")      'org-agenda)
   (global-set-key (kbd "M-p")         'move-text-up)
