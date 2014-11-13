@@ -9,6 +9,7 @@ also works as an Emacs configuration file.
 * Contents                                                   :noexport:TOC_1:
  - [[#foreword][Foreword]]
  - [[#ui-customization][UI customization]]
+ - [[#text-manipulations][Text manipulations]]
  - [[#abbreviations][Abbreviations]]
  - [[#dired][Dired]]
  - [[#better-buffer-names][Better buffer names]]
@@ -86,6 +87,54 @@ Mac, please, enlighten me!
 #+BEGIN_SRC emacs-lisp
   (setq mac-command-modifier 'meta)
 #+END_SRC
+* Text manipulations
+
+Some people mistakenly call Emacs a text editor. But, hey, what can you do -
+total ignorance has become a common practice long time ago. And, frankly
+speaking, these people have a point.
+
+** Join following line
+
+There's a default binding =M-^=, which takes the current line and puts in the
+end of the previous one. A fell in love with it from the first day I came
+across. But, actually, putting the next line in the end of the current one is a
+better design for the same functionality.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map (kbd "M-j")
+    (defun join-following-line ()
+      "Joins the following line"
+      (interactive)
+      (join-line -1)))
+#+END_SRC
+
+** SubWords
+
+CamelCaseIdentifiers are quite popular nowadays, so it's good to have an editor
+which understands them. Emacs has a built-in support for that, so functions,
+like, =forward-word=, =delete-word=, etc., will operate on subwords.
+
+It is quite handy and all, but, probably, half of the time you want to operate
+on the whole identifier instead of the subword. I found that =expand-region=
+nicely complements subword functionality in that regard:
+
+- If you want to work with subwords, then use =M-f=, =M-b=, =M-d=, =M-h=, etc.
+- Otherwise, use =C-== to select the whole word and do whatever you need.
+
+#+BEGIN_SRC emacs-lisp
+  ;; RecognizeCamelCaseSubwording
+  (global-subword-mode)
+  ;; don't remap some commands
+  (define-key subword-mode-map (vector 'remap 'transpose-words) nil)
+  (define-key subword-mode-map (vector 'remap 'upcase-word) nil)
+  (define-key subword-mode-map (vector 'remap 'downcase-word) nil)
+#+END_SRC
+
+** backspace
+** zap-up-to-char
+** Fill/unfill
+** Upcase/Lowercase/Capitalize
+** Move text
 
 * Abbreviations
 
@@ -447,19 +496,19 @@ the rare occasions you can use universal argument to suppress auto indentation.
 
 ** View mode
 
-Emacs has a strange convention for binding =C-x C-q= to toggle a read-only
-state. It's not ubiquitous, but it's definitely the most common binding. So, I
-try to follow it wherever it makes sense and customize the modes that don't
-follow it.
+Emacs has a strange-looking convention for binding =C-x C-q= to toggle a
+read-only state. It's not ubiquitous, but it's definitely the most common
+binding. So, I try to follow it wherever it makes sense and customize the modes
+that don't follow it.
 
 However, I find that =view-mode= for most of the buffers provides a better
 alternative to simple read-only toggle. It has some additional navigation
-functions, and also, you can use shorter bindings (without =C-= modifier) for
-common operations.
+functions, and also, you can use shorter bindings (leaving the =C-= modifier)
+for common operations.
 
 There's some kind of Vimy flavor to it and, eventually, when I use it I find
 myself thinking "How can those Vim people live switching between editing and
-viewing modes all the time? Wierd guys."
+viewing modes all the time? Weirdest guys."
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x C-q") 'view-mode)
@@ -1366,16 +1415,7 @@ get it.
                 (insert (file-truename fn)))
             (message "Path \"%s\" doesn't exist" fn)))))
   #+END_SRC
-
 * Upcoming sections
-** Text manipulations
-*** Move text
-*** Fill/unfill
-*** Upcase/Lowercase/Capitalize
-*** zap-up-to-char
-*** join following line
-*** backspace
-*** subword
 ** Multiple cursors
 ** Sudo edit
 ** Ediff
@@ -1937,11 +1977,6 @@ gradually move things from this section to separate ones.
     (interactive "*p")
     (move-text-internal (- arg)))
 
-  (defun join-following-line ()
-    "Joins the following line"
-    (interactive)
-    (join-line -1))
-
   (defcustom pop-predefined-register ?}
     "Register for saving window configuration before jump"
     :type 'register)
@@ -2079,7 +2114,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "M-+")         'org-list-repair)
   (global-set-key (kbd "C-x w")       'webjump)
   (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
-  (global-set-key (kbd "M-j")         'join-following-line)
   (global-set-key (kbd "M-Z")         'zap-up-to-char)
   (global-set-key (kbd "\C-x!")       'sudo-edit-current-file)
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
@@ -2230,11 +2264,4 @@ gradually move things from this section to separate ones.
 
   ;; Answering just 'y' or 'n' will do
   (defalias 'yes-or-no-p 'y-or-n-p)
-
-  ;; RecognizeCamelCaseSubwording
-  (global-subword-mode)
-  ;; don't remap some commands
-  (define-key subword-mode-map (vector 'remap 'transpose-words) nil)
-  (define-key subword-mode-map (vector 'remap 'upcase-word) nil)
-  (define-key subword-mode-map (vector 'remap 'downcase-word) nil)
 #+END_SRC
