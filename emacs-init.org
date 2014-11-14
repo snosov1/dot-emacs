@@ -35,7 +35,7 @@ also works as an Emacs configuration file.
 ** Lean and mean
 
 Emacs doesn't need a lot of UI elements - it should be lean and mean. Well, and
-clean, and it should look good on the screen.
+clean. And it should look good on the screen.
 
 #+BEGIN_SRC emacs-lisp
   (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -112,7 +112,8 @@ better design for the same functionality.
 
 CamelCaseIdentifiers are quite popular nowadays, so it's good to have an editor
 which understands them. Emacs has a built-in support for that, so functions,
-like, =forward-word=, =delete-word=, etc., will operate on subwords.
+like, =forward-word=, =delete-word=, etc., will operate on subwords if minor
+=subword-mode= is on.
 
 It is quite handy and all, but, probably, half of the time you want to operate
 on the whole identifier instead of the subword. I found that =expand-region=
@@ -130,7 +131,69 @@ nicely complements subword functionality in that regard:
   (define-key subword-mode-map (vector 'remap 'downcase-word) nil)
 #+END_SRC
 
-** backspace
+** Backspace
+
+Emacs has 2 bindings with slightly different meaning for the =Enter= key - =C-j=
+and =C-m=. That's a good thing, because =Enter= is a frequently used, but pretty
+distant key.
+
+And you may wonder - what about =Backspace=? Why doesn't it have a better
+binding as well?
+
+I will tell you why. Because somebody stole it from us.
+
+If you open a terminal emulator right now - most likely, you will find that
+=C-h= acts as =Backspace=. It's a beautiful ancient tradition, but Emacs doesn't
+follow it. And I state, that it is a result of some kind of sabotage in the
+beginning of Emacs history. Don't believe me? Want evidence? You can check
+everything yourself!
+
+Clone an Emacs git repository and checkout the revision number
+d7cc518448c8af66db86a842bbd0372e7e13a95a.
+
+You'll find yourself in a distant 1988. That's a first time known by Emacs
+revision history, when a =C-h= binding was mentioned.
+
+Open the file =lisp/emulation/vip.el= and go to line 217. You will find the
+following, very suspicious code there:
+
+#+BEGIN_EXAMPLE
+  (defun vip-mode ()
+    "Turn on VIP emulation of VI."
+    (interactive)
+    (if (not vip-inhibit-startup-message)
+        (progn
+      (switch-to-buffer "VIP Startup Message")
+      (erase-buffer)
+      (insert
+       "VIP is a Vi emulation package for GNU Emacs.  VIP provides most Vi commands
+  including Ex commands.  VIP is however different from Vi in several points.
+  You can get more information on VIP by:
+      1.  Typing `M-x info' and selecting menu item \"vip\".
+      2.  Typing `C-h k' followed by a key whose description you want.
+#+END_EXAMPLE
+
+Pay attention to the first 2 lines of the code and to the very last one.
+
+You see now? Those darn villains sabotaged Emacs just at the time, when they
+understood that everything is finished for them. That they cannot hold a
+competition against Emacs. So, they came up with their evil plan. And what a
+disgusting, smug name for a mode - VIP.
+
+Don't know about you, but I've seen enough evidence to be totally confident,
+that it was a planned Vi fans demarche against Emacs. I can even assume, that
+FBI and CIA were also involved. It can be one of the reasons why Mr. Stallman is
+so opposed to them.
+
+But it's not the time for enjoying ourselves with this finding. It is the time
+to fight and restore justice! Time to take back what rightly belongs to us!
+
+#+BEGIN_SRC emacs-lisp
+  (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
+  (global-set-key (kbd "M-h")   'backward-kill-word)
+  (global-set-key (kbd "C-M-h") 'backward-kill-word)
+#+END_SRC
+
 ** zap-up-to-char
 ** Fill/unfill
 ** Upcase/Lowercase/Capitalize
@@ -2106,8 +2169,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "<f5>")        'revert-buffer)
   (global-set-key [(control shift f)] 'grep-dispatch)
   (global-set-key (kbd "M-\\")        'fixup-whitespace)
-  (global-set-key (kbd "C-M-h")       'backward-kill-word)
-  (global-set-key (kbd "M-h")         'backward-kill-word)
   (global-set-key (kbd "M-/")         'hippie-expand)
   (global-set-key (kbd "\C-x k")      'kill-this-buffer)
   (global-set-key (kbd "C-+")         'org-list-repair)
@@ -2125,9 +2186,6 @@ gradually move things from this section to separate ones.
   (global-set-key "\C-x\C-l"          'tags-apropos)
   (global-set-key "\C-c\C-c"          'compile)
   (global-set-key "\C-c+"             'increment-decimal-number-at-point)
-
-  ;; define translations
-  (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
 
   ;; C-/ is not representable with an ASCII control code, so it cannot be sent to
   ;; terminals, but it is a convenient keybinding for undo. So mapping it to
