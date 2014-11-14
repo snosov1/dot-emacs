@@ -154,7 +154,7 @@ d7cc518448c8af66db86a842bbd0372e7e13a95a.
 You'll find yourself in a distant 1988. That's a first time known by Emacs
 revision history, when a =C-h= binding was mentioned.
 
-Open the file =lisp/emulation/vip.el= and go to line 217. You will find the
+Open the file =lisp/emulation/vip.el= and go to the line 217. You will find the
 following, very suspicious code there:
 
 #+BEGIN_EXAMPLE
@@ -182,11 +182,11 @@ disgusting, smug name for a mode - VIP.
 
 Don't know about you, but I've seen enough evidence to be totally confident,
 that it was a planned Vi fans demarche against Emacs. I can even assume, that
-FBI and CIA were also involved. It can be one of the reasons why Mr. Stallman is
-so opposed to them.
+FBI and CIA were also involved. Which is the most likely reason, why Mr.
+Stallman is so opposed to them.
 
-But it's not the time for enjoying ourselves with this finding. It is the time
-to fight and restore justice! Time to take back what rightly belongs to us!
+But it's not the time for enjoying ourselves with this finding. It's time to
+fight and restore justice! Time to take back what rightly belongs to us!
 
 #+BEGIN_SRC emacs-lisp
   (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
