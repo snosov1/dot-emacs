@@ -1613,8 +1613,174 @@ get it.
                 (insert (file-truename fn)))
             (message "Path \"%s\" doesn't exist" fn)))))
   #+END_SRC
+* Multiple cursors
+
+Multiple cursors is a kind of feature that doesn't sound like a very good idea
+the first time you hear about it. I was also sceptic about it, like "What good
+can you expect from the guys that invented minimap?".
+
+But I saw a video by Magnar Sveen, where he showed-off his implementation of
+multiple cursors in Emacs. I got the impression that he, himself, didn't really
+know how to use them properly. But somehow it had a ring to him.
+
+The idea from the video that also rang to me was selecting a word and adding
+auxiliary cursors on other occurrences of the same word. I didn't know how
+useful it was when I saw it, but I decided it give it a try.
+
+At first, I wasn't really using it much, because I didn't have the habit. And,
+to be honest, the concept is indeed a bit alien if you've never used it. But
+eventually, I worked out a style of using multiple cursors, which goes for me.
+
+I guess, I don't use a lot of the "stock" functionality and, probably, the way I
+use multiple cursors is different from the way the author intended. But it
+turned out to be so convenient, that now I can't imagine myself giving it up.
+
+So, here's how I use multiple cursors.
+
+The 2 most commonly used bindings are =C->= and =C-<=:
+
+- If the region is active (e.g. a word is selected), then =C->= searches for the
+  next occurrence of this region and creates an additional cursor when it finds
+  one. Similarly, =C-<= searches for a previous occurrence.
+- If no region is selected, then the cursor is added on the next (previous) line.
+- To "skip" an occurrence, provide a zero prefix argument, e.g. =C-0 C->=
+- To delete the last added cursor, provide a negative argument, e.g. =C-- C->=
+
+The next important binding to add cursors is =M-@=:
+
+- If no region is selected, then it adds a cursor in the exact same position of
+  the current cursor.
+- If the selected region is entirely on a single line, than it searches the
+  whole buffer for the occurrences of this region and adds cursors on each one
+  of them.
+- If the selected region spans multiple lines, then it adds a cursor on every
+  line.
+
+Now we're getting on speed. =M-#= adds successive numbers in the place of each
+cursor. E.g. if you have 3 cursors, then pressing =M-#= will print 0 in the
+position of the first cursor, 1 - in the position of the second one and 2 - in
+the position of the third one. If you provide a prefix argument, say, =C-3 M-#=,
+then the printed numbers will start with it - 3, 4, 5.
+
+Consider, for example, that you want to write the following code:
+
+#+BEGIN_EXAMPLE
+  array[0] = 0;
+  array[1] = 2;
+  array[2] = 4;
+  array[3] = 6;
+  array[4] = 8;
+  array[5] = 10;
+#+END_EXAMPLE
+
+What you do is:
+
+- place the cursor in the beginning of the line and add 6 cursors =C-6 C->=
+- type "array["
+- =M-#= to add the digits
+- type the closing "]" (if it's not already there)
+- then " = ", and, attention, "(* 2 ", =M-#= and ")"
+
+What we have at this point is:
+
+#+BEGIN_EXAMPLE
+  array[0] = (* 2 0)
+  array[1] = (* 2 1)
+  array[2] = (* 2 2)
+  array[3] = (* 2 3)
+  array[4] = (* 2 4)
+  array[5] = (* 2 5)
+#+END_EXAMPLE
+
+Assuming that the cursors are at the end of each line we press =C-x C-e= (which
+is bound to =eval-and-replace=) and get what we want.
+
+Neat, huh? But wait, there's more. Hang on to yer helmet! Do you need to
+initialize, say, some kind of "point" structure as well?
+
+#+BEGIN_EXAMPLE
+  point.x = vec[0];
+  point.y = vec[1];
+  point.z = vec[2];
+#+END_EXAMPLE
+
+Here's a tip:
+
+#+BEGIN_EXAMPLE
+  point.(char-to-string (+ ?x 0))
+  point.(char-to-string (+ ?x 1))
+  point.(char-to-string (+ ?x 2))
+#+END_EXAMPLE
+
+Confused? Don't be - if you evaluate the lisp forms you will get "x", "y" and
+"z" as the results. Only your imagination is the limit for =M-#= function.
+
+BTW, I have this scary form =(char-to-string (+ ?x ))= in the abbrev table, so
+all I have to do is type "char" and hit =M-/=.
+
+Last, but not least - M-', which is my experimental function. It aligns all of
+your cursors by adding the necessary number of spaces for each cursor.
+
+If you feel overwhelmed by all the vast and tricky functionality this mode
+provides - don't let it stop you from trying it out. Start with simple things,
+like =C->= and =C-<=. Soon you will get pretty comfortable with it and then you
+can start using other functions - little by little.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "multiple-cursors-autoloads"
+    '(progn
+       (when (require 'multiple-cursors nil t)
+         (defun mc/mark-all-dispatch ()
+           "- add a fake cursor at current position
+
+  - call mc/edit-lines if multiple lines are marked
+
+  - call mc/mark-all-like-this if marked region is on a single line"
+           (interactive)
+           (cond
+            ((not (region-active-p))
+             (mc/create-fake-cursor-at-point)
+             (mc/maybe-multiple-cursors-mode))
+            ((> (- (line-number-at-pos (region-end))
+                   (line-number-at-pos (region-beginning))) 0)
+             (mc/edit-lines))
+            (t
+             (mc/mark-all-like-this))))
+
+         (defun mc/align ()
+           "Aligns all the cursor vertically."
+           (interactive)
+           (let ((max-column 0)
+                 (cursors-column '()))
+             (mc/for-each-cursor-ordered
+              (mc/save-excursion
+               (goto-char (overlay-start cursor))
+               (let ((cur (current-column)))
+                 (setq cursors-column (append cursors-column (list cur)))
+                 (setq max-column (if (< max-column cur) cur max-column)))))
+
+             (defun mc--align-insert-times ()
+               (interactive)
+               (dotimes (_ times)
+                 (insert " ")))
+
+             (mc/for-each-cursor-ordered
+              (let ((times (- max-column (car cursors-column))))
+                (mc/execute-command-for-fake-cursor 'mc--align-insert-times cursor))
+              (setq cursors-column (cdr cursors-column)))))
+
+         (setq mc/list-file "~/.mc-lists.el")
+         (load mc/list-file t) ;; load, but no errors if it does not exist yet please
+
+         (global-set-key (kbd "C->")  'mc/mark-next-like-this)
+         (global-set-key (kbd "C-<")  'mc/mark-previous-like-this)
+
+         (global-set-key (kbd "M-@") 'mc/mark-all-dispatch)
+         (global-set-key (kbd "M-#") 'mc/insert-numbers)
+         (global-set-key (kbd "M-'") 'mc/align))))
+#+END_SRC
+
 * Upcoming sections
-** Multiple cursors
 ** Sudo edit
 ** Ediff
 ** Term
@@ -1785,7 +1951,8 @@ gradually move things from this section to separate ones.
 
          (add-hook 'text-mode-hook
                    '(lambda ()
-                      (setq-local er/try-expand-list (remove 'er/mark-text-sentence er/try-expand-list)))
+                      (setq-local er/try-expand-list (remove 'er/mark-text-sentence er/try-expand-list))
+                      (setq-local er/try-expand-list (remove 'er/mark-text-paragraph er/try-expand-list)))
                    t)
          (add-hook 'org-mode-hook
                    '(lambda ()
@@ -1798,59 +1965,6 @@ gradually move things from this section to separate ones.
 
          (global-set-key (kbd "C-=") 'er/expand-region)
          (setq expand-region-fast-keys-enabled nil))))
-
-  ;; multiple cursors
-  (eval-after-load "multiple-cursors-autoloads"
-    '(progn
-       (when (require 'multiple-cursors nil t)
-         (defun mc/mark-all-dispatch ()
-           "- add a fake cursor at current position
-
-  - call mc/edit-lines if multiple lines are marked
-
-  - call mc/mark-all-like-this if marked region is on a single line"
-           (interactive)
-           (cond
-            ((not (region-active-p))
-             (mc/create-fake-cursor-at-point)
-             (mc/maybe-multiple-cursors-mode))
-            ((> (- (line-number-at-pos (region-end))
-                   (line-number-at-pos (region-beginning))) 0)
-             (mc/edit-lines))
-            (t
-             (mc/mark-all-like-this))))
-
-         (defun mc/align ()
-           "Aligns all the cursor vertically."
-           (interactive)
-           (let ((max-column 0)
-                 (cursors-column '()))
-             (mc/for-each-cursor-ordered
-              (mc/save-excursion
-               (goto-char (overlay-start cursor))
-               (let ((cur (current-column)))
-                 (setq cursors-column (append cursors-column (list cur)))
-                 (setq max-column (if (< max-column cur) cur max-column)))))
-
-             (defun mc--align-insert-times ()
-               (interactive)
-               (dotimes (_ times)
-                 (insert " ")))
-
-             (mc/for-each-cursor-ordered
-              (let ((times (- max-column (car cursors-column))))
-                (mc/execute-command-for-fake-cursor 'mc--align-insert-times cursor))
-              (setq cursors-column (cdr cursors-column)))))
-
-         (setq mc/list-file "~/.mc-lists.el")
-         (load mc/list-file t) ;; load, but no errors if it does not exist yet please
-
-         (global-set-key (kbd "C->")  'mc/mark-next-like-this)
-         (global-set-key (kbd "C-<")  'mc/mark-previous-like-this)
-
-         (global-set-key (kbd "M-@") 'mc/mark-all-dispatch)
-         (global-set-key (kbd "M-#") 'mc/insert-numbers)
-         (global-set-key (kbd "M-'") 'mc/align))))
 
   ;; wgrep
   (eval-after-load "wgrep-autoloads"

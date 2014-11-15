@@ -73,7 +73,10 @@
 
 (define-abbrev-table 'gitignore-mode-abbrev-table '())
 
-(define-abbrev-table 'global-abbrev-table '())
+(define-abbrev-table 'global-abbrev-table
+  '(
+    ("char" "(char-to-string (+ ?x ))" nil 0)
+   ))
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
 
