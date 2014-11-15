@@ -207,10 +207,74 @@ the provided character, EXCLUDING it. It is automatically bound to =M-Z= upon
   (require 'misc)
 #+END_SRC
 
-** Upcase/Lowercase/Capitalize
+** Upcase, lowercase and capitalize
 
+Since 99.999% of people using Emacs rebind Caps Lock to Ctrl, you need a decent
+replacement for its use cases. Emacs has all the corresponding functionality,
+but the bindings are pretty awkward. So I make it much easier to access:
+
+- =M-u= - upcase word or region
+- =M-l= - lowercase word or region
+- =M-c= - capitalize word or region
+
+#+BEGIN_SRC emacs-lisp
+  (defmacro action-dispatch (action)
+    `(defun ,(intern (format "%s-dispatch" action)) (arg)
+       "Perform action on word or region."
+       (interactive "P")
+       (if (region-active-p)
+           (,(intern (format "%s-region" action)) (region-beginning) (region-end))
+         (,(intern (format "%s-word" action)) (if arg arg 1)))))
+
+  (define-key global-map [remap upcase-word]     (action-dispatch upcase))
+  (define-key global-map [remap downcase-word]   (action-dispatch downcase))
+  (define-key global-map [remap capitalize-word] (action-dispatch capitalize))
+#+END_SRC
 ** Move text
 
+If you need to move text to some pretty distant place, then, of course, it's
+easier to kill and yank it. But if you simply need to swizzle lines around a
+bit, then =M-n= and =M-p= bindings are a natural way to think about it and do
+it.
+
+#+BEGIN_SRC emacs-lisp
+  (defun move-text-internal (arg)
+    (cond
+     ((and mark-active transient-mark-mode)
+      (if (> (point) (mark))
+          (exchange-point-and-mark))
+      (let ((column (current-column))
+            (text (delete-and-extract-region (point) (mark))))
+        (forward-line arg)
+        (move-to-column column t)
+        (set-mark (point))
+        (insert text)
+        (exchange-point-and-mark)
+        (setq deactivate-mark nil)))
+     (t
+      (let ((column (current-column)))
+        (beginning-of-line)
+        (when (or (> arg 0) (not (bobp)))
+          (forward-line)
+          (when (or (< arg 0) (not (eobp)))
+            (transpose-lines arg))
+          (forward-line -1))
+        (move-to-column column t)))))
+
+  (define-key global-map (kbd "M-p")
+    (defun move-text-up (arg)
+      "Move region (transient-mark-mode active) or current line arg
+  lines up."
+      (interactive "*p")
+      (move-text-internal (- arg))))
+
+  (define-key global-map (kbd "M-n")
+    (defun move-text-down (arg)
+      "Move region (transient-mark-mode active) or current line arg
+  lines down."
+      (interactive "*p")
+      (move-text-internal arg)))
+#+END_SRC
 * Abbreviations
 
 I have a collection of abbreviations for commands, that I use rarely enough to
@@ -659,8 +723,6 @@ To do this, simply select the text and provide a universal argument: =C-u M-q=.
                  (fill-paragraph 'nil 't))))
          (message "WARNING: unfill not found"))))
 #+END_SRC
-
-
 * Spelling fly
 
 Can't tell it for sure, but I suspect that even the brightest spelling bee
@@ -2048,54 +2110,6 @@ gradually move things from this section to separate ones.
         (hs-hide-level arg)
       (hs-show-all)))
 
-  (defmacro action-dispatch (action)
-    `(defun ,(intern (format "%s-dispatch" action)) (arg)
-       "Perform action on word or region."
-       (interactive "P")
-       (if (region-active-p)
-           (,(intern (format "%s-region" action)) (region-beginning) (region-end))
-         (,(intern (format "%s-word" action)) (if arg arg 1)))))
-
-  (define-key global-map [remap upcase-word]     (action-dispatch upcase))
-  (define-key global-map [remap downcase-word]   (action-dispatch downcase))
-  (define-key global-map [remap capitalize-word] (action-dispatch capitalize))
-
-  ;; move text
-  (defun move-text-internal (arg)
-    (cond
-     ((and mark-active transient-mark-mode)
-      (if (> (point) (mark))
-          (exchange-point-and-mark))
-      (let ((column (current-column))
-            (text (delete-and-extract-region (point) (mark))))
-        (forward-line arg)
-        (move-to-column column t)
-        (set-mark (point))
-        (insert text)
-        (exchange-point-and-mark)
-        (setq deactivate-mark nil)))
-     (t
-      (let ((column (current-column)))
-        (beginning-of-line)
-        (when (or (> arg 0) (not (bobp)))
-          (forward-line)
-          (when (or (< arg 0) (not (eobp)))
-            (transpose-lines arg))
-          (forward-line -1))
-        (move-to-column column t)))))
-
-  (defun move-text-down (arg)
-    "Move region (transient-mark-mode active) or current line
-    arg lines down."
-    (interactive "*p")
-    (move-text-internal arg))
-
-  (defun move-text-up (arg)
-    "Move region (transient-mark-mode active) or current line
-    arg lines up."
-    (interactive "*p")
-    (move-text-internal (- arg)))
-
   (defcustom pop-predefined-register ?}
     "Register for saving window configuration before jump"
     :type 'register)
@@ -2214,8 +2228,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "C-M-l")       'recenter-top-bottom)
   (global-set-key (kbd "\C-c c")      'org-capture)
   (global-set-key (kbd "\C-c a")      'org-agenda)
-  (global-set-key (kbd "M-p")         'move-text-up)
-  (global-set-key (kbd "M-n")         'move-text-down)
   (global-set-key (kbd "M-P")         'scroll-down-line)
   (global-set-key (kbd "M-N")         'scroll-up-line)
   (global-set-key (kbd "M-\"")        'double-quote-word)
