@@ -28,6 +28,7 @@ also works as an Emacs configuration file.
  - [[#browse-kill-ring][Browse kill ring]]
  - [[#navigate-to-previous-position][Navigate to previous position]]
  - [[#get-full-path][Get full path]]
+ - [[#multiple-cursors][Multiple cursors]]
  - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -1616,12 +1617,14 @@ get it.
 * Multiple cursors
 
 Multiple cursors is a kind of feature that doesn't sound like a very good idea
-the first time you hear about it. I was also sceptic about it, like "What good
+the first time you hear about it. It seems too tricky and complex to be useful.
+And I was also sceptic, when I first saw it in Sublime Text 2 editor: "What good
 can you expect from the guys that invented minimap?".
 
-But I saw a video by Magnar Sveen, where he showed-off his implementation of
-multiple cursors in Emacs. I got the impression that he, himself, didn't really
-know how to use them properly. But somehow it had a ring to him.
+But one day I watched a video by Magnar Sveen, where he showed-off his
+implementation of multiple cursors in Emacs. I got the impression that he,
+himself, didn't really know how to use them properly, but somehow it had a ring
+to him.
 
 The idea from the video that also rang to me was selecting a word and adding
 auxiliary cursors on other occurrences of the same word. I didn't know how
@@ -1630,12 +1633,8 @@ useful it was when I saw it, but I decided it give it a try.
 At first, I wasn't really using it much, because I didn't have the habit. And,
 to be honest, the concept is indeed a bit alien if you've never used it. But
 eventually, I worked out a style of using multiple cursors, which goes for me.
-
-I guess, I don't use a lot of the "stock" functionality and, probably, the way I
-use multiple cursors is different from the way the author intended. But it
-turned out to be so convenient, that now I can't imagine myself giving it up.
-
-So, here's how I use multiple cursors.
+And it turned out to be so convenient, that now I can't imagine myself giving it
+up.
 
 The 2 most commonly used bindings are =C->= and =C-<=:
 
@@ -1646,21 +1645,22 @@ The 2 most commonly used bindings are =C->= and =C-<=:
 - To "skip" an occurrence, provide a zero prefix argument, e.g. =C-0 C->=
 - To delete the last added cursor, provide a negative argument, e.g. =C-- C->=
 
-The next important binding to add cursors is =M-@=:
+The next important binding is =M-@=:
 
 - If no region is selected, then it adds a cursor in the exact same position of
   the current cursor.
 - If the selected region is entirely on a single line, than it searches the
   whole buffer for the occurrences of this region and adds cursors on each one
   of them.
-- If the selected region spans multiple lines, then it adds a cursor on every
+- If the selected region spans multiple lines, then it adds a cursor on each
   line.
 
-Now we're getting on speed. =M-#= adds successive numbers in the place of each
-cursor. E.g. if you have 3 cursors, then pressing =M-#= will print 0 in the
-position of the first cursor, 1 - in the position of the second one and 2 - in
-the position of the third one. If you provide a prefix argument, say, =C-3 M-#=,
-then the printed numbers will start with it - 3, 4, 5.
+Now we're getting on speed. Once you already have multiple cursors, =M-#= adds
+successive numbers in the place of each cursor. E.g. if you have 3 cursors, then
+pressing =M-#= will print 0 in the position of the first cursor, 1 - in the
+position of the second cursor and 2 - in the position of the third cursor. If
+you provide a prefix argument, say, =C-3 M-#=, the printed numbers will start
+with it - 3, 4, 5.
 
 Consider, for example, that you want to write the following code:
 
@@ -1677,9 +1677,9 @@ What you do is:
 
 - place the cursor in the beginning of the line and add 6 cursors =C-6 C->=
 - type "array["
-- =M-#= to add the digits
+- hit =M-#= to add the digits
 - type the closing "]" (if it's not already there)
-- then " = ", and, attention, "(* 2 ", =M-#= and ")"
+- then " = ", and, *attention*, "(* 2 ", =M-#= and ")"
 
 What we have at this point is:
 
@@ -1692,8 +1692,8 @@ What we have at this point is:
   array[5] = (* 2 5)
 #+END_EXAMPLE
 
-Assuming that the cursors are at the end of each line we press =C-x C-e= (which
-is bound to =eval-and-replace=) and get what we want.
+Assuming that the cursors are at the end of each line, we press =C-x C-e= (which
+is bound to =eval-and-replace=), add semicolons and get what we want.
 
 Neat, huh? But wait, there's more. Hang on to yer helmet! Do you need to
 initialize, say, some kind of "point" structure as well?
@@ -1713,18 +1713,40 @@ Here's a tip:
 #+END_EXAMPLE
 
 Confused? Don't be - if you evaluate the lisp forms you will get "x", "y" and
-"z" as the results. Only your imagination is the limit for =M-#= function.
+"z" as the results. Only your imagination is the limit when using the =M-#=
+function.
 
 BTW, I have this scary form =(char-to-string (+ ?x ))= in the abbrev table, so
 all I have to do is type "char" and hit =M-/=.
 
-Last, but not least - M-', which is my experimental function. It aligns all of
-your cursors by adding the necessary number of spaces for each cursor.
+Last, but not least - M-', which is an experimental function written by me. It
+aligns all of your cursors by adding the necessary number of spaces in the
+positions of every cursor.
 
-If you feel overwhelmed by all the vast and tricky functionality this mode
-provides - don't let it stop you from trying it out. Start with simple things,
-like =C->= and =C-<=. Soon you will get pretty comfortable with it and then you
-can start using other functions - little by little.
+For example, if you have a code, like
+
+#+BEGIN_EXAMPLE
+  object.width = 30;
+  object.height = 150;
+  object.temperature = 300;
+#+END_EXAMPLE
+
+You can select the word =object=, hit =M-@=, =M-f=, =C-g= and M-' to make it
+look like this:
+
+#+BEGIN_EXAMPLE
+  object.width       = 30;
+  object.height      = 150;
+  object.temperature = 300;
+#+END_EXAMPLE
+
+You can do the same thing with the help of =align-regexp= function, but if you
+already created the cursors anyway, then M-' is a handy tool.
+
+If you feel overwhelmed by all the vast functionality this mode provides - don't
+let it stop you from trying it out. Start with simple things, like =C->= and
+=C-<=. Soon you will find yourself pretty comfortable with it and then you will
+start using other functions - little by little.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "multiple-cursors-autoloads"
