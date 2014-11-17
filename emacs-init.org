@@ -4,7 +4,7 @@
 * Foreword
 
 This is a little novel for casual reading about a text editor. Incidentally, it
-also works as an Emacs configuration file.
+also works as an Emacs 24.4 configuration file.
 
 * Contents                                                   :noexport:TOC_1:
  - [[#foreword][Foreword]]
@@ -16,7 +16,6 @@ also works as an Emacs configuration file.
  - [[#smarter-alternatives-to-built-in-functionality]["Smarter" alternatives to built-in functionality]]
  - [[#spelling-fly][Spelling fly]]
  - [[#fighting-escape-sequences-in-strings][Fighting escape sequences in strings]]
- - [[#images-in-the-same-directory][Images in the same directory]]
  - [[#parenthesis-for-dummies][Parenthesis for Dummies]]
  - [[#programming-languages][Programming languages]]
  - [[#magit][Magit]]
@@ -86,8 +85,9 @@ never owned a Mac, I can't really tell whether it works at all. If you own a
 Mac, please, enlighten me!
 
 #+BEGIN_SRC emacs-lisp
-  (setq mac-command-modifier 'meta)
+  (setq-default mac-command-modifier 'meta)
 #+END_SRC
+
 * Text manipulations
 
 Some people mistakenly call Emacs a text editor. But, hey, what can you do -
@@ -124,6 +124,7 @@ nicely complements subword functionality in that regard:
 - Otherwise, use =C-== to select the whole word and do whatever you need.
 
 #+BEGIN_SRC emacs-lisp
+  (require 'subword)
   ;; RecognizeCamelCaseSubwording
   (global-subword-mode)
   ;; don't remap some commands
@@ -315,6 +316,10 @@ manager inside Emacs.
 I consider dired a truly amazing piece of software. More than anything, it makes
 the job done without over-complication on implementation or interface side.
 
+#+BEGIN_SRC emacs-lisp
+  (require 'dired-x nil t)
+#+END_SRC
+
 ** Dired jump
 To enable a convenient =C-x C-j= binding, we have to require the =dired-x=
 module. When visiting a file, =C-x C-j= opens current directory in dired. When
@@ -323,13 +328,12 @@ nice shortcut - =j=. With universal argument - =C-u C-x C-j= - it opens dired in
 other window.
 
 #+BEGIN_SRC emacs-lisp
-  (when (require 'dired-x nil t)
-    (define-key dired-mode-map (kbd "j")
-      (define-key global-map (vector 'remap 'dired-jump)
-        (defun dired-jump-universal-other (arg)
-          "Calls dired-jump. With prefix argument uses other window"
-          (interactive "P")
-          (dired-jump arg)))))
+  (define-key dired-mode-map (kbd "j")
+    (define-key global-map (vector 'remap 'dired-jump)
+      (defun dired-jump-universal-other (arg)
+        "Calls dired-jump. With prefix argument uses other window"
+        (interactive "P")
+        (dired-jump arg))))
 #+END_SRC
 
 ** Dired details
@@ -383,9 +387,10 @@ better positions:
       (goto-char (point-min))
       (dired-next-line 1)
       ;; skip another line depending on hidden/shown state of dired-details
-      (when (or (not (boundp 'dired-details-state))
-                (equal dired-details-state 'shown))
-        (dired-next-line 1))
+      (with-no-warnings
+        (when (or (not (boundp 'dired-details-state))
+                  (equal dired-details-state 'shown))
+          (dired-next-line 1)))
       (if (looking-at "\\.") ;; top-level directories don't have a
           ;; .. entry
           (dired-next-line 1))))
@@ -423,7 +428,7 @@ When editing dired buffer (=C-x C-q=), allow to change the permissions as well:
 
 #+BEGIN_SRC emacs-lisp
   (define-key dired-mode-map (kbd "C-x C-q") 'dired-toggle-read-only)
-  (setq wdired-allow-to-change-permissions t)
+  (setq-default wdired-allow-to-change-permissions t)
 #+END_SRC
 
 ** Native explorer
@@ -498,8 +503,8 @@ still conflict, you can add another parent directory levels, until the clash is
 resolved
 
 #+BEGIN_SRC emacs-lisp
-  (when (require 'uniquify nil t)
-    (setq uniquify-buffer-name-style 'forward))
+  (require 'uniquify)
+  (setq-default uniquify-buffer-name-style 'forward)
 #+END_SRC
 
 ** Append tramp host
@@ -508,22 +513,22 @@ For remote files, opened with TRAMP, it makes sense to append the hostname to
 the buffer name.
 
 #+BEGIN_SRC emacs-lisp
-  (when (require 'tramp nil t)
-    (defun append-tramp-host ()
-      "Appends host name to the current buffer name for remote
+  (require 'tramp)
+  (defun append-tramp-host ()
+    "Appends host name to the current buffer name for remote
   files"
-      (interactive)
-      (when (tramp-tramp-file-p default-directory)
-        (rename-buffer
-         (concat
-          (replace-regexp-in-string " <.*>$" "" (or (uniquify-buffer-base-name) (buffer-name)))
-          " <"
-          (tramp-file-name-host
-           (tramp-dissect-file-name default-directory)) ">")
-         t)))
+    (interactive)
+    (when (tramp-tramp-file-p default-directory)
+      (rename-buffer
+       (concat
+        (replace-regexp-in-string " <.*>$" "" (or (uniquify-buffer-base-name) (buffer-name)))
+        " <"
+        (tramp-file-name-host
+         (tramp-dissect-file-name default-directory)) ">")
+       t)))
 
-    (add-hook 'find-file-hook 'append-tramp-host)
-    (add-hook 'dired-mode-hook 'append-tramp-host))
+  (add-hook 'find-file-hook 'append-tramp-host)
+  (add-hook 'dired-mode-hook 'append-tramp-host)
 #+END_SRC
 
 ** Rename buffer
@@ -747,32 +752,32 @@ toggle (cycle, actually) between (through) other languages, you can customize
 the =ispell-common-dictionaries= variable.
 
 #+BEGIN_SRC emacs-lisp
-  (when (require 'flyspell nil t)
-    (add-hook 'text-mode-hook 'flyspell-mode)
-    (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  (require 'flyspell)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
-    (defcustom ispell-common-dictionaries
-      '("en" "ru")
-      "List of dictionaries for common use"
-      :group 'ispell)
+  (defcustom ispell-common-dictionaries
+    '("en" "ru")
+    "List of dictionaries for common use"
+    :group 'ispell)
 
-    (setq ispell-dictionary (car ispell-common-dictionaries))
+  (setq-default ispell-dictionary (car ispell-common-dictionaries))
 
-    (define-key flyspell-mode-map (kbd "C-c M-$")
-      (defun ispell-next-dictionary()
-        "Cycle through dictionaries in `ispell-common-dictionaries'"
-        (interactive)
-        (let* ((dic ispell-current-dictionary)
-               (next (cadr (member dic ispell-common-dictionaries)))
-               (change (if next next (car ispell-common-dictionaries))))
-          (ispell-change-dictionary change))))
+  (define-key flyspell-mode-map (kbd "C-c M-$")
+    (defun ispell-next-dictionary()
+      "Cycle through dictionaries in `ispell-common-dictionaries'"
+      (interactive)
+      (let* ((dic ispell-current-dictionary)
+             (next (cadr (member dic ispell-common-dictionaries)))
+             (change (if next next (car ispell-common-dictionaries))))
+        (ispell-change-dictionary change))))
 
-    (define-key flyspell-mode-map (kbd "C-x M-$")
-      (defun flyspell-buffer-or-region ()
-        (interactive)
-        (if (region-active-p)
-            (flyspell-region (region-beginning) (region-end))
-          (flyspell-buffer)))))
+  (define-key flyspell-mode-map (kbd "C-x M-$")
+    (defun flyspell-buffer-or-region ()
+      (interactive)
+      (if (region-active-p)
+          (flyspell-region (region-beginning) (region-end))
+        (flyspell-buffer))))
 #+END_SRC
 * Fighting escape sequences in strings
 
@@ -799,46 +804,6 @@ To finish editing, press =C-c C-c=. To abort, press =C-c C-k=.
 As a side note, for the particular case of editing regular expressions, you can
 also use the command =M-x re-builder= to interactively construct highly
 sophisticated expressions.
-
-* Images in the same directory
-
-When you want to look through the images in a directory, it is convenient to
-visit next and previous images with shortcuts - =n= and =p=. This functionality
-is built-in since Emacs 24.4, but until I switch, I need special functions for
-that. Note, that those functions only traverse images with the same extension as
-the current one.
-
-#+BEGIN_SRC emacs-lisp
-  (when (require 'image-mode nil t)
-    (define-key image-mode-map "n"
-      (defun next-image (arg)
-        "Visit the next arg'th image in the same directory of the
-  same type."
-        (interactive "P")
-        (unless (and (buffer-file-name) (eq major-mode 'image-mode))
-          (error "Not visiting a file in image mode"))
-        (let* ((files   (directory-files
-                         (file-name-directory (buffer-file-name)) nil
-                         (file-name-extension (buffer-file-name)) ))
-               (len     (length files))
-               (this    (file-name-nondirectory (buffer-file-name)))
-               (idx     0)
-               (dir     (file-name-directory (buffer-file-name))))
-          (dolist (file files)
-            (if (not (string= this file))
-                (setq idx  (1+ idx))
-              (setq idx
-                    (mod (+ idx (if arg arg 1)) len))
-              (kill-this-buffer) ;; we don't want to have a thousand image
-              ;; buffers around
-              (find-file (concat dir (elt files idx))))))))
-
-    (define-key image-mode-map "p"
-      (defun previous-image (arg)
-        "Visit previous image. See `next-image'"
-        (interactive "P")
-        (next-image (if arg (- arg) -1)))))
-#+END_SRC
 
 * Parenthesis for Dummies
 
@@ -945,15 +910,14 @@ This replaces all the "project management" nonsense for me. It's incredibly
 flexible, convenient and simple at the same time. Truly, great stuff.
 
 #+BEGIN_SRC emacs-lisp
+  (require 'compile)
   (make-variable-buffer-local 'compile-command)
-  (when (require 'compile nil t)
-    ;; those patterns are used by dmd compiler
-    (setq compilation-error-regexp-alist
-          (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
-                    ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
-                  compilation-error-regexp-alist)))
+  ;; those patterns are used by dmd compiler
+  (setq-default compilation-error-regexp-alist
+                (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
+                          ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
+                        compilation-error-regexp-alist))
 #+END_SRC
-
 ** Python
 
 Probably, the most prominent package for Python development is =elpy=. At least
@@ -970,7 +934,7 @@ But if I'm to pick one for Python, it will, obviously, be =ipython=.
 #+BEGIN_SRC emacs-lisp
   (when (require 'python nil t)
     (if (executable-find "ipython")
-        (setq
+        (setq-default
          python-shell-interpreter "ipython"
          python-shell-prompt-regexp "In \\[[0-9]+\\]: "
          python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "))
@@ -1012,11 +976,11 @@ a =markdown-export= function (=C-c C-e=).
 The only unusual thing about this mode is that it alters the default syntax
 indentation. It lines up the dots in situations, like
 
-#+BEGIN_SRC d
+#+BEGIN_EXAMPLE
   foreach (file; dirPath.expandTilde()
                         .buildNormalizedPath()
                         .dirEntries(SpanMode.shallow)()
-#+END_SRC
+#+END_EXAMPLE
 
 There's kind of a funny story around this functionality. Somebody asked a
 [[https://stackoverflow.com/questions/25797945/adjusting-alignment-rules-for-ucfs-chains-in-d][question]] on StackOverflow about how you can achieve this. I got interested and
@@ -1175,7 +1139,7 @@ handled specially in =term-mode=. But it's not as convenient as =C-TAB=.
 #+BEGIN_SRC emacs-lisp
   (when (require 'ido nil t)
     (ido-mode 1)
-    (setq ido-enable-flex-matching t)
+    (setq-default ido-enable-flex-matching t)
     (global-set-key [C-tab] 'ido-switch-buffer))
 #+END_SRC
 
@@ -1200,26 +1164,26 @@ precedent: Ibuffer. Frankly, I don't use it much, but it's kind of nice to have
 when you need it.
 
 #+BEGIN_SRC emacs-lisp
-  (when (require 'ibuffer nil t)
-    ;; ibuffer groups
-    (setq ibuffer-saved-filter-groups
-          (quote (("default"
-                   ("org"  (mode . org-mode))
-                   ("dired" (mode . dired-mode))
-                   ("D" (mode . d-mode))
-                   ("C/C++" (or
-                             (mode . cc-mode)
-                             (mode . c-mode)
-                             (mode . c++-mode)))
-                   ("magit" (name . "^\\*magit"))
-                   ("Markdown" (mode . markdown-mode))
-                   ("emacs" (name . "^\\*Messages\\*$"))
-                   ("shell commands" (name . "^\\*.*Shell Command\\*"))))))
-    (add-hook 'ibuffer-mode-hook
-              (lambda ()
-                (ibuffer-switch-to-saved-filter-groups "default")))
+  (require 'ibuffer nil t)
+  ;; ibuffer groups
+  (setq-default ibuffer-saved-filter-groups
+                (quote (("default"
+                         ("org"  (mode . org-mode))
+                         ("dired" (mode . dired-mode))
+                         ("D" (mode . d-mode))
+                         ("C/C++" (or
+                                   (mode . cc-mode)
+                                   (mode . c-mode)
+                                   (mode . c++-mode)))
+                         ("magit" (name . "^\\*magit"))
+                         ("Markdown" (mode . markdown-mode))
+                         ("emacs" (name . "^\\*Messages\\*$"))
+                         ("shell commands" (name . "^\\*.*Shell Command\\*"))))))
+  (add-hook 'ibuffer-mode-hook
+            (lambda ()
+              (ibuffer-switch-to-saved-filter-groups "default")))
 
-    (global-set-key (kbd "\C-x \C-b") 'ibuffer))
+  (global-set-key (kbd "\C-x \C-b") 'ibuffer)
 #+END_SRC
 
 * Using external websites
@@ -2010,9 +1974,9 @@ gradually move things from this section to separate ones.
   ;; export .org files as reveal.js presentations (https://github.com/hakimel/reveal.js/)
   (require 'ox-reveal nil t)
 
-  (when (require 'ert nil t)
-    (define-key ert-results-mode-map "g"
-      'ert-results-rerun-all-tests))
+  (require 'ert)
+  (define-key ert-results-mode-map "g"
+    'ert-results-rerun-all-tests)
 
   ;; ------------------------------------------------------------
   ;; DEFUNS
@@ -2087,7 +2051,7 @@ gradually move things from this section to separate ones.
                               default-directory))
             nil nil "TAGS"))
           (ctags-command "")
-          (languages (case major-mode
+          (languages (cl-case major-mode
                        ((cc-mode c++-mode c-mode) "--languages=C,C++")
                        ((d-mode) "--languages=D")
                        (t ""))))
@@ -2118,65 +2082,66 @@ gradually move things from this section to separate ones.
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; term
-  (when (require 'term)
 
-    (defadvice ido-switch-buffer (after maintain-ansi-term activate)
-      "Go to prompt when switched to ansi-term"
-      (when (member major-mode '(term-mode))
-        (term-line-mode)
-        (end-of-buffer)
-        (end-of-line)
-        (term-char-mode)))
+  (require 'term)
 
-    (defcustom term-remote-hosts '()
-      "List of remote hosts"
-      :group 'term)
+  (defadvice ido-switch-buffer (after maintain-ansi-term activate)
+    "Go to prompt when switched to ansi-term"
+    (when (member major-mode '(term-mode))
+      (term-line-mode)
+      (end-of-buffer)
+      (end-of-line)
+      (term-char-mode)))
 
-    (defcustom ssh-config-filename "~/.ssh/config"
-      "ssh config filename"
-      :group 'term)
+  (defcustom term-remote-hosts '()
+    "List of remote hosts"
+    :group 'term)
 
-    (defun term-parse-ssh-config ()
-      "Parse `ssh-config-filename' to provide `remote-term'
+  (defcustom ssh-config-filename "~/.ssh/config"
+    "ssh config filename"
+    :group 'term)
+
+  (defun term-parse-ssh-config ()
+    "Parse `ssh-config-filename' to provide `remote-term'
   completion capabilities."
-      (interactive)
-      (setq term-remote-hosts '())
-      (if (file-exists-p ssh-config-filename)
-          (with-temp-buffer
-            (find-file ssh-config-filename)
-            (goto-char (point-min))
-            (while (re-search-forward "Host\\s-+\\([^\s]+\\)$" nil t)
-              (let ((host (match-string-no-properties 1)))
-                (add-to-list 'term-remote-hosts `(,host "ssh" ,host))))
-            (kill-buffer))))
-    (term-parse-ssh-config)
+    (interactive)
+    (setq term-remote-hosts '())
+    (if (file-exists-p ssh-config-filename)
+        (with-temp-buffer
+          (find-file ssh-config-filename)
+          (goto-char (point-min))
+          (while (re-search-forward "Host\\s-+\\([^\s]+\\)$" nil t)
+            (let ((host (match-string-no-properties 1)))
+              (add-to-list 'term-remote-hosts `(,host "ssh" ,host))))
+          (kill-buffer))))
+  (term-parse-ssh-config)
 
-    (defun remote-term-do (new-buffer-name cmd &rest switches)
-      "Fires a remote terminal"
-      (setq term-ansi-buffer-name (concat "*" new-buffer-name "*"))
-      (setq term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
-      (setq term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches))
+  (defun remote-term-do (new-buffer-name cmd &rest switches)
+    "Fires a remote terminal"
+    (let* ((term-ansi-buffer-name (concat "*" new-buffer-name "*"))
+           (term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
+           (term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches)))
       (set-buffer term-ansi-buffer-name)
       (term-mode)
       (term-char-mode)
       (term-set-escape-char ?\C-x)
-      (switch-to-buffer term-ansi-buffer-name))
+      (switch-to-buffer term-ansi-buffer-name)))
 
-    (defun remote-term (host-name)
-      (interactive
-       (list (completing-read "Remote host: " term-remote-hosts)))
-      (dolist (known-host term-remote-hosts)
-        (when (equal (car known-host) host-name)
-          (apply 'remote-term-do known-host))))
+  (defun remote-term (host-name)
+    (interactive
+     (list (completing-read "Remote host: " term-remote-hosts)))
+    (dolist (known-host term-remote-hosts)
+      (when (equal (car known-host) host-name)
+        (apply 'remote-term-do known-host))))
 
-    (add-hook 'term-mode-hook
-              '(lambda ()
-                 (yas-minor-mode -1)))
+  (add-hook 'term-mode-hook
+            '(lambda ()
+               (yas-minor-mode -1)))
 
-    (define-key term-mode-map "\C-x\C-j"   'dired-jump-universal-other)
-    (define-key term-raw-escape-map "\C-j" 'dired-jump-universal-other)
-    (define-key term-raw-escape-map "\C-l" 'term-line-mode)
-    (define-key term-mode-map "\C-x\C-k"   'term-char-mode))
+  (define-key term-mode-map "\C-x\C-j"   'dired-jump-universal-other)
+  (define-key term-raw-escape-map "\C-j" 'dired-jump-universal-other)
+  (define-key term-raw-escape-map "\C-l" 'term-line-mode)
+  (define-key term-mode-map "\C-x\C-k"   'term-char-mode)
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   ;; functions to save and restore window configuration for ediff-mode
@@ -2235,18 +2200,18 @@ gradually move things from this section to separate ones.
         (call-interactively 'git-grep)
       (call-interactively 'find-grep)))
 
+  (defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
   (make-variable-buffer-local 'hs-hide-all-toggle-state)
-  (when (require 'hideshow nil t)
-    (defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
-    (defun hs-toggle-hideshow-all (arg)
-      "Toggle hideshow all. Prefix arg is the level of hiding."
-      (interactive "P")
-      (if (not arg)
-          (setq arg 1))
-      (setq hs-hide-all-toggle-state (not hs-hide-all-toggle-state))
-      (if hs-hide-all-toggle-state
-          (hs-hide-level arg)
-        (hs-show-all))))
+  (require 'hideshow nil t)
+  (defun hs-toggle-hideshow-all (arg)
+    "Toggle hideshow all. Prefix arg is the level of hiding."
+    (interactive "P")
+    (if (not arg)
+        (setq arg 1))
+    (setq hs-hide-all-toggle-state (not hs-hide-all-toggle-state))
+    (if hs-hide-all-toggle-state
+        (hs-hide-level arg)
+      (hs-show-all)))
 
   (defcustom pop-predefined-register ?}
     "Register for saving window configuration before jump"
@@ -2491,9 +2456,10 @@ gradually move things from this section to separate ones.
   (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
   ;; ftp dumb hosts
-  (setq ange-ftp-dumb-unix-host-regexp (regexp-opt '(
-                                                     "files.itseez.com"
-                                                     )))
+  (setq-default ange-ftp-dumb-unix-host-regexp
+                (regexp-opt '(
+                              "files.itseez.com"
+                              )))
 
   ;; disable 'confusing' functions disabling
   (put 'narrow-to-region 'disabled nil)
@@ -2502,7 +2468,7 @@ gradually move things from this section to separate ones.
   (setq ring-bell-function 'ignore)
 
   ;; ediff: fine highlight by char, not words
-  (setq ediff-forward-word-function 'forward-char)
+  (setq-default ediff-forward-word-function 'forward-char)
 
   ;; delete trailing whitespace before save
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -2529,3 +2495,7 @@ gradually move things from this section to separate ones.
   ;; Answering just 'y' or 'n' will do
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
+
+# Local Variables:
+# compile-command: "emacs -batch -l org -l ob-tangle --eval \"(find-file \\\"/home/sergei/.dev-setup/dot-emacs/emacs-init.org\\\")\" --eval \"(org-babel-tangle nil \\\"/tmp/emacs-init-compile.el\\\")\" --eval \"(batch-byte-compile-file \\\"/tmp/emacs-init-compile.el\\\")\" 2>&1 | sed -n '/Warning\\|Error/p' | xargs -r ls"
+# End:
