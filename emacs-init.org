@@ -373,14 +373,14 @@ better positions:
     (defun dired-jump-to-bottom ()
       "Jumps to the last file"
       (interactive)
-      (end-of-buffer)
+      (goto-char (point-max))
       (dired-previous-line 1)))
 
   (define-key dired-mode-map (vector 'remap 'beginning-of-buffer)
     (defun dired-jump-to-top ()
       "Jumps to the .. entry"
       (interactive)
-      (beginning-of-buffer)
+      (goto-char (point-min))
       (dired-next-line 1)
       ;; skip another line depending on hidden/shown state of dired-details
       (when (or (not (boundp 'dired-details-state))
@@ -753,7 +753,8 @@ the =ispell-common-dictionaries= variable.
 
     (defcustom ispell-common-dictionaries
       '("en" "ru")
-      "List of dictionaries for common use")
+      "List of dictionaries for common use"
+      :group 'ispell)
 
     (setq ispell-dictionary (car ispell-common-dictionaries))
 
@@ -944,9 +945,8 @@ This replaces all the "project management" nonsense for me. It's incredibly
 flexible, convenient and simple at the same time. Truly, great stuff.
 
 #+BEGIN_SRC emacs-lisp
+  (make-variable-buffer-local 'compile-command)
   (when (require 'compile nil t)
-    (make-variable-buffer-local 'compile-command)
-
     ;; those patterns are used by dmd compiler
     (setq compilation-error-regexp-alist
           (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
@@ -1556,7 +1556,7 @@ C-SPC= when used with a universal argument =C-u C-M-\=.
       (interactive "P")
       (if arg
           (pop-global-mark)
-        (setq mark-ring (remove-duplicates mark-ring :test 'equal))
+        (delete-dups mark-ring)
         (set-mark-command '(4)))))
 #+END_SRC
 * Get full path
@@ -1605,14 +1605,12 @@ get it.
           (setq p1 (car bds))
           (setq p2 (cdr bds))
 
-          ;; grab the string
-          (setq fn (buffer-substring-no-properties p1 p2)  )
-
-          (if (file-exists-p fn)
-              (progn
-                (delete-region p1 p2 )
-                (insert (file-truename fn)))
-            (message "Path \"%s\" doesn't exist" fn)))))
+          (let ((fn (buffer-substring-no-properties p1 p2)))
+            (if (file-exists-p fn)
+                (progn
+                  (delete-region p1 p2 )
+                  (insert (file-truename fn)))
+              (message "Path \"%s\" doesn't exist" fn))))))
   #+END_SRC
 * Multiple cursors
 
@@ -2062,12 +2060,12 @@ gradually move things from this section to separate ones.
   without it. "
     (with-temp-buffer
       (insert filename)
-      (end-of-buffer)
+      (goto-char (point-max))
       (if (re-search-backward "@\\(.*\\):" nil t)
           (let ((remote-name (buffer-substring (match-beginning 1) (match-end 1))))
             (goto-char (match-end 1))
             (insert (concat "|sudo:" remote-name))
-            (beginning-of-buffer)
+            (goto-char (point-min))
             (forward-char)
             (when (looking-at "scpc")
               (delete-char 4)
@@ -2131,10 +2129,12 @@ gradually move things from this section to separate ones.
         (term-char-mode)))
 
     (defcustom term-remote-hosts '()
-      "List of remote hosts")
+      "List of remote hosts"
+      :group 'term)
 
     (defcustom ssh-config-filename "~/.ssh/config"
-      "ssh config filename")
+      "ssh config filename"
+      :group 'term)
 
     (defun term-parse-ssh-config ()
       "Parse `ssh-config-filename' to provide `remote-term'
@@ -2211,7 +2211,8 @@ gradually move things from this section to separate ones.
 
   (defcustom git-grep-switches "--extended-regexp -I -n --ignore-case "
     "Switches to pass to 'git grep'."
-    :type 'string)
+    :type 'string
+    :group 'grep)
 
   (defun git-grep (re)
     (interactive
@@ -2234,21 +2235,23 @@ gradually move things from this section to separate ones.
         (call-interactively 'git-grep)
       (call-interactively 'find-grep)))
 
-  (defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
   (make-variable-buffer-local 'hs-hide-all-toggle-state)
-  (defun hs-toggle-hideshow-all (arg)
-    "Toggle hideshow all. Prefix arg is the level of hiding."
-    (interactive "P")
-    (if (not arg)
-        (setq arg 1))
-    (setq hs-hide-all-toggle-state (not hs-hide-all-toggle-state))
-    (if hs-hide-all-toggle-state
-        (hs-hide-level arg)
-      (hs-show-all)))
+  (when (require 'hideshow nil t)
+    (defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
+    (defun hs-toggle-hideshow-all (arg)
+      "Toggle hideshow all. Prefix arg is the level of hiding."
+      (interactive "P")
+      (if (not arg)
+          (setq arg 1))
+      (setq hs-hide-all-toggle-state (not hs-hide-all-toggle-state))
+      (if hs-hide-all-toggle-state
+          (hs-hide-level arg)
+        (hs-show-all))))
 
   (defcustom pop-predefined-register ?}
     "Register for saving window configuration before jump"
-    :type 'register)
+    :type 'register
+    :group 'ediff)
 
   (define-key global-map [remap jump-to-register]
     (defun jump-to-register-with-save (register &optional delete)
@@ -2260,11 +2263,11 @@ gradually move things from this section to separate ones.
         (window-configuration-to-register pop-predefined-register))
       (jump-to-register register delete)))
 
+  (require 'etags)
   (defun find-function-push-tag (function)
     "This function is meant as a drop-in replacement for find-tag
   in emacs-lisp-mode. It calls find-function and inserts current
   position into find-tag-marker-ring."
-    (require 'etags)
     (interactive (find-function-read))
     (ring-insert find-tag-marker-ring (point-marker))
     (find-function function))
