@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: formatidx
+# key: formatidx
+# --
+#include <iostream>
+#include <iomanip>
+std::string format_idx(size_t idx)
+{
+    std::ostringstream oss;
+    oss << std::setw(4) << std::setfill('0') << idx;
+    return oss.str();
+}
