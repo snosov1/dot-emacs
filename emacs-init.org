@@ -256,11 +256,12 @@ it.
      (t
       (let ((column (current-column)))
         (beginning-of-line)
-        (when (or (> arg 0) (not (bobp)))
-          (forward-line)
-          (when (or (< arg 0) (not (eobp)))
-            (transpose-lines arg))
+        (forward-line)
+        (transpose-lines arg)
+        (when (and (> arg 0) (not (eobp)))
           (forward-line -1))
+        (when (and (< arg 0) (not (bobp)))
+          (forward-line -2))
         (move-to-column column t)))))
 
   (define-key global-map (kbd "M-p")
