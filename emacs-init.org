@@ -2489,6 +2489,9 @@ gradually move things from this section to separate ones.
   ;; Revolt, outrage, revolution! No double spaces in the end of sentences.
   (set-default 'sentence-end-double-space nil)
 
+  ;; Disable electric indent mode
+  (electric-indent-mode -1)
+
   ;; make backspace to always delete chars
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
   (define-key isearch-mode-map [escape] 'isearch-cancel)
