@@ -28,6 +28,7 @@ also works as an Emacs 24.4 configuration file.
  - [[#navigate-to-previous-position][Navigate to previous position]]
  - [[#get-full-path][Get full path]]
  - [[#multiple-cursors][Multiple cursors]]
+ - [[#sudo-edit][Sudo edit]]
  - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -1765,8 +1766,59 @@ start using other functions - little by little.
          (global-set-key (kbd "M-'") 'mc/align))))
 #+END_SRC
 
+* Sudo edit
+
+Sometimes you need root rights to edit a file, e.g. some config in the "/etc"
+directory. Most of the time, you will open it in Emacs as usual to find out that
+you cannot edit it and you actually need the root rights.
+
+In that case you can simply press =C-x != to re-open it using a "sudo" protocol.
+It works for remote files opened via TRAMP ssh protocol as well.
+
+#+BEGIN_SRC emacs-lisp
+  (defun add-sudo-to-filename (filename)
+    "Adds sudo proxy to filename for use with TRAMP.
+
+  Works for both local and remote hosts (>=23.4). The syntax used
+  for remote hosts follows the pattern
+  '/ssh:you@remotehost|sudo:remotehost:/path/to/file'. Some people
+  say, that you may need to call smth like
+  `(set-default 'tramp-default-proxies-alist (quote ((\".*\"
+  \"\\`root\\'\" \"/ssh:%u@%h:\"))))', but it works for me just fine
+  without it. "
+    (with-temp-buffer
+      (insert filename)
+      (goto-char (point-max))
+      (if (re-search-backward "@\\(.*\\):" nil t)
+          (let ((remote-name (buffer-substring (match-beginning 1) (match-end 1))))
+            (goto-char (match-end 1))
+            (insert (concat "|sudo:" remote-name))
+            (goto-char (point-min))
+            (forward-char)
+            (when (looking-at "scp")
+              (delete-char 3)
+              (when (looking-at "c")
+                (delete-char 1))
+              (insert "ssh"))
+            (buffer-string))
+        (concat "/sudo::" filename))))
+
+  (define-key global-map (kbd "\C-x!")
+    (defun sudo-edit-current-file (&optional arg)
+      "Edit currently visited file as root.
+
+  With a prefix ARG prompt for a file to visit.
+  Will also prompt for a file to visit if current
+  buffer is not visiting a file."
+      (interactive "P")
+      (if (or arg (not buffer-file-name))
+          (find-file (concat "/sudo:root@localhost:"
+                             (ido-read-file-name "Find file(as root): ")))
+        (let ((position (point)))
+          (find-alternate-file (add-sudo-to-filename buffer-file-name))
+          (goto-char position)))))
+#+END_SRC
 * Upcoming sections
-** Sudo edit
 ** Ediff
 ** Term
 ** Hide/show blocks
@@ -2013,31 +2065,6 @@ gradually move things from this section to separate ones.
        ((string= parent path) nil)
        (t (search-file-up name parent)))))
 
-  (defun add-sudo-to-filename (filename)
-    "Adds sudo proxy to filename for use with TRAMP.
-
-  Works for both local and remote hosts (>=23.4). The syntax used
-  for remote hosts follows the pattern
-  '/ssh:you@remotehost|sudo:remotehost:/path/to/file'. Some people
-  say, that you may need to call smth like
-  `(set-default 'tramp-default-proxies-alist (quote ((\".*\"
-  \"\\`root\\'\" \"/ssh:%u@%h:\"))))', but it works for me just fine
-  without it. "
-    (with-temp-buffer
-      (insert filename)
-      (goto-char (point-max))
-      (if (re-search-backward "@\\(.*\\):" nil t)
-          (let ((remote-name (buffer-substring (match-beginning 1) (match-end 1))))
-            (goto-char (match-end 1))
-            (insert (concat "|sudo:" remote-name))
-            (goto-char (point-min))
-            (forward-char)
-            (when (looking-at "scpc")
-              (delete-char 4)
-              (insert "ssh"))
-            (buffer-string))
-        (concat "/sudo::" filename))))
-
   (defun update-tags-file (arg)
     "Suggests options to update the TAGS file via ctags.
 
@@ -2066,20 +2093,6 @@ gradually move things from this section to separate ones.
           (cd (add-sudo-to-filename (expand-file-name default-directory))))
         (shell-command (read-from-minibuffer "ctags command: "  ctags-command)))
       (visit-tags-table tags-file-name)))
-
-  (defun sudo-edit-current-file (&optional arg)
-    "Edit currently visited file as root.
-
-  With a prefix ARG prompt for a file to visit.
-  Will also prompt for a file to visit if current
-  buffer is not visiting a file."
-    (interactive "P")
-    (if (or arg (not buffer-file-name))
-        (find-file (concat "/sudo:root@localhost:"
-                           (ido-read-file-name "Find file(as root): ")))
-      (let ((position (point)))
-        (find-alternate-file (add-sudo-to-filename buffer-file-name))
-        (goto-char position))))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; term
@@ -2348,7 +2361,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "C-x w")       'webjump)
   (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
   (global-set-key (kbd "M-Z")         'zap-up-to-char)
-  (global-set-key (kbd "\C-x!")       'sudo-edit-current-file)
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
   (global-set-key (kbd "C-z")         'undo)
   (global-set-key [escape]            'keyboard-escape-quit)
