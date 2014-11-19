@@ -1580,7 +1580,7 @@ get it.
   #+END_SRC
 * Multiple cursors
 
-Multiple cursors is a kind of feature that doesn't sound like a very good idea
+"Multiple cursors" is a kind of feature that doesn't sound like a very good idea
 the first time you hear about it. It seems too tricky and complex to be useful.
 And I was also sceptic, when I first saw it in Sublime Text 2 editor: "What good
 can you expect from the guys that invented minimap?".
@@ -1592,13 +1592,12 @@ to him.
 
 The idea from the video that also rang to me was selecting a word and adding
 auxiliary cursors on other occurrences of the same word. I didn't know how
-useful it was when I saw it, but I decided it give it a try.
+useful it was when I saw it, but I decided to give it a try.
 
 At first, I wasn't really using it much, because I didn't have the habit. And,
 to be honest, the concept is indeed a bit alien if you've never used it. But
 eventually, I worked out a style of using multiple cursors, which goes for me.
-And it turned out to be so convenient, that now I can't imagine myself giving it
-up.
+It turned out to be so convenient, that now I can't imagine myself giving it up.
 
 The 2 most commonly used bindings are =C->= and =C-<=:
 
@@ -1606,8 +1605,9 @@ The 2 most commonly used bindings are =C->= and =C-<=:
   next occurrence of this region and creates an additional cursor when it finds
   one. Similarly, =C-<= searches for a previous occurrence.
 - If no region is selected, then the cursor is added on the next (previous) line.
-- To "skip" an occurrence, provide a zero prefix argument, e.g. =C-0 C->=
-- To delete the last added cursor, provide a negative argument, e.g. =C-- C->=
+- To "skip" an occurrence, provide a zero prefix argument, e.g. =C-0 C->=.
+- To delete the last added cursor, provide a negative argument, e.g. =C-- C->=.
+- To remove all the "fake" cursors, use =C-g=.
 
 The next important binding is =M-@=:
 
@@ -1643,7 +1643,7 @@ What you do is:
 - type "array["
 - hit =M-#= to add the digits
 - type the closing "]" (if it's not already there)
-- then " = ", and, *attention*, "(* 2 ", =M-#= and ")"
+- then type " = ", "(* 2 ", =M-#= and ")"
 
 What we have at this point is:
 
@@ -1704,8 +1704,8 @@ look like this:
   object.temperature = 300;
 #+END_EXAMPLE
 
-You can do the same thing with the help of =align-regexp= function, but if you
-already created the cursors anyway, then M-' is a handy tool.
+You can do the same thing with the help of =align-regexp=, but if you created
+the cursors anyway, then M-' is a handy tool.
 
 If you feel overwhelmed by all the vast functionality this mode provides - don't
 let it stop you from trying it out. Start with simple things, like =C->= and
@@ -1765,7 +1765,6 @@ start using other functions - little by little.
          (global-set-key (kbd "M-#") 'mc/insert-numbers)
          (global-set-key (kbd "M-'") 'mc/align))))
 #+END_SRC
-
 * Sudo edit
 
 Sometimes you need root rights to edit a file, e.g. some config in the "/etc"
