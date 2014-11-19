@@ -1818,12 +1818,60 @@ It works for remote files opened via TRAMP ssh protocol as well.
           (goto-char position)))))
 #+END_SRC
 * Upcoming sections
+** Org
+*** Presentations with reveal.js
+
+There's a nice "framework" (or something) for creating presentations using plain
+text files - reveal.js.
+
+Originally, you were supposed to write the content in HTML, but know you can use
+a lot of popular lightweight markups, like Org or Markdown.
+
+To create a presentation using Org, you should:
+
+- =git clone https://github.com/hakimel/reveal.js.git=
+-
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "org-autoloads"
+    '(progn
+       (when (require 'org nil t)
+         ;; enable python execution in org-mode
+         (require 'ob-python)
+         (require 'ob-R)
+         (require 'ox-reveal)
+
+         (defun conditional-org-reveal-export-to-html ()
+           (save-excursion
+             (beginning-of-buffer)
+             (when (search-forward "#+REVEAL" nil nil)
+               (org-reveal-export-to-html))))
+
+         (add-hook 'org-ctrl-c-ctrl-c-final-hook
+                   'conditional-org-reveal-export-to-html))))
+#+END_SRC
+*** Permanent table of contents
+
+Org has a built-in way to generate a table of contents when exporting. However,
+sometimes you need a table of contents in the raw org file. For example, when
+you use it as a readme file in a GitHub repository.
+
+I wrote a simple package serving this simple need.
+
+In 2 words, you simply add a =:TOC:= tag to a heading and it will be updated
+with the current table of contents before each save.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "org-toc-autoloads"
+    '(progn
+       (if (require 'org-toc nil t)
+           (add-hook 'org-mode-hook 'org-toc-enable)
+         (message "WARNING: org-toc not found"))))
+#+END_SRC
+
 ** Ediff
 ** Term
 ** Hide/show blocks
-** Org
-*** org-toc
-*** reveal.js
 ** Grepping
 ** Expand region
 ** Tags
@@ -1918,28 +1966,6 @@ gradually move things from this section to separate ones.
                  (define-key d-mode-map (kbd "M-?")          'ac-dcd-show-ddoc-with-buffer)
                  (define-key d-mode-map (kbd "C-c i")        'ac-dcd-add-imports))
              (message "WARNING: dcd-server not found"))))))
-
-  (eval-after-load "org-autoloads"
-    '(progn
-       (when (require 'org nil t)
-         ;; enable python execution in org-mode
-         (require 'ob-python)
-         (require 'ob-R)
-
-         (defun conditional-org-reveal-export-to-html ()
-           (save-excursion
-             (beginning-of-buffer)
-             (when (search-forward "#+REVEAL" nil nil)
-               (org-reveal-export-to-html))))
-
-         (add-hook 'org-ctrl-c-ctrl-c-final-hook
-                   'conditional-org-reveal-export-to-html))))
-
-  (eval-after-load "org-toc-autoloads"
-    '(progn
-       (if (require 'org-toc nil t)
-           (add-hook 'org-mode-hook 'org-toc-enable)
-         (message "WARNING: org-toc not found"))))
 
   ;; expand-region
   (eval-after-load "expand-region-autoloads"
