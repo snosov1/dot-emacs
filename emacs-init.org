@@ -29,6 +29,7 @@ also works as an Emacs 24.4 configuration file.
  - [[#get-full-path][Get full path]]
  - [[#multiple-cursors][Multiple cursors]]
  - [[#sudo-edit][Sudo edit]]
+ - [[#ediff][Ediff]]
  - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -1404,10 +1405,10 @@ universal argument. This is similar to =C-M-x= / =C-u C-M-x= behavior in
 There was a period of my work, when I was implementing a computer vision
 algorithm. To test and improve it, I had to generate a 3D scene and experiment
 with different camera positions and fields of view. For example, I had to figure
-out something like: "Do we get a good quality if we use four 55 degrees cameras
+out something like: "Do we get a good quality if we use four 55 degree cameras
 and place them like that?"
 
-After I generate the images of a 3D scene, I have to process those. And as you
+After I generated the images of a 3D scene, I had to process those. And as you
 may know, for a computer vision application, the most common representation of
 the camera intrinsic parameters is /camera matrix/. It's a 3x3 matrix of the
 following form:
@@ -1420,14 +1421,13 @@ where fx and fy are the /focal lengths/ in x and y dimensions. This matrix is
 used to convert image coordinates to camera world coordinates and visa-versa.
 
 Focal length can be unambiguously evaluated given the field-of-view of the
-camera: focal = tan^{-1}(fov / 2). Of course, you can make a conversion in
+camera: focal = tan^{-1}(fov / 2). And, of course, you can make a conversion in
 the opposite direction: fov = 2 atan(focal^{-1}).
 
 This is not quantum physics, by all means. But I used this formulas rare enough,
-that I needed to look them up every time, and often enough to be annoyed by this
-every time. Add to the annoyance, that after you find the formula, you have to
-perform something like 5 operations in =calc= to evaluate it (including
-conversion from degrees to radians).
+that I had to look them up every time I needed those, and often enough to be
+annoyed by this. Add to the annoyance, that after I found the formula, I had to
+perform something like 5 operations in =calc= to evaluate it.
 
 And at some point it struck me, that I'm using Emacs. A text editor with a
 primary goal to allow me to build the best working environment for myself. Just
@@ -1440,9 +1440,9 @@ some other ones.
 And maybe not even formulas, but something else. Like, just now, while I was
 writing this, a colleague of mine asked me "How you can take 2 videos and stack
 them vertically?". I wrote =ffmpeg-top-bottom= and hit =M-/=, it expanded to a
-command found in my =.abbrev_defs= file and then I sent it to her.
+command found in my =.abbrev_defs= file and I sent it to her.
 
-She remembered, that I had already sent her this command before, but she
+She remembered, that I had already sent her this command previously, but she
 couldn't find it anywhere. I smiled about it and told her that she can ask me as
 many times as needed, because I always have it at hand.
 
@@ -1450,12 +1450,13 @@ Anyway, long story short. That time I was thinking of focal lengths was the time
 when I really appreciated the "extensibility" part of Emacs. I wasn't too
 thrilled about it when I just started using it. I was always, like, "Somebody
 else must have already built a perfect environment. I should simply find it and
-use it".
+use it". Needless to say, I'm still looking for this "perfect environment".
 
-But at that day I put the following functions to my init file and moved on
+But at that day, I put the following functions to my init file and moved on
 enlightened. From that moment, when I need a conversion I just write something
-like =(fov2focal (deg2rad 55))= and hit =C-x C-e=. At that day I became a tiny
-bit closer to a perfect working environment.
+like =(fov2focal (deg2rad 55))= and hit =C-x C-e=.
+
+Yeah. At that day, I became a bit closer to a perfect working environment.
 
 #+BEGIN_SRC emacs-lisp
   (defun deg2rad (x)
@@ -1817,6 +1818,74 @@ It works for remote files opened via TRAMP ssh protocol as well.
           (find-alternate-file (add-sudo-to-filename buffer-file-name))
           (goto-char position)))))
 #+END_SRC
+* Ediff
+
+In the pre-magit era I had to provide the ediff interface as an external tool to
+the version control systems. It wasn't the most clean experience, but it worked.
+
+Fortunately, now we don't have to resort to hacks like this - we can simply
+press =e= in magit buffer - both to see the diff and resolve conflicts.
+
+The only thing is that the default ediff user experience comes from stone age,
+so I had to tweak it a bit.
+
+First, a couple of functions to save and restore window configuration after
+ediff session.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ediff)
+
+  (defun ediff-save-window-configuration ()
+    (window-configuration-to-register ?E))
+  (defun ediff-restore-window-configuration ()
+    (jump-to-register ?E))
+
+  (setq-default ediff-before-setup-hook (quote (ediff-save-window-configuration)))
+  (setq-default ediff-quit-hook (quote (ediff-cleanup-mess ediff-restore-window-configuration exit-recursive-edit)))
+  (setq-default ediff-suspend-hook (quote (ediff-default-suspend-function ediff-restore-window-configuration)))
+#+END_SRC
+
+Then, I don't want ediff to create other frames. Everything should stay in the
+same frame I'm working in. And the splitting should be horizontal (i.e.
+side-by-side).
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default ediff-window-setup-function (quote ediff-setup-windows-plain))
+  (setq-default ediff-split-window-function (quote split-window-horizontally))
+#+END_SRC
+
+Also, I prefer that the difference regions are always highlighted, not just when
+those are "active". And, of course, it's more convenient when the diff is
+refined by chars, not words.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default ediff-highlight-all-diffs t)
+  (setq-default ediff-forward-word-function 'forward-char)
+#+END_SRC
+
+The last thing is that the default colors are not very pretty, so I replaced
+them with something that looks like the kdiff3 default theme, because it was my
+previous favorite diff viewing tool.
+
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'ediff-current-diff-A nil :background "white" :foreground "black")
+  (set-face-attribute 'ediff-current-diff-Ancestor nil :background "white" :foreground "black")
+  (set-face-attribute 'ediff-current-diff-B nil :background "white" :foreground "black")
+  (set-face-attribute 'ediff-current-diff-C nil :background "white" :foreground "black")
+  (set-face-attribute 'ediff-even-diff-A nil :background "antique white" :foreground "Black")
+  (set-face-attribute 'ediff-even-diff-Ancestor nil :background "antique white" :foreground "black")
+  (set-face-attribute 'ediff-even-diff-B nil :background "antique white" :foreground "black")
+  (set-face-attribute 'ediff-even-diff-C nil :background "antique white" :foreground "Black")
+  (set-face-attribute 'ediff-fine-diff-A nil :background "gainsboro" :foreground "blue")
+  (set-face-attribute 'ediff-fine-diff-Ancestor nil :background "gainsboro" :foreground "red")
+  (set-face-attribute 'ediff-fine-diff-B nil :background "gainsboro" :foreground "forest green")
+  (set-face-attribute 'ediff-fine-diff-C nil :background "gainsboro" :foreground "purple")
+  (set-face-attribute 'ediff-odd-diff-A nil :background "antique white" :foreground "black")
+  (set-face-attribute 'ediff-odd-diff-Ancestor nil :background "antique white" :foreground "black")
+  (set-face-attribute 'ediff-odd-diff-B nil :background "antique white" :foreground "Black")
+  (set-face-attribute 'ediff-odd-diff-C nil :background "antique white" :foreground "black")
+#+END_SRC
+
 * Upcoming sections
 ** Org
 *** Presentations with reveal.js
@@ -1869,7 +1938,6 @@ with the current table of contents before each save.
          (message "WARNING: org-toc not found"))))
 #+END_SRC
 
-** Ediff
 ** Term
 ** Hide/show blocks
 ** Grepping
@@ -2183,12 +2251,6 @@ gradually move things from this section to separate ones.
   (define-key term-mode-map "\C-x\C-k"   'term-char-mode)
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  ;; functions to save and restore window configuration for ediff-mode
-  (defun ediff-save-window-configuration ()
-    (window-configuration-to-register ?E))
-  (defun ediff-restore-window-configuration ()
-    (jump-to-register ?E))
-
   (define-key global-map [remap open-line]
     (defun open-line-indent (arg)
       "Use newline-and-indent in open-line command if there are
@@ -2293,12 +2355,6 @@ gradually move things from this section to separate ones.
    '(create-lockfiles nil)
    '(default-input-method "russian-computer")
    '(diff-update-on-the-fly nil)
-   '(ediff-before-setup-hook (quote (ediff-save-window-configuration)))
-   '(ediff-highlight-all-diffs t)
-   '(ediff-quit-hook (quote (ediff-cleanup-mess ediff-restore-window-configuration exit-recursive-edit)))
-   '(ediff-split-window-function (quote split-window-horizontally))
-   '(ediff-suspend-hook (quote (ediff-default-suspend-function ediff-restore-window-configuration)))
-   '(ediff-window-setup-function (quote ediff-setup-windows-plain))
    '(frame-background-mode (quote dark))
    '(grep-find-command (quote ("find . -type f -exec grep -nHi -e  {} +" . 35)))
    '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill)))
@@ -2337,22 +2393,6 @@ gradually move things from this section to separate ones.
    '(diff-header ((t (:background "black"))))
    '(diff-refine-change ((t (:background "dark slate gray"))))
    '(diff-removed ((t (:foreground "tomato"))))
-   '(ediff-current-diff-A ((t (:background "white" :foreground "black"))) t)
-   '(ediff-current-diff-Ancestor ((t (:background "white" :foreground "black"))) t)
-   '(ediff-current-diff-B ((t (:background "white" :foreground "black"))) t)
-   '(ediff-current-diff-C ((t (:background "white" :foreground "black"))) t)
-   '(ediff-even-diff-A ((t (:background "antique white" :foreground "Black"))) t)
-   '(ediff-even-diff-Ancestor ((t (:background "antique white" :foreground "black"))) t)
-   '(ediff-even-diff-B ((t (:background "antique white" :foreground "black"))) t)
-   '(ediff-even-diff-C ((t (:background "antique white" :foreground "Black"))) t)
-   '(ediff-fine-diff-A ((t (:background "gainsboro" :foreground "blue"))) t)
-   '(ediff-fine-diff-Ancestor ((t (:background "gainsboro" :foreground "red"))) t)
-   '(ediff-fine-diff-B ((t (:background "gainsboro" :foreground "forest green"))) t)
-   '(ediff-fine-diff-C ((t (:background "gainsboro" :foreground "purple"))) t)
-   '(ediff-odd-diff-A ((t (:background "antique white" :foreground "black"))) t)
-   '(ediff-odd-diff-Ancestor ((t (:background "antique white" :foreground "black"))) t)
-   '(ediff-odd-diff-B ((t (:background "antique white" :foreground "Black"))) t)
-   '(ediff-odd-diff-C ((t (:background "antique white" :foreground "black"))) t)
    '(term-color-black ((t (:background "#1d1f21" :foreground "#1d1f21"))))
    '(term-color-blue ((t (:background "#81a2be" :foreground "#81a2be"))))
    '(term-color-green ((t (:background "firebrick" :foreground "firebrick"))))
@@ -2504,9 +2544,6 @@ gradually move things from this section to separate ones.
 
   ;; shut up the bell
   (setq ring-bell-function 'ignore)
-
-  ;; ediff: fine highlight by char, not words
-  (setq-default ediff-forward-word-function 'forward-char)
 
   ;; delete trailing whitespace before save
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
