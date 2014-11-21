@@ -1884,6 +1884,12 @@ previous favorite diff viewing tool.
   (set-face-attribute 'ediff-odd-diff-Ancestor nil :background "antique white" :foreground "black")
   (set-face-attribute 'ediff-odd-diff-B nil :background "antique white" :foreground "Black")
   (set-face-attribute 'ediff-odd-diff-C nil :background "antique white" :foreground "black")
+
+  (set-face-attribute 'diff-added nil :foreground "green")
+  (set-face-attribute 'diff-file-header nil :background "black" :weight bold)
+  (set-face-attribute 'diff-header nil :background "black")
+  (set-face-attribute 'diff-refine-change nil :background "dark slate gray")
+  (set-face-attribute 'diff-removed nil :foreground "tomato")
 #+END_SRC
 
 * Upcoming sections
@@ -1925,7 +1931,7 @@ Org has a built-in way to generate a table of contents when exporting. However,
 sometimes you need a table of contents in the raw org file. For example, when
 you use it as a readme file in a GitHub repository.
 
-I wrote a simple package serving this simple need.
+I wrote a simple package serving this need.
 
 In 2 words, you simply add a =:TOC:= tag to a heading and it will be updated
 with the current table of contents before each save.
@@ -1937,8 +1943,196 @@ with the current table of contents before each save.
            (add-hook 'org-mode-hook 'org-toc-enable)
          (message "WARNING: org-toc not found"))))
 #+END_SRC
-
 ** Term
+
+I don't need an actual terminal emulator often, because I can issue shell
+commands with =M-&= and =C-c C-c=. But sometimes I do need a terminal. And when
+I need one, I need a "real" PTY emulator, not =shell= or =eshell=.
+
+The built-in =M-x ansi-term= is a more or less decent emulator in that regard.
+It has rough edges and maybe it's not the best emulator ever, but, hey, it's
+good enough to run Vim and other obscure terminal software. You can definitely
+live with it.
+
+First, let's bind =C-x C-l= to trigger =line-mode=, where you can navigate the
+buffer without sending commands to the terminal, and bind =C-x C-k= to trigger
+=char-mode=, where all the input commands are sent to terminal.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'term)
+
+  (define-key term-mode-map "\C-x\C-j"   'dired-jump-universal-other)
+  (define-key term-raw-escape-map "\C-j" 'dired-jump-universal-other)
+  (define-key term-raw-escape-map "\C-l" 'term-line-mode)
+  (define-key term-mode-map "\C-x\C-k"   'term-char-mode)
+#+END_SRC
+
+For persistence, let's go to the end of the buffer and trigger the =char-mode=
+when switching to the terminal buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice ido-switch-buffer (after maintain-ansi-term activate)
+    "Go to prompt when switched to ansi-term"
+    (when (member major-mode '(term-mode))
+      (term-line-mode)
+      (end-of-buffer)
+      (end-of-line)
+      (term-char-mode)))
+#+END_SRC
+
+The default term colors are unreadable for some reason, so I spent quite some
+time to find decent alternatives.
+
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'term-color-black nil   :background "#1d1f21" :foreground "#1d1f21")
+  (set-face-attribute 'term-color-blue nil    :background "#81a2be" :foreground "#81a2be")
+  (set-face-attribute 'term-color-green nil   :background "firebrick" :foreground "firebrick")
+  (set-face-attribute 'term-color-magenta nil :background "#b294bb" :foreground "#b294bb")
+  (set-face-attribute 'term-color-red nil     :background "#cc6666" :foreground "#cc6666")
+  (set-face-attribute 'term-color-white nil   :background "#c5c8c6" :foreground "#c5c8c6")
+  (set-face-attribute 'term-color-yellow nil  :background "#f0c674" :foreground "#f0c674")
+#+END_SRC
+
+All of the above were some minor tweaks to the existing =ansi-term=
+functionality. What comes next could also be considered a minor tweak if you
+consider the lines-of-code count. But it is actually a cool feature I use with
+great pleasure.
+
+A simple question - how do you work on a remote workstation via ssh?
+
+The most popular answer I hear is to open a terminal and work from there.
+Probably, this fact is one of the good reasons for people to use Vim. It's an
+overkill to install Emacs and your configuration on every remote you work with.
+Especially, if you want to do something simple. On the contrary, Vim is
+pre-installed on pretty much any platform and conscientious Vim users don't need
+a lot of configuration.
+
+Obviously, Emacs has an answer to that, but, surprisingly, it doesn't lie on a
+surface - you have to figure this out yourself. So, let me try to explain to you
+how conscientious Emacs users work on remote machines.
+
+First thing, you may already know, is that you can provide a configuration file
+to =ssh=, normally found as =~/.ssh/config=. In this file you can have records,
+like:
+
+#+BEGIN_EXAMPLE
+  Host server1
+       User snosov1
+       HostName 192.168.0.14
+
+  Host distant-ws
+       User sergei
+       Port 324
+       HostName 83.123.44.2
+#+END_EXAMPLE
+
+With those records you can use a shorthand command, like =ssh distant-ws= to
+connect to the server without specifying username, host and port. Pretty neat.
+
+But there's more. When you start Emacs, my little function
+=term-parse-ssh-config= will parse this config file and save a list of the
+hosts. Then, you can issue =M-x remote-term= command and it will ask you for a
+hostname (with enabled completion) and open an ssh session in the =ansi-term=
+window. Not bad, huh?
+
+But there's even more. There are 2 functions =remote-authorize= and
+=remote-enable-dired=.
+
+If you execute those for some remote host, then:
+
+- =M-x remote-authorize= will add your public key to the authorized keys list on
+  the remote and it won't ask you for authentication any more. This assumes that
+  you have generated a key pair via
+  #+BEGIN_EXAMPLE
+    ssh-keygen -t rsa -C "your_email@example.com"
+  #+END_EXAMPLE
+- =remote-enable-dired= will modify the ".profile" on the remote, so that when
+  you'll press =C-x C-j= for a =dired-jump= in the remote terminal (opened with
+  =M-x remote-term=), it will open dired for the remote directory.
+
+Those functions enable you to work with the remote exactly as you would work
+with a local workstation. No need to resort to terminal, no need to install
+Emacs and your configuration on the remote. You will simply your local Emacs
+instance.
+
+Needless to say, you can do stuff, like, copying files from remote dired buffer
+to local dired buffer will work transparently - no need for =scp=.
+
+And all of this is enabled with just 3 simple steps:
+
+- add a record to =~/.ssh/config= and re-open Emacs or call
+  =M-x term-parse-ssh-config=
+- call =M-x remote-authorize=
+- call =M-x remote-enable-dired=
+
+It is a tremendously convenient and useful functionality. The only caveat is
+that you should name the hosts in your ssh config file with the same names that
+are specified in the =/etc/hostname= on the remotes.
+
+#+BEGIN_SRC emacs-lisp
+  (defcustom term-remote-hosts '()
+    "List of remote hosts"
+    :group 'term)
+
+  (defcustom ssh-config-filename "~/.ssh/config"
+    "ssh config filename"
+    :group 'term)
+
+  (defcustom ssh-public-key-filename "~/.ssh/id_rsa.pub"
+    "ssh public key filename"
+    :group 'term)
+
+  (funcall
+   (defun term-parse-ssh-config ()
+     "Parse `ssh-config-filename' to provide `remote-term'
+    completion capabilities."
+     (interactive)
+     (setq term-remote-hosts '())
+     (if (file-exists-p ssh-config-filename)
+         (with-temp-buffer
+           (find-file ssh-config-filename)
+           (goto-char (point-min))
+           (while (re-search-forward "Host\\s-+\\([^\s]+\\)$" nil t)
+             (let ((host (match-string-no-properties 1)))
+               (add-to-list 'term-remote-hosts `(,host "ssh" ,host))))
+           (kill-buffer)))))
+
+  (defun remote-authorize (hostname)
+    (interactive
+     (list (completing-read "Remote host: " term-remote-hosts)))
+    (async-shell-command
+     (concat "cat " ssh-public-key-filename
+             " | ssh " hostname
+             " 'mkdir -p .ssh && cat - >>.ssh/authorized_keys'")))
+
+  (defun remote-enable-dired (hostname)
+    (interactive
+     (list (completing-read "Remote host: " term-remote-hosts)))
+    (let ((filename (concat temporary-file-directory ".profile")))
+      (with-temp-file filename
+        (insert "######################################################################\n# Put this in your remote system's .profile for remote bash to track\n# your current dir\nset_eterm_dir () {\n    echo -e \"\\033AnSiTu\" \"$LOGNAME\" # $LOGNAME is more portable than using whoami.\n    echo -e \"\\033AnSiTc\" \"$(pwd)\"\n    if [ $(uname) = \"SunOS\" ]; then\n\t    # The -f option does something else on SunOS and is not needed anyway.\n       \thostname_options=\"\";\n    else\n        hostname_options=\"-f\";\n    fi\n    echo -e \"\\033AnSiTh\" \"$(hostname $hostname_options)\" # Using the -f option can cause problems on some OSes.\n    history -a # Write history to disk.\n}\n\n# Track directory, username, and cwd for remote logons.\nif [ \"$TERM\" = \"eterm-color\" ]; then\n    PROMPT_COMMAND=set_eterm_dir\nfi\n######################################################################\n"))
+      (async-shell-command
+       (concat "cat " filename " | ssh " hostname " 'cp .profile .profile.sergei.bak && cat - .profile >.profile.sergei.emacs.dired && cp .profile.sergei.emacs.dired .profile'"))))
+
+  (defun remote-term-do (new-buffer-name cmd &rest switches)
+    "Fires a remote terminal"
+    (let* ((term-ansi-buffer-name (concat "*" new-buffer-name "*"))
+           (term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
+           (term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches)))
+      (set-buffer term-ansi-buffer-name)
+      (term-mode)
+      (term-char-mode)
+      (term-set-escape-char ?\C-x)
+      (switch-to-buffer term-ansi-buffer-name)))
+
+  (defun remote-term (hostname)
+    (interactive
+     (list (completing-read "Remote host: " term-remote-hosts)))
+    (dolist (known-host term-remote-hosts)
+      (when (equal (car known-host) hostname)
+        (apply 'remote-term-do known-host))))
+#+END_SRC
+
 ** Hide/show blocks
 ** Grepping
 ** Expand region
@@ -2113,7 +2307,11 @@ gradually move things from this section to separate ones.
              (let ((yas-dir "~/.yasnippets"))
                (when (file-exists-p yas-dir)
                  (setq yas-snippet-dirs (list yas-dir))))
-             (yas-global-mode 1))
+             (yas-global-mode 1)
+
+             (add-hook 'term-mode-hook
+                       '(lambda ()
+                          (yas-minor-mode -1))))
          (message "WARNING: yasnippet not found"))))
 
   ;; ox-reveal
@@ -2186,70 +2384,6 @@ gradually move things from this section to separate ones.
           (cd (add-sudo-to-filename (expand-file-name default-directory))))
         (shell-command (read-from-minibuffer "ctags command: "  ctags-command)))
       (visit-tags-table tags-file-name)))
-
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; term
-
-  (require 'term)
-
-  (defadvice ido-switch-buffer (after maintain-ansi-term activate)
-    "Go to prompt when switched to ansi-term"
-    (when (member major-mode '(term-mode))
-      (term-line-mode)
-      (end-of-buffer)
-      (end-of-line)
-      (term-char-mode)))
-
-  (defcustom term-remote-hosts '()
-    "List of remote hosts"
-    :group 'term)
-
-  (defcustom ssh-config-filename "~/.ssh/config"
-    "ssh config filename"
-    :group 'term)
-
-  (defun term-parse-ssh-config ()
-    "Parse `ssh-config-filename' to provide `remote-term'
-  completion capabilities."
-    (interactive)
-    (setq term-remote-hosts '())
-    (if (file-exists-p ssh-config-filename)
-        (with-temp-buffer
-          (find-file ssh-config-filename)
-          (goto-char (point-min))
-          (while (re-search-forward "Host\\s-+\\([^\s]+\\)$" nil t)
-            (let ((host (match-string-no-properties 1)))
-              (add-to-list 'term-remote-hosts `(,host "ssh" ,host))))
-          (kill-buffer))))
-  (term-parse-ssh-config)
-
-  (defun remote-term-do (new-buffer-name cmd &rest switches)
-    "Fires a remote terminal"
-    (let* ((term-ansi-buffer-name (concat "*" new-buffer-name "*"))
-           (term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
-           (term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches)))
-      (set-buffer term-ansi-buffer-name)
-      (term-mode)
-      (term-char-mode)
-      (term-set-escape-char ?\C-x)
-      (switch-to-buffer term-ansi-buffer-name)))
-
-  (defun remote-term (host-name)
-    (interactive
-     (list (completing-read "Remote host: " term-remote-hosts)))
-    (dolist (known-host term-remote-hosts)
-      (when (equal (car known-host) host-name)
-        (apply 'remote-term-do known-host))))
-
-  (add-hook 'term-mode-hook
-            '(lambda ()
-               (yas-minor-mode -1)))
-
-  (define-key term-mode-map "\C-x\C-j"   'dired-jump-universal-other)
-  (define-key term-raw-escape-map "\C-j" 'dired-jump-universal-other)
-  (define-key term-raw-escape-map "\C-l" 'term-line-mode)
-  (define-key term-mode-map "\C-x\C-k"   'term-char-mode)
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   (define-key global-map [remap open-line]
     (defun open-line-indent (arg)
@@ -2383,23 +2517,6 @@ gradually move things from this section to separate ones.
    '(truncate-lines t)
    '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
    '(yas-prompt-functions (quote (yas-dropdown-prompt yas-ido-prompt yas-completing-prompt yas-x-prompt yas-no-prompt))))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(diff-added ((t (:foreground "green"))))
-   '(diff-file-header ((t (:background "black" :weight bold))))
-   '(diff-header ((t (:background "black"))))
-   '(diff-refine-change ((t (:background "dark slate gray"))))
-   '(diff-removed ((t (:foreground "tomato"))))
-   '(term-color-black ((t (:background "#1d1f21" :foreground "#1d1f21"))))
-   '(term-color-blue ((t (:background "#81a2be" :foreground "#81a2be"))))
-   '(term-color-green ((t (:background "firebrick" :foreground "firebrick"))))
-   '(term-color-magenta ((t (:background "#b294bb" :foreground "#b294bb"))))
-   '(term-color-red ((t (:background "#cc6666" :foreground "#cc6666"))))
-   '(term-color-white ((t (:background "#c5c8c6" :foreground "#c5c8c6"))))
-   '(term-color-yellow ((t (:background "#f0c674" :foreground "#f0c674")))))
 
   ;; ------------------------------------------------------------
   ;; KEY BINDINGS
