@@ -2082,16 +2082,6 @@ are specified in the =/etc/hostname= on the remotes.
         (apply 'remote-term-do known-host))))
 #+END_SRC
 
-** Hide/show blocks
-** Grepping
-** Expand region
-** Tags
-** Auto-completion
-*** Overview
-*** hippie-expand
-*** auto-complete
-*** abbrev/yasnippet
-
 * Upcoming sections
 ** Org
 *** Presentations with reveal.js
@@ -2143,6 +2133,16 @@ with the current table of contents before each save.
            (add-hook 'org-mode-hook 'org-toc-enable)
          (message "WARNING: org-toc not found"))))
 #+END_SRC
+** Hide/show blocks
+** Grepping
+** Expand region
+** Tags
+** Auto-completion
+*** Overview
+*** hippie-expand
+*** auto-complete
+*** abbrev/yasnippet
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
