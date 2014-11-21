@@ -30,6 +30,7 @@ also works as an Emacs 24.4 configuration file.
  - [[#multiple-cursors][Multiple cursors]]
  - [[#sudo-edit][Sudo edit]]
  - [[#ediff][Ediff]]
+ - [[#term][Term]]
  - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -1891,59 +1892,7 @@ previous favorite diff viewing tool.
   (set-face-attribute 'diff-refine-change nil :background "dark slate gray")
   (set-face-attribute 'diff-removed nil :foreground "tomato")
 #+END_SRC
-
-* Upcoming sections
-** Org
-*** Presentations with reveal.js
-
-There's a nice "framework" (or something) for creating presentations using plain
-text files - reveal.js.
-
-Originally, you were supposed to write the content in HTML, but know you can use
-a lot of popular lightweight markups, like Org or Markdown.
-
-To create a presentation using Org, you should:
-
-- =git clone https://github.com/hakimel/reveal.js.git=
--
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load "org-autoloads"
-    '(progn
-       (when (require 'org nil t)
-         ;; enable python execution in org-mode
-         (require 'ob-python)
-         (require 'ob-R)
-         (require 'ox-reveal)
-
-         (defun conditional-org-reveal-export-to-html ()
-           (save-excursion
-             (beginning-of-buffer)
-             (when (search-forward "#+REVEAL" nil nil)
-               (org-reveal-export-to-html))))
-
-         (add-hook 'org-ctrl-c-ctrl-c-final-hook
-                   'conditional-org-reveal-export-to-html))))
-#+END_SRC
-*** Permanent table of contents
-
-Org has a built-in way to generate a table of contents when exporting. However,
-sometimes you need a table of contents in the raw org file. For example, when
-you use it as a readme file in a GitHub repository.
-
-I wrote a simple package serving this need.
-
-In 2 words, you simply add a =:TOC:= tag to a heading and it will be updated
-with the current table of contents before each save.
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load "org-toc-autoloads"
-    '(progn
-       (if (require 'org-toc nil t)
-           (add-hook 'org-mode-hook 'org-toc-enable)
-         (message "WARNING: org-toc not found"))))
-#+END_SRC
-** Term
+* Term
 
 I don't need an actual terminal emulator often, because I can issue shell
 commands with =M-&= and =C-c C-c=. But sometimes I do need a terminal. And when
@@ -2142,6 +2091,58 @@ are specified in the =/etc/hostname= on the remotes.
 *** hippie-expand
 *** auto-complete
 *** abbrev/yasnippet
+
+* Upcoming sections
+** Org
+*** Presentations with reveal.js
+
+There's a nice "framework" (or something) for creating presentations using plain
+text files - reveal.js.
+
+Originally, you were supposed to write the content in HTML, but know you can use
+a lot of popular lightweight markups, like Org or Markdown.
+
+To create a presentation using Org, you should:
+
+- =git clone https://github.com/hakimel/reveal.js.git=
+-
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "org-autoloads"
+    '(progn
+       (when (require 'org nil t)
+         ;; enable python execution in org-mode
+         (require 'ob-python)
+         (require 'ob-R)
+         (require 'ox-reveal)
+
+         (defun conditional-org-reveal-export-to-html ()
+           (save-excursion
+             (beginning-of-buffer)
+             (when (search-forward "#+REVEAL" nil nil)
+               (org-reveal-export-to-html))))
+
+         (add-hook 'org-ctrl-c-ctrl-c-final-hook
+                   'conditional-org-reveal-export-to-html))))
+#+END_SRC
+*** Permanent table of contents
+
+Org has a built-in way to generate a table of contents when exporting. However,
+sometimes you need a table of contents in the raw org file. For example, when
+you use it as a readme file in a GitHub repository.
+
+I wrote a simple package serving this need.
+
+In 2 words, you simply add a =:TOC:= tag to a heading and it will be updated
+with the current table of contents before each save.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "org-toc-autoloads"
+    '(progn
+       (if (require 'org-toc nil t)
+           (add-hook 'org-mode-hook 'org-toc-enable)
+         (message "WARNING: org-toc not found"))))
+#+END_SRC
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
