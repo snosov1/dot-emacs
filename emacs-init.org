@@ -1984,6 +1984,49 @@ hosts. Then, you can issue =M-x remote-term= command and it will ask you for a
 hostname (with enabled completion) and open an ssh session in the =ansi-term=
 window. Not bad, huh?
 
+#+BEGIN_SRC emacs-lisp
+  (defcustom term-remote-hosts '()
+    "List of remote hosts"
+    :group 'term)
+
+  (defcustom ssh-config-filename "~/.ssh/config"
+    "ssh config filename"
+    :group 'term)
+
+  (funcall
+   (defun term-parse-ssh-config ()
+     "Parse `ssh-config-filename' to provide `remote-term'
+    completion capabilities."
+     (interactive)
+     (setq term-remote-hosts '())
+     (if (file-exists-p ssh-config-filename)
+         (with-temp-buffer
+           (find-file ssh-config-filename)
+           (goto-char (point-min))
+           (while (re-search-forward "Host\\s-+\\([^\s]+\\)$" nil t)
+             (let ((host (match-string-no-properties 1)))
+               (add-to-list 'term-remote-hosts `(,host "ssh" ,host))))
+           (kill-buffer)))))
+
+  (defun remote-term-do (new-buffer-name cmd &rest switches)
+    "Fires a remote terminal"
+    (let* ((term-ansi-buffer-name (concat "*" new-buffer-name "*"))
+           (term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
+           (term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches)))
+      (set-buffer term-ansi-buffer-name)
+      (term-mode)
+      (term-char-mode)
+      (term-set-escape-char ?\C-x)
+      (switch-to-buffer term-ansi-buffer-name)))
+
+  (defun remote-term (hostname)
+    (interactive
+     (list (completing-read "Remote host: " term-remote-hosts)))
+    (dolist (known-host term-remote-hosts)
+      (when (equal (car known-host) hostname)
+        (apply 'remote-term-do known-host))))
+#+END_SRC
+
 But wait, there's even more. Two functions:
 
 - =M-x remote-authorize= will add your public key to the authorized keys list on
@@ -2016,32 +2059,9 @@ that you should name the hosts in your ssh config file with the same names that
 are specified in the =/etc/hostname= on the remotes.
 
 #+BEGIN_SRC emacs-lisp
-  (defcustom term-remote-hosts '()
-    "List of remote hosts"
-    :group 'term)
-
-  (defcustom ssh-config-filename "~/.ssh/config"
-    "ssh config filename"
-    :group 'term)
-
   (defcustom ssh-public-key-filename "~/.ssh/id_rsa.pub"
     "ssh public key filename"
     :group 'term)
-
-  (funcall
-   (defun term-parse-ssh-config ()
-     "Parse `ssh-config-filename' to provide `remote-term'
-    completion capabilities."
-     (interactive)
-     (setq term-remote-hosts '())
-     (if (file-exists-p ssh-config-filename)
-         (with-temp-buffer
-           (find-file ssh-config-filename)
-           (goto-char (point-min))
-           (while (re-search-forward "Host\\s-+\\([^\s]+\\)$" nil t)
-             (let ((host (match-string-no-properties 1)))
-               (add-to-list 'term-remote-hosts `(,host "ssh" ,host))))
-           (kill-buffer)))))
 
   (defun remote-authorize (hostname)
     (interactive
@@ -2059,24 +2079,6 @@ are specified in the =/etc/hostname= on the remotes.
         (insert "######################################################################\n# Put this in your remote system's .profile for remote bash to track\n# your current dir\nset_eterm_dir () {\n    echo -e \"\\033AnSiTu\" \"$LOGNAME\" # $LOGNAME is more portable than using whoami.\n    echo -e \"\\033AnSiTc\" \"$(pwd)\"\n    if [ $(uname) = \"SunOS\" ]; then\n\t    # The -f option does something else on SunOS and is not needed anyway.\n       \thostname_options=\"\";\n    else\n        hostname_options=\"-f\";\n    fi\n    echo -e \"\\033AnSiTh\" \"$(hostname $hostname_options)\" # Using the -f option can cause problems on some OSes.\n    history -a # Write history to disk.\n}\n\n# Track directory, username, and cwd for remote logons.\nif [ \"$TERM\" = \"eterm-color\" ]; then\n    PROMPT_COMMAND=set_eterm_dir\nfi\n######################################################################\n"))
       (async-shell-command
        (concat "cat " filename " | ssh " hostname " 'cp .profile .profile.sergei.bak && cat - .profile >.profile.sergei.emacs.dired && cp .profile.sergei.emacs.dired .profile'"))))
-
-  (defun remote-term-do (new-buffer-name cmd &rest switches)
-    "Fires a remote terminal"
-    (let* ((term-ansi-buffer-name (concat "*" new-buffer-name "*"))
-           (term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
-           (term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches)))
-      (set-buffer term-ansi-buffer-name)
-      (term-mode)
-      (term-char-mode)
-      (term-set-escape-char ?\C-x)
-      (switch-to-buffer term-ansi-buffer-name)))
-
-  (defun remote-term (hostname)
-    (interactive
-     (list (completing-read "Remote host: " term-remote-hosts)))
-    (dolist (known-host term-remote-hosts)
-      (when (equal (car known-host) hostname)
-        (apply 'remote-term-do known-host))))
 #+END_SRC
 
 * Upcoming sections
