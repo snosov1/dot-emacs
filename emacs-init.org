@@ -1984,10 +1984,7 @@ hosts. Then, you can issue =M-x remote-term= command and it will ask you for a
 hostname (with enabled completion) and open an ssh session in the =ansi-term=
 window. Not bad, huh?
 
-But there's even more. There are 2 functions =remote-authorize= and
-=remote-enable-dired=.
-
-If you execute those for some remote host, then:
+But wait, there's even more. Two functions:
 
 - =M-x remote-authorize= will add your public key to the authorized keys list on
   the remote and it won't ask you for authentication any more. This assumes that
@@ -1995,22 +1992,22 @@ If you execute those for some remote host, then:
   #+BEGIN_EXAMPLE
     ssh-keygen -t rsa -C "your_email@example.com"
   #+END_EXAMPLE
-- =remote-enable-dired= will modify the ".profile" on the remote, so that when
-  you'll press =C-x C-j= for a =dired-jump= in the remote terminal (opened with
-  =M-x remote-term=), it will open dired for the remote directory.
+- =M-x remote-enable-dired= will modify the ".profile" file on the remote, so
+  that when you'll press =C-x C-j= for a =dired-jump= in the remote terminal
+  (opened with =M-x remote-term=), it will open dired for the remote directory.
 
 Those functions enable you to work with the remote exactly as you would work
 with a local workstation. No need to resort to terminal, no need to install
-Emacs and your configuration on the remote. You will simply your local Emacs
+Emacs and your configuration on the remote. You will simply use your local Emacs
 instance.
 
-Needless to say, you can do stuff, like, copying files from remote dired buffer
-to local dired buffer will work transparently - no need for =scp=.
+Needless to say, stuff, like, copying files from remote dired buffer to local
+dired buffer, will work transparently - no need for =scp= or anything.
 
 And all of this is enabled with just 3 simple steps:
 
-- add a record to =~/.ssh/config= and re-open Emacs or call
-  =M-x term-parse-ssh-config=
+- add a record to =~/.ssh/config= and re-open Emacs or call =M-x
+  term-parse-ssh-config=
 - call =M-x remote-authorize=
 - call =M-x remote-enable-dired=
 
@@ -2133,6 +2130,7 @@ with the current table of contents before each save.
            (add-hook 'org-mode-hook 'org-toc-enable)
          (message "WARNING: org-toc not found"))))
 #+END_SRC
+
 ** Hide/show blocks
 ** Grepping
 ** Expand region
@@ -2142,7 +2140,6 @@ with the current table of contents before each save.
 *** hippie-expand
 *** auto-complete
 *** abbrev/yasnippet
-
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
