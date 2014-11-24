@@ -31,6 +31,7 @@ also works as an Emacs 24.4 configuration file.
  - [[#sudo-edit][Sudo edit]]
  - [[#ediff][Ediff]]
  - [[#term][Term]]
+ - [[#grepping][Grepping]]
  - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -829,7 +830,7 @@ requirements:
   wrapped
 
 Simple as that. Easiest thing in the world. But not only I didn't find a
-built-in solution for that, I didn't find a decent solution at all!
+built-in solution for that, I didn't find a decent solution to exist at all!
 
 The first option was, obviously, =electric-pair=. It's built-in and
 lightweight - great. But for some reason it doesn't insert the closing pair if
@@ -1950,7 +1951,7 @@ time to find decent alternatives.
 
 All of the above were some minor tweaks to the existing =ansi-term=
 functionality. What comes next could also be considered a minor tweak if you
-consider the lines-of-code count. But it is actually a cool feature I use with
+think of the lines-of-code count. But it is a really powerful feature I use with
 great pleasure.
 
 A simple question - how do you work on a remote workstation via ssh?
@@ -1959,15 +1960,15 @@ The most popular answer I hear is to open a terminal and work from there.
 Probably, this fact is one of the good reasons for people to use Vim. It's an
 overkill to install Emacs and your configuration on every remote you work with.
 Especially, if you want to do something simple. On the contrary, Vim is
-pre-installed on pretty much any platform and conscientious Vim users don't need
-a lot of configuration.
+pre-installed on pretty much any platform and since conscientious Vim users
+don't need a lot of configuration, it's a workable solution for them.
 
-Obviously, Emacs has an answer to that, but, surprisingly, it doesn't lie on a
-surface - you have to figure this out yourself. So, let me try to explain to you
-how conscientious Emacs users work on remote machines.
+Obviously, Emacs has it's own solution, but, surprisingly, it doesn't lie on a
+surface - you have to figure it out yourself. Let me try to explain to you how
+conscientious Emacs users work on remote machines.
 
 First thing, you may already know, is that you can provide a configuration file
-to =ssh=, normally found as =~/.ssh/config=. In this file you can have records,
+to =ssh= - normally, it's =~/.ssh/config=. In this file you can have records,
 like:
 
 #+BEGIN_EXAMPLE
@@ -1985,7 +1986,7 @@ With those records you can use a shorthand command, like =ssh distant-ws= to
 connect to the server without specifying username, host and port. Pretty neat.
 
 But there's more. When you start Emacs, my little function
-=term-parse-ssh-config= will parse this config file and save a list of the
+=term-parse-ssh-config= will parse this config file and save a list of then
 hosts. Then, you can issue =M-x remote-term= command and it will ask you for a
 hostname (with enabled completion) and open an ssh session in the =ansi-term=
 window. Not bad, huh?
@@ -2033,11 +2034,11 @@ window. Not bad, huh?
         (apply 'remote-term-do known-host))))
 #+END_SRC
 
-But wait, there's even more. Two functions:
+But wait, there's even more.
 
 - =M-x remote-authorize= will add your public key to the authorized keys list on
-  the remote and it won't ask you for authentication any more. This assumes that
-  you have generated a key pair via
+  the remote and it won't ask you for authentication anymore. In order to work,
+  this function assumes that you already have generated a key pair via
   #+BEGIN_EXAMPLE
     ssh-keygen -t rsa -C "your_email@example.com"
   #+END_EXAMPLE
@@ -2085,6 +2086,72 @@ are specified in the =/etc/hostname= on the remotes.
         (insert "######################################################################\n# Put this in your remote system's .profile for remote bash to track\n# your current dir\nset_eterm_dir () {\n    echo -e \"\\033AnSiTu\" \"$LOGNAME\" # $LOGNAME is more portable than using whoami.\n    echo -e \"\\033AnSiTc\" \"$(pwd)\"\n    if [ $(uname) = \"SunOS\" ]; then\n\t    # The -f option does something else on SunOS and is not needed anyway.\n       \thostname_options=\"\";\n    else\n        hostname_options=\"-f\";\n    fi\n    echo -e \"\\033AnSiTh\" \"$(hostname $hostname_options)\" # Using the -f option can cause problems on some OSes.\n    history -a # Write history to disk.\n}\n\n# Track directory, username, and cwd for remote logons.\nif [ \"$TERM\" = \"eterm-color\" ]; then\n    PROMPT_COMMAND=set_eterm_dir\nfi\n######################################################################\n"))
       (async-shell-command
        (concat "cat " filename " | ssh " hostname " 'cp .profile .profile.sergei.bak && cat - .profile >.profile.sergei.emacs.dired && cp .profile.sergei.emacs.dired .profile'"))))
+#+END_SRC
+
+* Grepping
+
+I use simple grep commands to search through files:
+
+- find+grep (=C-F=) to search in the current directory
+- git-grep (=C-u C-F=) to search in the whole repository.
+
+There are "modern" alternatives to these tools, like, =ack= and =ag=. But I
+can't really appreciate the benefits they bring over the "stock" programs, i.e.
+the benefits seam too small to me to bother. Simplicity and "always there"
+aspects are much more valuable to me in that case.
+
+If I want to limit the search, most of the time =git-grep= will be a decent
+option. If I want to limit it even further, then I provide something like "-name
+'*.c'" option to =find=.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'vc-git)
+  (require 'grep)
+
+  (grep-apply-setting 'grep-find-command
+                      (quote ("find . -type f -exec grep -nHi -e  {} +" . 35)))
+
+  (defcustom git-grep-switches "--extended-regexp -I -n --ignore-case "
+    "Switches to pass to 'git grep'."
+    :type 'string
+    :group 'grep)
+
+  (defun git-grep (re)
+    (interactive
+     (list (let ((gg-init-value
+                  ;; if region is active - use its value as an init
+                  (if (region-active-p)
+                      (buffer-substring-no-properties (region-beginning) (region-end))
+                    nil)))
+             (read-from-minibuffer "git grep: " gg-init-value nil nil 'grep-history))))
+    (let ((grep-use-null-device nil))
+      (grep (format "git --no-pager grep %s -e %s -- %s"
+                    git-grep-switches
+                    re
+                    (expand-file-name (vc-git-root default-directory))))))
+
+  (define-key global-map [(control shift f)]
+    (defun grep-dispatch (arg)
+      "With prefix calls `git-grep' and `find-grep' otherwise"
+      (interactive "P")
+      (if arg
+          (call-interactively 'git-grep)
+        (call-interactively 'find-grep))))
+#+END_SRC
+
+Grep buffer with clickable links is definitely a great feature. What makes it
+super great is the ability to press =C-x C-q= and edit the contents of the
+buffer, provided by =wgrep= package.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "wgrep-autoloads"
+    '(progn
+       (when (require 'wgrep nil t)
+         (setq wgrep-enable-key "\C-x\C-q")
+         (add-hook 'grep-mode-hook
+                   '(lambda ()
+                      (define-key grep-mode-map "\C-c\C-c"
+                        'wgrep-save-all-buffers))))))
 #+END_SRC
 
 * Upcoming sections
@@ -2140,7 +2207,6 @@ with the current table of contents before each save.
 #+END_SRC
 
 ** Hide/show blocks
-** Grepping
 ** Expand region
 ** Tags
 ** Auto-completion
@@ -2156,10 +2222,6 @@ gradually move things from this section to separate ones.
 #+BEGIN_SRC emacs-lisp
   ;; ------------------------------------------------------------
   ;; BUILT-IN DEPENDENCIES
-
-  ;; for git-grep command
-  (require 'vc-git)
-  (require 'grep)
 
   ;; hippie-expand
   (require 'hippie-exp)
@@ -2296,16 +2358,6 @@ gradually move things from this section to separate ones.
          (global-set-key (kbd "C-=") 'er/expand-region)
          (setq expand-region-fast-keys-enabled nil))))
 
-  ;; wgrep
-  (eval-after-load "wgrep-autoloads"
-    '(progn
-       (when (require 'wgrep nil t)
-         (setq wgrep-enable-key "\C-x\C-q")
-         (add-hook 'grep-mode-hook
-                   '(lambda ()
-                      (define-key grep-mode-map "\C-c\C-c"
-                        'wgrep-save-all-buffers))))))
-
   (eval-after-load "yasnippet-autoloads"
     '(progn
        (if (require 'yasnippet nil t)
@@ -2415,32 +2467,6 @@ gradually move things from this section to separate ones.
       ;; text only version
       (message (concat title ": " msg))))
 
-  (defcustom git-grep-switches "--extended-regexp -I -n --ignore-case "
-    "Switches to pass to 'git grep'."
-    :type 'string
-    :group 'grep)
-
-  (defun git-grep (re)
-    (interactive
-     (list (let ((gg-init-value
-                  ;; if region is active - use its value as an init
-                  (if (region-active-p)
-                      (buffer-substring-no-properties (region-beginning) (region-end))
-                    nil)))
-             (read-from-minibuffer "git grep: " gg-init-value nil nil 'grep-history))))
-    (let ((grep-use-null-device nil))
-      (grep (format "git --no-pager grep %s -e %s -- %s"
-                    git-grep-switches
-                    re
-                    (expand-file-name (vc-git-root default-directory))))))
-
-  (defun grep-dispatch (arg)
-    "With prefix calls `git-grep' and `find-grep' otherwise"
-    (interactive "P")
-    (if arg
-        (call-interactively 'git-grep)
-      (call-interactively 'find-grep)))
-
   (defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
   (make-variable-buffer-local 'hs-hide-all-toggle-state)
   (require 'hideshow nil t)
@@ -2496,7 +2522,6 @@ gradually move things from this section to separate ones.
    '(default-input-method "russian-computer")
    '(diff-update-on-the-fly nil)
    '(frame-background-mode (quote dark))
-   '(grep-find-command (quote ("find . -type f -exec grep -nHi -e  {} +" . 35)))
    '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill)))
    '(indent-tabs-mode nil)
    '(initial-major-mode (quote emacs-lisp-mode))
@@ -2540,7 +2565,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "\C-x v a")    'vc-annotate)
   (global-set-key (kbd "\C-x v b")    'vc-annotate)
   (global-set-key (kbd "<f5>")        'revert-buffer)
-  (global-set-key [(control shift f)] 'grep-dispatch)
   (global-set-key (kbd "M-\\")        'fixup-whitespace)
   (global-set-key (kbd "M-/")         'hippie-expand)
   (global-set-key (kbd "\C-x k")      'kill-this-buffer)
