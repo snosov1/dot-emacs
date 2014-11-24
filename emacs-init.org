@@ -259,12 +259,18 @@ it.
      (t
       (let ((column (current-column)))
         (beginning-of-line)
-        (forward-line)
-        (transpose-lines arg)
-        (when (and (> arg 0) (not (eobp)))
+        (when (or (> arg 0) (not (bobp)))
+          (forward-line)
+          (when (or (< arg 0) (not (eobp)))
+            (transpose-lines arg)
+            ;; Account for changes to transpose-lines in Emacs 24.3
+            (when (and (eval-when-compile
+                         (not (version-list-<
+                               (version-to-list emacs-version)
+                               '(24 3 50 0))))
+                       (< arg 0))
+              (forward-line -1)))
           (forward-line -1))
-        (when (and (< arg 0) (not (bobp)))
-          (forward-line -2))
         (move-to-column column t)))))
 
   (define-key global-map (kbd "M-p")
@@ -1887,7 +1893,7 @@ previous favorite diff viewing tool.
   (set-face-attribute 'ediff-odd-diff-C nil :background "antique white" :foreground "black")
 
   (set-face-attribute 'diff-added nil :foreground "green")
-  (set-face-attribute 'diff-file-header nil :background "black" :weight bold)
+  (set-face-attribute 'diff-file-header nil :background "black" :weight 'bold)
   (set-face-attribute 'diff-header nil :background "black")
   (set-face-attribute 'diff-refine-change nil :background "dark slate gray")
   (set-face-attribute 'diff-removed nil :foreground "tomato")
