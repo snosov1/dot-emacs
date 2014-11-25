@@ -32,6 +32,7 @@ also works as an Emacs 24.4 configuration file.
  - [[#ediff][Ediff]]
  - [[#term][Term]]
  - [[#grepping][Grepping]]
+ - [[#hideshow-blocks][Hide/show blocks]]
  - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -2154,6 +2155,53 @@ buffer, provided by =wgrep= package.
                         'wgrep-save-all-buffers))))))
 #+END_SRC
 
+* Hide/show blocks
+
+There are some situations when you want to have a glance of functions defined in
+a file. For elisp, you can use a trick, like =M-x occur defun=. Something like
+Python could also be approached with a similar solution. But it's not that easy
+to do so for the C-family languages. And that's where the =hideshow= module can
+help you.
+
+It has plenty of decent functions for collapsing code blocks. For example,
+=hs-hide-all=, which is supposed to solve the aforementioned problem. But it
+doesn't really work very well beyond the C language itself. Consider, for
+example, a C++ file which defines all the symbols inside a namespace, or a Java
+file with a class definition. Those files have just a single top-level entry,
+which is not very informative.
+
+So, I came up with this little function, that serves pretty much every need I
+have regarding the hiding functionality.
+
+First of all, it's a toggling function - so, on one execution it collapses
+blocks and on the next one it expands those. For collapsing, it uses every
+top-level block inside the current one.
+
+E.g. if you're at the top level of a C file, then it will leave only function
+definitions. If you're inside a function, it will collapse every inner block /in
+that function/. If you're inside a block, that's inside a function, it will
+collapse every inner block /in that block/ and so on.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
+  (make-variable-buffer-local 'hs-hide-all-toggle-state)
+  (require 'hideshow nil t)
+  (defun hs-toggle-hideshow-all (arg)
+    "Toggle hideshow all. Prefix arg is the level of hiding."
+    (interactive "P")
+    (if (not arg)
+        (setq arg 1))
+    (setq hs-hide-all-toggle-state (not hs-hide-all-toggle-state))
+    (if hs-hide-all-toggle-state
+        (hs-hide-level arg)
+      (hs-show-all)))
+
+  (add-hook 'c-mode-common-hook
+            '(lambda ()
+               (hs-minor-mode t)
+               (define-key c-mode-base-map "\C-ch" 'hs-toggle-hideshow-all)))
+#+END_SRC
+
 * Upcoming sections
 ** Org
 *** Presentations with reveal.js
@@ -2206,7 +2254,6 @@ with the current table of contents before each save.
          (message "WARNING: org-toc not found"))))
 #+END_SRC
 
-** Hide/show blocks
 ** Expand region
 ** Tags
 ** Auto-completion
@@ -2466,19 +2513,6 @@ gradually move things from this section to separate ones.
                                        " \"" title "\" \"" msg "\"")))
       ;; text only version
       (message (concat title ": " msg))))
-
-  (defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
-  (make-variable-buffer-local 'hs-hide-all-toggle-state)
-  (require 'hideshow nil t)
-  (defun hs-toggle-hideshow-all (arg)
-    "Toggle hideshow all. Prefix arg is the level of hiding."
-    (interactive "P")
-    (if (not arg)
-        (setq arg 1))
-    (setq hs-hide-all-toggle-state (not hs-hide-all-toggle-state))
-    (if hs-hide-all-toggle-state
-        (hs-hide-level arg)
-      (hs-show-all)))
 
   (defcustom pop-predefined-register ?}
     "Register for saving window configuration before jump"
