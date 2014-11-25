@@ -2171,7 +2171,7 @@ file with a class definition. Those files have just a single top-level entry,
 which is not very informative.
 
 So, I came up with this little function, that serves pretty much every need I
-have regarding the hiding functionality.
+have regarding the hiding functionality, bound to =C-c h= in C-derived modes.
 
 First of all, it's a toggling function - so, on one execution it collapses
 blocks and on the next one it expands those. For collapsing, it uses every
