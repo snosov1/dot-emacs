@@ -6,6 +6,10 @@
 This is a little novel for casual reading about a text editor. Incidentally, it
 also works as an Emacs 24.4 configuration file.
 
+Every chapter talks about some aspect of my day-to-day Emacs usage. Hopefully,
+you can find something useful for yourself and/or tell me about better ways to
+do something in Emacs.
+
 * Contents                                                   :noexport:TOC_1:
  - [[#foreword][Foreword]]
  - [[#ui-customization][UI customization]]
