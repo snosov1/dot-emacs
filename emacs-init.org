@@ -1905,11 +1905,12 @@ previous favorite diff viewing tool.
   (set-face-attribute 'ediff-odd-diff-B nil :background "antique white" :foreground "Black")
   (set-face-attribute 'ediff-odd-diff-C nil :background "antique white" :foreground "black")
 
-  (set-face-attribute 'diff-added nil :foreground "green")
+  (set-face-attribute 'diff-added nil :background nil :foreground "green")
+  (set-face-attribute 'diff-refine-added nil :background "#335533")
   (set-face-attribute 'diff-file-header nil :background "black" :weight 'bold)
   (set-face-attribute 'diff-header nil :background "black")
-  (set-face-attribute 'diff-refine-change nil :background "dark slate gray")
-  (set-face-attribute 'diff-removed nil :foreground "tomato")
+  (set-face-attribute 'diff-removed nil :background nil :foreground "tomato")
+  (set-face-attribute 'diff-refine-removed nil :background "#553333")
 #+END_SRC
 * Term
 
