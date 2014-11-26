@@ -15,9 +15,9 @@ do something in Emacs.
  - [[#ui-customization][UI customization]]
  - [[#text-manipulations][Text manipulations]]
  - [[#abbreviations][Abbreviations]]
+ - [[#smarter-alternatives-to-built-in-functionality]["Smarter" alternatives to built-in functionality]]
  - [[#dired][Dired]]
  - [[#better-buffer-names][Better buffer names]]
- - [[#smarter-alternatives-to-built-in-functionality]["Smarter" alternatives to built-in functionality]]
  - [[#spelling-fly][Spelling fly]]
  - [[#fighting-escape-sequences-in-strings][Fighting escape sequences in strings]]
  - [[#parenthesis-for-dummies][Parenthesis for Dummies]]
@@ -324,6 +324,195 @@ and =yasnippet= for everything else.
     (setq-default abbrev-mode nil))
 #+END_SRC
 
+* "Smarter" alternatives to built-in functionality
+
+The following functions try to be smarter about what they do, while closely
+maintaining the original intent and implementation.
+
+** Searching
+
+If you select a region, that entirely lies on a single line, then incremental
+searching (=C-s= and =C-r=) will use it as an initial value and make a first
+jump. The common way I use it is:
+
+- mark a word or a longer unit with =er/expand-region= (=C-==)
+- press =C-s= or =C-r= to jump to the next or previous occurrence
+
+#+BEGIN_SRC emacs-lisp
+  (defmacro smart-isearch (direction)
+    `(defun ,(intern (format "smart-isearch-%s" direction)) (&optional regexp-p no-recursive-edit)
+       "If region is active and non empty, use it for searching and
+    make first jump. Otherwise, behave like original function."
+       (interactive "P\np")
+       (let ((smart-p (and
+                       (region-active-p)
+                       (< (region-beginning) (region-end))
+                       (= (- (line-number-at-pos (region-end))
+                             (line-number-at-pos (region-beginning))) 0)
+                       )))
+         (when smart-p
+           (kill-ring-save (region-beginning) (region-end)))
+
+         (,(intern (format "isearch-%s" direction)) regexp-p no-recursive-edit)
+
+         (when smart-p
+           (isearch-yank-kill)
+           (,(intern (format "isearch-repeat-%s" direction)))))))
+  (define-key global-map [remap isearch-forward]  (smart-isearch forward))
+  (define-key global-map [remap isearch-backward] (smart-isearch backward))
+#+END_SRC
+
+Similarly, =occur= (=M-s o=) will use the selected region, if any, without
+prompting. By the way, you can press =M-s o= during incremental search to
+call =occur= for the current search string.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map [remap occur]
+    (defun smart-occur (arg)
+      (interactive "P")
+      (if (region-active-p)
+          (occur (buffer-substring-no-properties (region-beginning) (region-end)) arg)
+        (call-interactively 'occur))))
+#+END_SRC
+
+I got used to the convention of =C-x C-q= being a toggle between writable and
+read-only buffer states. It's better for occur mode to follow this convention.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key occur-mode-map "\C-x\C-q" 'occur-edit-mode)
+  (define-key occur-edit-mode-map "\C-x\C-q" 'occur-cease-edit)
+#+END_SRC
+
+** Beginning of line
+
+When jumping to the beginning of line, more often than not you actually want to
+jump to the first non-whitespace character. So, the default behavior of
+=beginning-of-line= (=C-a=) is remapped to =back-to-indentation=. In case you
+actually wanted to go to the very beginning of the line, you should hit =C-a=
+one more time.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map [remap move-beginning-of-line]
+    (defun smart-beginning-of-line ()
+      "Move point to first non-whitespace character or beginning-of-line.
+
+    Move point to the first non-whitespace character on this line.
+    If point was already at that position, move point to beginning of line."
+      (interactive)
+      (let ((oldpos (point)))
+        (back-to-indentation)
+        (and (= oldpos (point))
+             (beginning-of-line)))))
+#+END_SRC
+
+** Free advice
+
+It is so natural and convenient for the just yanked region to be properly
+indented, that I got used to this functionality even before I turned it on. On
+the rare occasions you can use universal argument to suppress auto indentation.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice insert-for-yank-1 (after indent-region activate)
+    "Indent yanked region in certain modes, C-u prefix to disable"
+    (if (and (not current-prefix-arg)
+             (member major-mode '(sh-mode
+                                  emacs-lisp-mode lisp-mode
+                                  c-mode c++-mode objc-mode d-mode java-mode cuda-mode
+                                  LaTeX-mode TeX-mode
+                                  xml-mode html-mode css-mode)))
+        (indent-region (region-beginning) (region-end) nil)))
+#+END_SRC
+
+** View mode
+
+Emacs has a strange-looking convention for binding =C-x C-q= to toggle a
+read-only state. It's not ubiquitous, but it's definitely the most common
+binding. So, I try to follow it wherever it makes sense and customize the modes
+that don't follow it.
+
+However, I find that =view-mode= for most of the buffers provides a better
+alternative to simple read-only toggle. It has some additional navigation
+functions, and also, you can use shorter bindings (leaving the =C-= modifier)
+for common operations.
+
+There's some kind of Vimy flavor to it and, eventually, when I use it I find
+myself thinking "How can those Vim people live switching between editing and
+viewing modes all the time? Weirdest guys."
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x C-q") 'view-mode)
+
+  ;; simpler navigation
+  (define-key view-mode-map "p" 'previous-line)
+  (define-key view-mode-map "n" 'next-line)
+  (define-key view-mode-map "f" 'forward-char)
+  (define-key view-mode-map "b" 'backward-char)
+  (define-key view-mode-map "l" 'recenter-top-bottom)
+  (define-key view-mode-map "e" 'move-end-of-line)
+  (define-key view-mode-map "a" 'smart-beginning-of-line)
+  (define-key view-mode-map "v" 'scroll-up-command)
+#+END_SRC
+
+** Fill/unfill paragraph
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default fill-column 80)
+#+END_SRC
+
+=fill-paragraph= command (=M-q=) is so handy, that I find myself using it more
+often, than =newline-and-indent= when writing text.
+
+I tweaked it a bit, so that when you provide a universal argument, then the
+paragraph (or region) is "unfilled", i.e. it's placed on a single line. It may
+seem like a useless function, but it turns out to be pretty handy as well.
+
+Consider a case, when you're writing an e-mail which is going to be posted to
+some news group and displayed via web interface. If the width of the field for
+your e-mail is lesser that your =fill-column= value, then it will look ugly.
+E.g. you send the following text:
+
+#+BEGIN_EXAMPLE
+  This is not a very long sentence, but it's long enough to occupy 2 lines for your
+  fill-column value.
+
+  This is the next sentence, after the "not-so-long" one.
+#+END_EXAMPLE
+
+If the width of the displaying field is less than 80 (in my case), then it will
+look something like this:
+
+#+BEGIN_EXAMPLE
+  This is not a very long sentence, but it's long enough to occupy
+  2 lines for your
+  fill-column value.
+
+  This is the next sentence, after the "not-so-long" one.
+#+END_EXAMPLE
+
+You get those 2 short, ugly lines.
+
+In order to workaround this, you can rely on the web interface (or any other
+client, that will render an e-mail) and perform =unfill-region= before sending
+it.
+
+To do this, simply select the text and provide a universal argument: =C-u M-q=.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "unfill-autoloads"
+    '(progn
+       (if (require 'unfill nil t)
+           (define-key global-map [remap fill-paragraph]
+             (defun fill-paragraph-dispatch (arg)
+               "Fill or unfill paragraph"
+               (interactive "P")
+               (if arg
+                   (if (region-active-p)
+                       (unfill-region (region-beginning) (region-end))
+                     (unfill-paragraph))
+                 (fill-paragraph 'nil 't))))
+         (message "WARNING: unfill not found"))))
+#+END_SRC
+
 * Dired
 
 As you may know, dired stands for DIRectory EDitor and it is, basically, a file
@@ -339,9 +528,13 @@ the job done without over-complication on implementation or interface side.
 ** Dired jump
 To enable a convenient =C-x C-j= binding, we have to require the =dired-x=
 module. When visiting a file, =C-x C-j= opens current directory in dired. When
-already in dired, it jumps to the parent directory and it is also bound to a
-nice shortcut - =j=. With universal argument - =C-u C-x C-j= - it opens dired in
-other window.
+already in dired, it jumps to the parent directory. With universal argument -
+=C-u C-x C-j= - it opens dired in other window.
+
+Note, that in Dired and in View mode it is also bound to a nice shortcut - =j=.
+So, if you want to traverse some tree and have a quick look into some files, you
+can use one-letter commands for navigation. You only need to use =v= to open
+files in =view-mode= and =j= - to jump back to dired.
 
 #+BEGIN_SRC emacs-lisp
   (define-key dired-mode-map (kbd "j")
@@ -350,6 +543,8 @@ other window.
         "Calls dired-jump. With prefix argument uses other window"
         (interactive "P")
         (dired-jump arg))))
+
+  (define-key view-mode-map "j" 'dired-jump-universal-other)
 #+END_SRC
 
 ** Dired details
@@ -554,196 +749,6 @@ pressing =C-x C-r=.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "\C-x\C-r") 'rename-buffer)
-#+END_SRC
-
-* "Smarter" alternatives to built-in functionality
-
-The following functions try to be smarter about what they do, while closely
-maintaining the original intent and implementation.
-
-** Searching
-
-If you select a region, that entirely lies on a single line, then incremental
-searching (=C-s= and =C-r=) will use it as an initial value and make a first
-jump. The common way I use it is:
-
-- mark a word or a longer unit with =er/expand-region= (=C-==)
-- press =C-s= or =C-r= to jump to the next or previous occurrence
-
-#+BEGIN_SRC emacs-lisp
-  (defmacro smart-isearch (direction)
-    `(defun ,(intern (format "smart-isearch-%s" direction)) (&optional regexp-p no-recursive-edit)
-       "If region is active and non empty, use it for searching and
-    make first jump. Otherwise, behave like original function."
-       (interactive "P\np")
-       (let ((smart-p (and
-                       (region-active-p)
-                       (< (region-beginning) (region-end))
-                       (= (- (line-number-at-pos (region-end))
-                             (line-number-at-pos (region-beginning))) 0)
-                       )))
-         (when smart-p
-           (kill-ring-save (region-beginning) (region-end)))
-
-         (,(intern (format "isearch-%s" direction)) regexp-p no-recursive-edit)
-
-         (when smart-p
-           (isearch-yank-kill)
-           (,(intern (format "isearch-repeat-%s" direction)))))))
-  (define-key global-map [remap isearch-forward]  (smart-isearch forward))
-  (define-key global-map [remap isearch-backward] (smart-isearch backward))
-#+END_SRC
-
-Similarly, =occur= (=M-s o=) will use the selected region, if any, without
-prompting. By the way, you can press =M-s o= during incremental search to
-call =occur= for the current search string.
-
-#+BEGIN_SRC emacs-lisp
-  (define-key global-map [remap occur]
-    (defun smart-occur (arg)
-      (interactive "P")
-      (if (region-active-p)
-          (occur (buffer-substring-no-properties (region-beginning) (region-end)) arg)
-        (call-interactively 'occur))))
-#+END_SRC
-
-I got used to the convention of =C-x C-q= being a toggle between writable and
-read-only buffer states. It's better for occur mode to follow this convention.
-
-#+BEGIN_SRC emacs-lisp
-  (define-key occur-mode-map "\C-x\C-q" 'occur-edit-mode)
-  (define-key occur-edit-mode-map "\C-x\C-q" 'occur-cease-edit)
-#+END_SRC
-
-** Beginning of line
-
-When jumping to the beginning of line, more often than not you actually want to
-jump to the first non-whitespace character. So, the default behavior of
-=beginning-of-line= (=C-a=) is remapped to =back-to-indentation=. In case you
-actually wanted to go to the very beginning of the line, you should hit =C-a=
-one more time.
-
-#+BEGIN_SRC emacs-lisp
-  (define-key global-map [remap move-beginning-of-line]
-    (defun smart-beginning-of-line ()
-      "Move point to first non-whitespace character or beginning-of-line.
-
-    Move point to the first non-whitespace character on this line.
-    If point was already at that position, move point to beginning of line."
-      (interactive)
-      (let ((oldpos (point)))
-        (back-to-indentation)
-        (and (= oldpos (point))
-             (beginning-of-line)))))
-#+END_SRC
-
-** Free advice
-
-It is so natural and convenient for the just yanked region to be properly
-indented, that I got used to this functionality even before I turned it on. On
-the rare occasions you can use universal argument to suppress auto indentation.
-
-#+BEGIN_SRC emacs-lisp
-  (defadvice insert-for-yank-1 (after indent-region activate)
-    "Indent yanked region in certain modes, C-u prefix to disable"
-    (if (and (not current-prefix-arg)
-             (member major-mode '(sh-mode
-                                  emacs-lisp-mode lisp-mode
-                                  c-mode c++-mode objc-mode d-mode java-mode cuda-mode
-                                  LaTeX-mode TeX-mode
-                                  xml-mode html-mode css-mode)))
-        (indent-region (region-beginning) (region-end) nil)))
-#+END_SRC
-
-** View mode
-
-Emacs has a strange-looking convention for binding =C-x C-q= to toggle a
-read-only state. It's not ubiquitous, but it's definitely the most common
-binding. So, I try to follow it wherever it makes sense and customize the modes
-that don't follow it.
-
-However, I find that =view-mode= for most of the buffers provides a better
-alternative to simple read-only toggle. It has some additional navigation
-functions, and also, you can use shorter bindings (leaving the =C-= modifier)
-for common operations.
-
-There's some kind of Vimy flavor to it and, eventually, when I use it I find
-myself thinking "How can those Vim people live switching between editing and
-viewing modes all the time? Weirdest guys."
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-x C-q") 'view-mode)
-
-  (add-hook 'view-mode-hook
-            '(lambda ()
-               ;; simpler navigation
-               (define-key view-mode-map "p" 'previous-line)
-               (define-key view-mode-map "n" 'next-line)
-               (define-key view-mode-map "f" 'forward-char)
-               (define-key view-mode-map "b" 'backward-char)
-               (define-key view-mode-map "l" 'recenter-top-bottom)
-               (define-key view-mode-map "e" 'move-end-of-line)
-               (define-key view-mode-map "a" 'smart-beginning-of-line)
-               (define-key view-mode-map "v" 'scroll-up-command)))
-#+END_SRC
-** Fill/unfill paragraph
-
-#+BEGIN_SRC emacs-lisp
-  (setq-default fill-column 80)
-#+END_SRC
-
-=fill-paragraph= command (=M-q=) is so handy, that I find myself using it more
-often, than =newline-and-indent= when writing text.
-
-I tweaked it a bit, so that when you provide a universal argument, then the
-paragraph (or region) is "unfilled", i.e. it's placed on a single line. It may
-seem like a useless function, but it turns out to be pretty handy as well.
-
-Consider a case, when you're writing an e-mail which is going to be posted to
-some news group and displayed via web interface. If the width of the field for
-your e-mail is lesser that your =fill-column= value, then it will look ugly.
-E.g. you send the following text:
-
-#+BEGIN_EXAMPLE
-  This is not a very long sentence, but it's long enough to occupy 2 lines for your
-  fill-column value.
-
-  This is the next sentence, after the "not-so-long" one.
-#+END_EXAMPLE
-
-If the width of the displaying field is less than 80 (in my case), then it will
-look something like this:
-
-#+BEGIN_EXAMPLE
-  This is not a very long sentence, but it's long enough to occupy
-  2 lines for your
-  fill-column value.
-
-  This is the next sentence, after the "not-so-long" one.
-#+END_EXAMPLE
-
-You get those 2 short, ugly lines.
-
-In order to workaround this, you can rely on the web interface (or any other
-client, that will render an e-mail) and perform =unfill-region= before sending
-it.
-
-To do this, simply select the text and provide a universal argument: =C-u M-q=.
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load "unfill-autoloads"
-    '(progn
-       (if (require 'unfill nil t)
-           (define-key global-map [remap fill-paragraph]
-             (defun fill-paragraph-dispatch (arg)
-               "Fill or unfill paragraph"
-               (interactive "P")
-               (if arg
-                   (if (region-active-p)
-                       (unfill-region (region-beginning) (region-end))
-                     (unfill-paragraph))
-                 (fill-paragraph 'nil 't))))
-         (message "WARNING: unfill not found"))))
 #+END_SRC
 * Spelling fly
 
