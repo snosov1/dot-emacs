@@ -1849,8 +1849,8 @@ press =e= in magit buffer - both to see the diff and resolve conflicts.
 The only thing is that the default ediff user experience comes from stone age,
 so I had to tweak it a bit.
 
-First, a couple of functions to save and restore window configuration after
-ediff session.
+First, a couple of functions to automatically save and restore window
+configuration after ediff session.
 
 #+BEGIN_SRC emacs-lisp
   (require 'ediff)
@@ -1866,7 +1866,7 @@ ediff session.
 #+END_SRC
 
 Then, I don't want ediff to create other frames. Everything should stay in the
-same frame I'm working in. And the splitting should be horizontal (i.e.
+same frame I'm working in. And splitting should be horizontal (i.e.
 side-by-side).
 
 #+BEGIN_SRC emacs-lisp
