@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: dirlocals
+# key: dirlocals
+# --
+((d-mode . ((indent-tabs-mode . t)
+            (fill-column . 80))))
