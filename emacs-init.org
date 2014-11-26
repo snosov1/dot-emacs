@@ -440,6 +440,8 @@ myself thinking "How can those Vim people live switching between editing and
 viewing modes all the time? Weirdest guys."
 
 #+BEGIN_SRC emacs-lisp
+  (require 'view)
+
   (global-set-key (kbd "C-x C-q") 'view-mode)
 
   ;; simpler navigation
