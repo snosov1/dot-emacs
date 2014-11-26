@@ -2410,6 +2410,13 @@ gradually move things from this section to separate ones.
                       (setq-local er/try-expand-list (remove 'er/mark-text-sentence er/try-expand-list)))
                    t)
 
+         (defun er/add-cc-mode-expansions ()
+           "Adds expansions for buffers in c-mode."
+           (set (make-local-variable 'er/try-expand-list)
+                (append er/try-expand-list
+                        '(er/c-mark-fully-qualified-name
+                          er/c-mark-function-call-1   er/c-mark-function-call-2))))
+
          (when (require 'd-mode nil t)
            (er/enable-mode-expansions 'd-mode 'er/add-cc-mode-expansions))
 
