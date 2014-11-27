@@ -12,6 +12,7 @@
         c-electric-semi&comma
         c-electric-slash
         c-electric-star
+        c-end-of-statement
         c-indent-line-or-region
         capitalize-dispatch
         comment-dwim

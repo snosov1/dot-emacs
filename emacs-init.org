@@ -1056,6 +1056,33 @@ I don't feel like dropping it after putting so much effort into it.
                        auto-mode-alist)))))
 #+END_SRC
 
+** C and C++
+
+There are just 2 minor things about C and C++:
+- I don't make a difference between them and treat everything as C++. It also
+  goes for CUDA sources as well.
+- =C-c C-o= is bound to =ff-find-other-file=. This function is pretty simple and
+  it doesn't work very well for a lot of common source code layouts, but it
+  comes in handy, when you can use it.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+  (add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
+  (add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
+  (add-to-list 'auto-mode-alist '("\\.cuh\\'" . c++-mode))
+  (add-hook 'c-mode-common-hook
+            '(lambda ()
+               (define-key c-mode-base-map "\C-c\C-o"
+                 'ff-find-other-file)
+
+               (define-key c-mode-base-map "\C-c\C-c"    nil)
+               (define-key c-mode-base-map (kbd "C-M-h") nil)
+               (define-key c-mode-base-map (kbd "M-j")   nil)
+
+               ;; set //-style comments for c-mode
+               (setq comment-start "//" comment-end "")))
+#+END_SRC
+
 ** Misc
 
 Nothing special, really.
@@ -2687,24 +2714,6 @@ gradually move things from this section to separate ones.
                  (defun revert-buffer-without-query ()
                    (interactive)
                    (revert-buffer nil t)))))
-
-  (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-  (add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
-  (add-hook 'c-mode-common-hook
-            '(lambda ()
-               (define-key c-mode-base-map "\C-c\C-o"
-                 'ff-find-other-file)
-
-               (define-key c-mode-base-map "\C-c\C-c"    nil)
-               (define-key c-mode-base-map (kbd "C-M-h") nil)
-               (define-key c-mode-base-map (kbd "M-j")   nil)
-
-               ;; hs-mode
-               (hs-minor-mode t)
-               (define-key c-mode-base-map "\C-ch"
-                 'hs-toggle-hideshow-all)
-               ;; set //-style comments for c-mode
-               (setq comment-start "//" comment-end "")))
 
   (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
 
