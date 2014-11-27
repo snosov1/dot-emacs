@@ -1058,12 +1058,14 @@ I don't feel like dropping it after putting so much effort into it.
 
 ** C and C++
 
-There are just 2 minor things about C and C++:
+There are just 3 minor things about C and C++:
 - I don't make a difference between them and treat everything as C++. It also
   goes for CUDA sources as well.
 - =C-c C-o= is bound to =ff-find-other-file=. This function is pretty simple and
   it doesn't work very well for a lot of common source code layouts, but it
   comes in handy, when you can use it.
+- =C-c .= is bound to =c-guess-buffer= for cases, when I have to modify the code
+  that has some alien formatting style.
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
@@ -1074,6 +1076,8 @@ There are just 2 minor things about C and C++:
             '(lambda ()
                (define-key c-mode-base-map "\C-c\C-o"
                  'ff-find-other-file)
+               (define-key c-mode-base-map (kbd "C-c .")
+                 'c-guess-buffer)
 
                (define-key c-mode-base-map "\C-c\C-c"    nil)
                (define-key c-mode-base-map (kbd "C-M-h") nil)
