@@ -1,0 +1,26 @@
+# -*- mode: snippet -*-
+# name : matrix_inverse
+# key: inv
+# --
+template <typename T>
+void matrix_inverse(T in[9], T out[9])
+{
+    // row-major storage
+
+    T det =
+        in(0) * (in[4] * in[8] - in[7] * in[5]) -
+        in(1) * (in[3] * in[8] - in[5] * in[6]) +
+        in(2) * (in[3] * in[7] - in[4] * in[6]);
+
+    T invdet = 1.0 / det;
+
+    out[0] = (in[4] * in[8] - in[7] * in[5]) * invdet;
+    out[1] = (in[2] * in[7] - in[1] * in[8]) * invdet;
+    out[2] = (in[1] * in[5] - in[2] * in[4]) * invdet;
+    out[3] = (in[5] * in[6] - in[3] * in[8]) * invdet;
+    out[4] = (in[0] * in[8] - in[2] * in[6]) * invdet;
+    out[5] = (in[3] * in[2] - in[0] * in[5]) * invdet;
+    out[6] = (in[3] * in[7] - in[6] * in[4]) * invdet;
+    out[7] = (in[6] * in[1] - in[0] * in[7]) * invdet;
+    out[8] = (in[0] * in[4] - in[3] * in[1]) * invdet;
+}
