@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: triggers if previous command returned non-zero
+# key: ifne0
+# --
+if [ $? -ne 0 ]; then
+    exit 125 # skip code for git bisect
+fi
