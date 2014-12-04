@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: adds explicit dependency to a source file
+# key: dependency
+# --
+set_property(SOURCE ${1:source} APPEND PROPERTY OBJECT_DEPENDS "${2:dependency}")
