@@ -14,7 +14,6 @@ do something in Emacs.
  - [[#foreword][Foreword]]
  - [[#ui-customization][UI customization]]
  - [[#text-manipulations][Text manipulations]]
- - [[#abbreviations][Abbreviations]]
  - [[#smarter-alternatives-to-built-in-functionality]["Smarter" alternatives to built-in functionality]]
  - [[#dired][Dired]]
  - [[#better-buffer-names][Better buffer names]]
@@ -37,6 +36,7 @@ do something in Emacs.
  - [[#term][Term]]
  - [[#grepping][Grepping]]
  - [[#hideshow-blocks][Hide/show blocks]]
+ - [[#auto-completion][Auto-completion]]
  - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -188,16 +188,16 @@ Pay attention to the first 2 lines of the code and to the very last one.
 
 You see now? Those darn villains sabotaged Emacs just at the time, when they
 understood that everything is finished for them. That they cannot hold a
-competition against Emacs. So, they came up with their evil plan. And what a
-disgusting, smug name for a mode - VIP.
+competition against Emacs. So, they came up with their evil plan.
 
 Don't know about you, but I've seen enough evidence to be totally confident,
 that it was a planned Vi fans demarche against Emacs. I can even assume, that
 FBI and CIA were also involved. Which is the most likely reason, why Mr.
-Stallman is so opposed to them.
+Stallman is so opposed to them. And what a disgusting, smug name for a mode -
+VIP.
 
-But it's not the time for enjoying ourselves with this finding. It's time to
-fight and restore justice! Time to take back what rightly belongs to us!
+But it's not the time to enjoy ourselves with this finding. It's time to fight
+and restore justice! Time to take back what rightly belongs to us!
 
 #+BEGIN_SRC emacs-lisp
   (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
@@ -293,37 +293,6 @@ it.
       (interactive "*p")
       (move-text-internal arg)))
 #+END_SRC
-* Abbreviations
-
-I have a collection of abbreviations for commands, that I use rarely enough to
-forget their actual spelling, but often enough to get annoyed every time I have
-to look it up somewhere.
-
-As a simplest example, I always forget how to use the =ln= command to create a
-symbolic link. Where do you have to put =-s=? Where is the target path and where
-is the link name? I know, it's ridiculous, but I was making mistakes every time
-I tried to use it.
-
-Now, I simply print =ln=, hit =M-/= for =hippie-expand=, it becomes =ln -s
-target link= and I'm happy.
-
-The abbreviations are listed in =.abbrev_defs= file and, basically, all of those
-are commands, which do something simple, but are represented by a random-looking
-symbols sequence.
-
-I also use =yasnippet= for a similar functionality, but it didn't work very well
-in minibuffer for me. And since I use minibuffer to issue shell commands (=M-&=)
-quite often, my rule of thumb is to use abbreviations for common shell commands
-and =yasnippet= for everything else.
-
-#+BEGIN_SRC emacs-lisp
-  (when (require 'abbrev nil t)
-    (add-hook 'find-file-hook
-              '(lambda()
-                 (abbrev-mode -1)))
-    (setq-default abbrev-mode nil))
-#+END_SRC
-
 * "Smarter" alternatives to built-in functionality
 
 The following functions try to be smarter about what they do, while closely
@@ -1815,7 +1784,6 @@ start using other functions - little by little.
                (interactive)
                (dotimes (_ times)
                  (insert " ")))
-
              (mc/for-each-cursor-ordered
               (let ((times (- max-column (car cursors-column))))
                 (mc/execute-command-for-fake-cursor 'mc--align-insert-times cursor))
@@ -1831,6 +1799,7 @@ start using other functions - little by little.
          (global-set-key (kbd "M-#") 'mc/insert-numbers)
          (global-set-key (kbd "M-'") 'mc/align))))
 #+END_SRC
+
 * Sudo edit
 
 Sometimes you need root rights to edit a file, e.g. some config in the "/etc"
@@ -2258,6 +2227,229 @@ collapse every inner block /in that block/ and so on.
                (hs-minor-mode t)
                (define-key c-mode-base-map "\C-ch" 'hs-toggle-hideshow-all)))
 #+END_SRC
+* Auto-completion
+** Overview
+
+I was postponing the writing of Auto-completion section for a long time. The
+reason is - I'm still uncertain about my attitude to it.
+
+When I first started using Emacs, obviously, auto-completion was one of the main
+features I wanted to be there. Because I was working in (shrug) Microsoft Visual
+Studio and considered it a given. I was under impression that no good work can
+be done without it.
+
+To be clear - I'm talking about "smart" or "intellisense" kind of
+auto-completion. I.e. if I write "reader.", then an editor should provide
+precise list of public members and methods of the "reader" object.
+
+So, I spent something like 2 weeks to make it work. If I recall correctly, it
+was some clang-based solution for C++. It worked decently well, but occasional
+one second glitches were annoying, so I turned off the automatic start of
+auto-completion in favor of explicit binding. This way I could trigger the
+completion only when I needed it.
+
+And guess what? I've found myself never using it in about a month. Also, when I
+tried to use it - there were always some rough edges. It didn't work perfectly,
+it needed some variables to be set... It was Always Something. So, I turned it
+off and guess again? I have never felt the need for it during my work. Not once.
+I lived like that happily starting to appreciate Emacs more and more. And,
+eventually, I began advocating Emacs to others.
+
+Not very surprisingly, a first question from almost everybody was about
+auto-completion. And believe it or not, the answer "You don't actually need
+auto-completion!" wasn't really helping. Everybody just stopped listening. For
+good reasons or bad, they just didn't want to listen further, because I was
+denying something they work with all the time.
+
+And I cannot blame them. I had the exact same first expectations, it took some
+time to figure out the redundancy of auto-completion.
+
+So, I decided to enable the auto-completion once again and to honestly try to
+employ it into my work. I spent some time again, made it work decently, but I
+didn't really notice the gain. Yeah, it was nice and all, but it literally
+didn't make any difference.
+
+But to make it work, most of the time you have to install external tools, add
+quite a lot of configuration and you have to maintain everything. Once again, it
+seemed too much for an absolutely useless functionality, so I removed it, again.
+
+Since then I keep changing my mind about auto-completion back and forth. For
+some time I'm convinced that it's absolutely useless. Then I start thinking that
+maybe the idea is not that bad and maybe the tools have improved. So, I try
+things out from scratch, but every time the solution is half-backed. It works
+immediately after I configure everything, but when I switch workstations, try
+something like remote access via TRAMP, encounter some unusual build system or
+source tree - it stops working and needs to be tweaked again.
+
+The endless tweaking for occasional 10 second gains just doesn't feel right for
+me. So I came up with this "theory" about auto-completion, that "formally"
+"proves" its complete uselessness! I will share it and you can decide whether it
+is convincing enough.
+
+** Hippie expand
+
+Obviously, you need auto-completion when you need to type a long word or piece
+of text. You don't need it for short sequences. And there are only 2
+fundamentally different cases:
+
+- You know the text you want to write - you just don't want to type every
+  character. E.g. you want to call a function named "doEverythingRight"; you
+  remember its name (or at least the beginning); and you want to start typing
+  it - enter a few characters (like, "doEv") and then hit a button to complete
+  the whole thing.
+- You don't know the text you want to write - you want to choose between
+  candidates. E.g. you entered "reader." and you expect the reader object to
+  have a method that skips some characters while reading. You don't know its
+  name - it might be "skip", "seek", "jump" or something else. But you want to
+  see the list of all public methods of the reader and maybe find something
+  there.
+
+The first case is rather simple. You don't actually need any sophisticated and
+precise auto-completion for that. A simple heuristic, like - trying to complete
+using words in all opened buffers will suffice.
+
+For the case of the "doEverythingRight" function it means, that if you have
+already used this function in some opened buffer - it will be auto-completed by
+=hippie-expand= (=M-/=).
+
+I guess it's called "hippie", because of its naive, but vast nature - "try every
+word in every opened buffer" - that sounds hippie to me. But despite of the
+hippie nature - it works reasonably good. And if it didn't guess right for the
+first time, you can choose other candidates by repeating the command.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'hippie-exp)
+  (setq-default hippie-expand-try-functions-list
+                (quote
+                 (try-complete-file-name-partially
+                  try-complete-file-name
+                  try-expand-all-abbrevs
+                  try-expand-dabbrev
+                  try-expand-dabbrev-all-buffers
+                  try-expand-dabbrev-from-kill)))
+  (global-set-key (kbd "M-/") 'hippie-expand)
+#+END_SRC
+
+The second case is completely different, and I argue that auto-completion is not
+the right tool to solve the problem. Indeed, in that case what you actually need
+is documentation, not completion. The cases when you can guess the function name
+correctly without the need of any documentation are pretty rare.
+
+So, a more straightforward approach would be to open the documentation of the
+reader object and consult it:
+
+- For example, Googling for =c++ ifstream= (via =C-c g=) will give you the
+  results faster - the very first link has a nice overview of the =ifstream=
+  methods.
+- In case if you work on some proprietary code base, when Google can't help
+  you - you can still search through the documentation if you have it, or jump
+  to definition via =find-tag= (=M-.=) and look through the members and/or
+  comments. =C-c h= will help you to hide the unnecessary details.
+
+One might argue that the main reason to use auto-completion is to increase
+typing speed. But you really start asking questions after that statement. Like,
+what is your current typing speed? If you're touch typing then it won't take
+long for your speed to exceed 50 words per minute, which is 250 characters per
+minute, which is ~4 characters per second. Typing "doEverythingRight" on that
+speed takes you 4 seconds. Typing "seek" takes you under 1 second. Do you want
+to improve it even further? What is reason for that? Do you think it's a
+bottleneck in your work? Are you sure? And do you honestly believe that using
+arrows to choose the correct candidate is actually increasing your speed?
+
+In case, if you're not touch typing, but rather hunt-and-pecking with 2 fingers
+on 5 words per minute speed, then I must tell - auto-completion won't help your
+productivity. Well, it will to some minor extent, but learning to touch type
+will improve it by 2 orders of magnitude compared to auto-completion.
+
+So, auto-completion is the wrong tool again. You have to learn to touch type
+instead of using auto-completion to increase your speed (and accuracy). It is
+not as hard as many people think. You can teach a monkey to touch type in
+something like 40 hours with the keyboard. Is it really too much?
+
+** Snippets
+
+First case from the previous section, when you know the text you want to write
+and just don't want to type every character, has an important sub-case. What if
+the text you want to write is quite long or cryptographic-looking? You
+definitely don't want to remember those kind of things and =hippie-expand= won't
+help you, since it completes only words.
+
+There are multiple options in Emacs for this. Unfortunately, I couldn't find the
+one, that fits me entirely, but I'm kind of pleased with a combo of =abbrev= and
+=yasnippet= packages.
+
+*** Yasnippet
+
+Yasnippet is a great package for snippets of any kind - long or short, simple or
+complex. It provides great possibilities to make the snippets really smart.
+
+The only thing is that I don't like when the tools try to be smarter than me -
+it hurts my self-esteem. So all my snippets are mostly dumb with almost no
+interactivity. And the good thing is that yasnippet doesn't stand in my way. It
+doesn't require me to use the fancy snippets, rather it provides an option to do
+so.
+
+There's not much more to tell about it. Yasnippet is really great at its job. It
+had rough edges and big starting times previously, but now I find it to be in
+quite good shape.
+
+The advice I can give you about using it - like configuring Emacs, it's better
+to start with zero snippets and add new ones as you go. You can look through
+other people's snippets for good ideas, but there's little use in a pack with a
+thousand of snippets. You won't find the time to study those snippets and they
+may not suite your way of writing the code.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "yasnippet-autoloads"
+    '(progn
+       (if (require 'yasnippet nil t)
+           (progn
+             (let ((yas-dir "~/.yasnippets"))
+               (when (file-exists-p yas-dir)
+                 (setq yas-snippet-dirs (list yas-dir))))
+             (setq-default yas-prompt-functions (quote
+                                                 (yas-dropdown-prompt
+                                                  yas-ido-prompt
+                                                  yas-completing-prompt
+                                                  yas-x-prompt
+                                                  yas-no-prompt)))
+             (yas-global-mode 1)
+
+             (add-hook 'term-mode-hook
+                       '(lambda ()
+                          (yas-minor-mode -1))))
+         (message "WARNING: yasnippet not found"))))
+#+END_SRC
+
+*** Abbreviations
+
+One particular place where =yasnippet= doesn't really work well is minibuffer. I
+don't know if it's just me, or it's not supposed to work there. But anyway, I
+use minibuffer to issue shell commands (=M-&=) quite often, and the =abbrev=
+package comes to the rescue.
+
+There are commands that I use rarely enough to forget their actual spelling, but
+often enough to be annoyed every time I have to look them up somewhere. As a
+simplest example, I always forget how to use the =ln= command to create a
+symbolic link. Where do you have to put =-s=? Where is the target path and where
+is the link name? I know, it's ridiculous, but I was making mistakes every time
+I used it.
+
+Now, I simply print =ln=, hit =M-/= for =hippie-expand=, it becomes =ln -s
+target link= and I'm happy.
+
+The abbreviations are listed in =.abbrev_defs= file and, basically, all of those
+are commands, which do something simple, but are represented by a random-looking
+symbols sequence. My rule of thumb is to use abbreviations for common shell
+commands and =yasnippet= for everything else.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'abbrev nil t)
+    (add-hook 'find-file-hook
+              '(lambda()
+                 (abbrev-mode -1)))
+    (setq-default abbrev-mode nil))
+#+END_SRC
 
 * Upcoming sections
 ** Org
@@ -2313,11 +2505,7 @@ with the current table of contents before each save.
 
 ** Expand region
 ** Tags
-** Auto-completion
-*** Overview
-*** hippie-expand
-*** auto-complete
-*** abbrev/yasnippet
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -2325,81 +2513,7 @@ gradually move things from this section to separate ones.
 
 #+BEGIN_SRC emacs-lisp
   ;; ------------------------------------------------------------
-  ;; BUILT-IN DEPENDENCIES
-
-  ;; hippie-expand
-  (require 'hippie-exp)
-
-  ;; ------------------------------------------------------------
   ;; PER-PACKAGE CONFIGURATION
-
-  (eval-after-load "auto-complete-autoloads"
-    '(progn
-       (when (require 'auto-complete nil t)
-         (require 'auto-complete-config)
-
-         (defun ac-expand-no-next ()
-           "Try expand, and if expanded twice, complete."
-           (interactive)
-           (unless (ac-expand-common)
-             (let ((string (ac-selected-candidate)))
-               (when string
-                 (if (equal ac-prefix string)
-                     (ac-complete)
-                   (ac-expand-string string (eq last-command this-command))
-                   ;; Do reposition if menu at long line
-                   (if (and (> (popup-direction ac-menu) 0)
-                            (ac-menu-at-wrapper-line-p))
-                       (ac-reposition))
-                   (setq ac-show-menu t)
-                   string)))))
-
-         (ac-flyspell-workaround)
-         (setq-default ac-use-comphist nil)
-         (define-key ac-completing-map [tab] 'ac-expand-no-next)
-
-         (defun ac-yasnippet-candidates-sorted-by-length ()
-           "Sorts yasnippet candidates by length."
-           (sort (ac-yasnippet-candidates) '(lambda (l r) (< (length l) (length r)))))
-
-         (ac-define-source yasnippet
-           '((depends yasnippet)
-             (candidates . ac-yasnippet-candidates-sorted-by-length)
-             (action . yas-expand)
-             (candidate-face . ac-yasnippet-candidate-face)
-             (selection-face . ac-yasnippet-selection-face)
-             (symbol . "a")))
-
-         (add-hook 'emacs-lisp-mode-hook
-                   '(lambda ()
-                      (auto-complete-mode t)
-                      (setq ac-sources '(
-                                         ac-source-yasnippet
-                                         ac-source-features
-                                         ac-source-functions
-                                         ac-source-variables
-                                         ac-source-symbols
-                                         ac-source-words-in-same-mode-buffers
-                                         ))))
-
-         (when (and (require 'ac-dcd nil t) (require 'd-mode nil t))
-           (if (and (executable-find ac-dcd-server-executable)
-                    (executable-find ac-dcd-executable))
-               (progn
-                 (add-hook 'd-mode-hook
-                           '(lambda ()
-                              (auto-complete-mode t)
-                              (ac-dcd-maybe-start-server)
-                              (setq ac-sources '(
-                                                 ac-source-yasnippet
-                                                 ac-source-dcd
-                                                 ac-source-words-in-same-mode-buffers
-                                                 ))))
-                 (define-key d-mode-map [remap find-tag]     'ac-dcd-goto-definition)
-                 (define-key d-mode-map [remap pop-tag-mark] 'ac-dcd-goto-def-pop-marker)
-                 (define-key d-mode-map (kbd "M-?")          'ac-dcd-show-ddoc-with-buffer)
-                 (define-key d-mode-map (kbd "C-c i")        'ac-dcd-add-imports))
-             (message "WARNING: dcd-server not found"))))))
 
   ;; expand-region
   (eval-after-load "expand-region-autoloads"
@@ -2468,20 +2582,6 @@ gradually move things from this section to separate ones.
 
          (global-set-key (kbd "C-=") 'er/expand-region)
          (setq expand-region-fast-keys-enabled nil))))
-
-  (eval-after-load "yasnippet-autoloads"
-    '(progn
-       (if (require 'yasnippet nil t)
-           (progn
-             (let ((yas-dir "~/.yasnippets"))
-               (when (file-exists-p yas-dir)
-                 (setq yas-snippet-dirs (list yas-dir))))
-             (yas-global-mode 1)
-
-             (add-hook 'term-mode-hook
-                       '(lambda ()
-                          (yas-minor-mode -1))))
-         (message "WARNING: yasnippet not found"))))
 
   ;; ox-reveal
   ;; export .org files as reveal.js presentations (https://github.com/hakimel/reveal.js/)
@@ -2620,7 +2720,6 @@ gradually move things from this section to separate ones.
    '(default-input-method "russian-computer")
    '(diff-update-on-the-fly nil)
    '(frame-background-mode (quote dark))
-   '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill)))
    '(indent-tabs-mode nil)
    '(initial-major-mode (quote emacs-lisp-mode))
    '(initial-scratch-message nil)
@@ -2644,8 +2743,7 @@ gradually move things from this section to separate ones.
    '(tab-width 4)
    '(tags-case-fold-search nil)
    '(truncate-lines t)
-   '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
-   '(yas-prompt-functions (quote (yas-dropdown-prompt yas-ido-prompt yas-completing-prompt yas-x-prompt yas-no-prompt))))
+   '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark))))
 
   ;; ------------------------------------------------------------
   ;; KEY BINDINGS
@@ -2659,12 +2757,10 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "\C-c a")      'org-agenda)
   (global-set-key (kbd "M-P")         'scroll-down-line)
   (global-set-key (kbd "M-N")         'scroll-up-line)
-  (global-set-key (kbd "M-\"")        'double-quote-word)
   (global-set-key (kbd "\C-x v a")    'vc-annotate)
   (global-set-key (kbd "\C-x v b")    'vc-annotate)
   (global-set-key (kbd "<f5>")        'revert-buffer)
   (global-set-key (kbd "M-\\")        'fixup-whitespace)
-  (global-set-key (kbd "M-/")         'hippie-expand)
   (global-set-key (kbd "\C-x k")      'kill-this-buffer)
   (global-set-key (kbd "C-+")         'org-list-repair)
   (global-set-key (kbd "M-+")         'org-list-repair)

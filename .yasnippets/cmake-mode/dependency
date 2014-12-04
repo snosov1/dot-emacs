@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: adds explicit dependency to a source file
 # key: dependency
+# contributor: http://stackoverflow.com/questions/6545879/cmake-dependency-on-defined-preprocessor-header-file
 # --
 set_property(SOURCE ${1:source} APPEND PROPERTY OBJECT_DEPENDS "${2:dependency}")
