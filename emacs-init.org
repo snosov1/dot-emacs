@@ -37,6 +37,7 @@ do something in Emacs.
  - [[#grepping][Grepping]]
  - [[#hideshow-blocks][Hide/show blocks]]
  - [[#auto-completion][Auto-completion]]
+ - [[#org][Org]]
  - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -534,7 +535,9 @@ dired. You can toggle its visibility by pressing =h=:
 #+END_SRC
 
 ** Dired async
-=dired-async= module makes copying, renaming and deletion commands asynchronous:
+=dired-async= module makes copying, renaming and deletion commands asynchronous.
+It doesn't work flawlessly and even hangs sometimes. But still it's a "nice to
+have" feature. Just don't forget to update the buffers using =g=.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "async-autoloads"
@@ -2450,10 +2453,54 @@ commands and =yasnippet= for everything else.
                  (abbrev-mode -1)))
     (setq-default abbrev-mode nil))
 #+END_SRC
+* Org
+** Customization
 
-* Upcoming sections
-** Org
-*** Presentations with reveal.js
+You should require the corresponding =ob-= module to be able to execute source
+blocks for some language. E.g. after requiring =ob-python= you can hit =C-c C-c=
+on the heading of Python source block, and it will be executed. If you =return=
+something from this block - the results will be placed right after the block.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'org)
+  (require 'ob-python)
+#+END_SRC
+
+Default look of the Org files can be improved by leaving single stars for
+headings and indenting the text according to the heading level.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default org-confirm-babel-evaluate nil)
+  (setq-default org-hide-leading-stars t)
+  (setq-default org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
+  (setq-default org-src-fontify-natively t)
+  (setq-default org-startup-indented t)
+  (setq-default org-support-shift-select (quote always))
+#+END_SRC
+
+When I use "C-c '" to edit the source blocks, my finger muscles keep using the
+familiar key bindings. So, it's better for those to do what I mean.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key org-src-mode-map (kbd "C-x C-s") 'org-edit-src-save)
+  (define-key org-src-mode-map (kbd "C-x k")   'org-edit-src-exit)
+#+END_SRC
+
+If the cursor is under the number of a numbered list (not necessarily in an org
+file), then you can use =C-+= or =M-+= to fix the numbering if it is broken.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-+")         'org-list-repair)
+  (global-set-key (kbd "M-+")         'org-list-repair)
+
+  ;; don't redefine some bindings
+  (define-key org-mode-map [C-tab] nil)
+  (define-key org-mode-map (kbd "M-h") nil)
+  ;; swap active/inactive time-stamp bindings
+  (define-key org-mode-map (kbd "C-c .") 'org-time-stamp-inactive)
+  (define-key org-mode-map (kbd "C-c !") 'org-time-stamp)
+#+END_SRC
+** Presentations with reveal.js
 
 There's a nice "framework" (or something) for creating presentations using plain
 text files - reveal.js. Originally, you were supposed to write the content in
@@ -2469,18 +2516,17 @@ To export the presentation itself you can use either =C-c C-e R R= or =C-c C-c=
 in any part of the buffer, where it doesn't have any special meaning.
 
 #+BEGIN_SRC emacs-lisp
-  (eval-after-load "org-autoloads"
+  (eval-after-load "ox-reveal-autoloads"
     '(progn
        (when (and (require 'org nil t) (require 'ox-reveal nil t))
-         ;; enable python execution in org-mode
-         (require 'ob-python)
-         (require 'ob-R)
-
          (defun conditional-org-reveal-export-to-html ()
            (save-excursion
              (beginning-of-buffer)
              (when (search-forward "#+REVEAL" nil nil)
                (org-reveal-export-to-html))))
+
+         (add-hook 'org-ctrl-c-ctrl-c-final-hook
+                   'conditional-org-reveal-export-to-html)
 
          (defcustom org-reveal-repo "https://github.com/hakimel/reveal.js.git"
            "Destination of the reveal.js repo. You can point it to a local clone."
@@ -2499,12 +2545,9 @@ in any part of the buffer, where it doesn't have any special meaning.
            (backward-delete-char 1)
            (search-backward "\"")
            (delete-char 1)
-           (save-buffer))
-
-         (add-hook 'org-ctrl-c-ctrl-c-final-hook
-                   'conditional-org-reveal-export-to-html))))
+           (save-buffer)))))
 #+END_SRC
-*** Permanent table of contents
+** Permanent table of contents
 
 Org has a built-in way to generate a table of contents when exporting. However,
 sometimes you need a table of contents in the raw org file. For example, when
@@ -2523,9 +2566,9 @@ with the current table of contents before each save.
          (message "WARNING: org-toc not found"))))
 #+END_SRC
 
+* Upcoming sections
 ** Expand region
 ** Tags
-
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -2602,10 +2645,6 @@ gradually move things from this section to separate ones.
 
          (global-set-key (kbd "C-=") 'er/expand-region)
          (setq expand-region-fast-keys-enabled nil))))
-
-  ;; ox-reveal
-  ;; export .org files as reveal.js presentations (https://github.com/hakimel/reveal.js/)
-  (require 'ox-reveal nil t)
 
   (require 'ert)
   (define-key ert-results-mode-map "g"
@@ -2746,15 +2785,6 @@ gradually move things from this section to separate ones.
    '(ls-lisp-dirs-first t)
    '(ls-lisp-ignore-case t)
    '(ls-lisp-verbosity nil)
-   '(org-agenda-files (quote ("~/Dropbox/Private/org/")))
-   '(org-clock-mode-line-total (quote current))
-   '(org-confirm-babel-evaluate nil)
-   '(org-directory "~/Dropbox/Private/org")
-   '(org-hide-leading-stars t)
-   '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-habit org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
-   '(org-src-fontify-natively t)
-   '(org-startup-indented t)
-   '(org-support-shift-select (quote always))
    '(read-buffer-completion-ignore-case t)
    '(read-file-name-completion-ignore-case t)
    '(scroll-conservatively 1)
@@ -2773,8 +2803,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "C-M-p")       'backward-paragraph)
   (global-set-key (kbd "C-M-n")       'forward-paragraph)
   (global-set-key (kbd "C-M-l")       'recenter-top-bottom)
-  (global-set-key (kbd "\C-c c")      'org-capture)
-  (global-set-key (kbd "\C-c a")      'org-agenda)
   (global-set-key (kbd "M-P")         'scroll-down-line)
   (global-set-key (kbd "M-N")         'scroll-up-line)
   (global-set-key (kbd "\C-x v a")    'vc-annotate)
@@ -2782,8 +2810,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "<f5>")        'revert-buffer)
   (global-set-key (kbd "M-\\")        'fixup-whitespace)
   (global-set-key (kbd "\C-x k")      'kill-this-buffer)
-  (global-set-key (kbd "C-+")         'org-list-repair)
-  (global-set-key (kbd "M-+")         'org-list-repair)
   (global-set-key (kbd "C-x w")       'webjump)
   (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
   (global-set-key (kbd "M-Z")         'zap-up-to-char)
@@ -2802,28 +2828,9 @@ gradually move things from this section to separate ones.
   ;; "traditional" undo sequence C-_ is a cute way around
   (define-key key-translation-map [?\C-/] [?\C-_]) ;; translate C-/ to C-_
 
-  ;; convenient binding for C-x C-s in org-src-mode
-  (add-hook 'org-src-mode-hook
-            '(lambda ()
-               (define-key org-src-mode-map (kbd "C-x C-s") 'org-edit-src-save)
-               (define-key org-src-mode-map (kbd "C-x k")   'org-edit-src-exit)))
-
   (add-hook 'shell-mode-hook
             '(lambda ()
                (define-key shell-mode-map (kbd "\C-c\C-o") nil)))
-
-  (add-hook 'org-mode-hook
-            '(lambda ()
-               ;; don't redefine some bindings
-               (define-key org-mode-map [C-tab]
-                 nil)
-               (define-key org-mode-map (kbd "M-h")
-                 nil)
-               ;; swap active/inactive time-stamp bindings
-               (define-key org-mode-map (kbd "C-c .")
-                 'org-time-stamp-inactive)
-               (define-key org-mode-map (kbd "C-c !")
-                 'org-time-stamp)))
 
   (add-hook 'conf-mode-hook
             '(lambda ()
