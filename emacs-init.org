@@ -486,6 +486,24 @@ To do this, simply select the text and provide a universal argument: =C-u M-q=.
          (message "WARNING: unfill not found"))))
 #+END_SRC
 
+** Open line
+
+=C-o= "opens" the line, i.e. it inserts a newline, but doesn't move the cursor.
+It's nice, but, by default, it doesn't re-indent the next line, which means that
+most of the time you still have to go there and hit =TAB=. Let's fix that.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map [remap open-line]
+    (defun open-line-indent (arg)
+      "Use newline-and-indent in open-line command if there are
+    non-whitespace characters after the point"
+      (interactive "P")
+      (save-excursion
+        (if (looking-at-p "\\s-*$") ;; how in earth does this work?
+            (newline arg)
+          (newline-and-indent)))))
+#+END_SRC
+
 * Dired
 
 As you may know, dired stands for DIRectory EDitor and it is, basically, a file
@@ -2780,16 +2798,6 @@ gradually move things from this section to separate ones.
           (cd (add-sudo-to-filename (expand-file-name default-directory))))
         (shell-command (read-from-minibuffer "ctags command: "  ctags-command)))
       (visit-tags-table tags-file-name)))
-
-  (define-key global-map [remap open-line]
-    (defun open-line-indent (arg)
-      "Use newline-and-indent in open-line command if there are
-  non-whitespace characters after the point"
-      (interactive "P")
-      (save-excursion
-        (if (looking-at-p "\\s-*$") ;; how in earth does this work?
-            (newline arg)
-          (newline-and-indent)))))
 
   (defcustom pop-predefined-register ?}
     "Register for saving window configuration before jump"
