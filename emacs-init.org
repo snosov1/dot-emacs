@@ -186,9 +186,9 @@ following, very suspicious code there:
 
 Pay attention to the first 2 lines of the code and to the very last one.
 
-You see now? Those darn villains sabotaged Emacs just at the time, when they
-understood that everything is finished for them. That they cannot hold a
-competition against Emacs. So, they came up with their evil plan.
+You see now? Those darn villains sabotaged Emacs, when they understood that
+everything is finished for them. That they cannot hold a competition against
+Emacs. So, they came up with their evil plan.
 
 Don't know about you, but I've seen enough evidence to be totally confident,
 that it was a planned Vi fans demarche against Emacs. I can even assume, that
@@ -2456,30 +2456,50 @@ commands and =yasnippet= for everything else.
 *** Presentations with reveal.js
 
 There's a nice "framework" (or something) for creating presentations using plain
-text files - reveal.js.
+text files - reveal.js. Originally, you were supposed to write the content in
+HTML, but now you can use a lot of popular lightweight markups, like Org or
+Markdown.
 
-Originally, you were supposed to write the content in HTML, but know you can use
-a lot of popular lightweight markups, like Org or Markdown.
+To start working on a presentation using Org, you should simply create a folder
+and execute =M-x org-reveal-init= (it is not a stock function, the definition is
+provided below). It will clone a reveal.js repository and create a template.org
+file.
 
-To create a presentation using Org, you should:
-
-- =git clone https://github.com/hakimel/reveal.js.git=
--
+To export the presentation itself you can use either =C-c C-e R R= or =C-c C-c=
+in any part of the buffer, where it doesn't have any special meaning.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "org-autoloads"
     '(progn
-       (when (require 'org nil t)
+       (when (and (require 'org nil t) (require 'ox-reveal nil t))
          ;; enable python execution in org-mode
          (require 'ob-python)
          (require 'ob-R)
-         (require 'ox-reveal)
 
          (defun conditional-org-reveal-export-to-html ()
            (save-excursion
              (beginning-of-buffer)
              (when (search-forward "#+REVEAL" nil nil)
                (org-reveal-export-to-html))))
+
+         (defcustom org-reveal-repo "https://github.com/hakimel/reveal.js.git"
+           "Destination of the reveal.js repo. You can point it to a local clone."
+           :group 'ox-reveal)
+         (defun org-reveal-init ()
+           (interactive)
+           (async-shell-command (concat "git clone " org-reveal-repo))
+           (find-file "template.org")
+           (insert "revealjs")
+           (yas-expand)
+           (goto-char (point-min))
+           (search-forward "(")
+           (backward-char)
+           (forward-sexp)
+           (eval-and-replace)
+           (backward-delete-char 1)
+           (search-backward "\"")
+           (delete-char 1)
+           (save-buffer))
 
          (add-hook 'org-ctrl-c-ctrl-c-final-hook
                    'conditional-org-reveal-export-to-html))))

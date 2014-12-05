@@ -1,0 +1,52 @@
+# -*- mode: snippet -*-
+# name: revealjs
+# key: revealjs
+# --
+#+TITLE: Rocky IV
+#+DATE: (format-time-string "%Y-%m-%d")
+#+AUTHOR: Ivan Drago
+#+EMAIL: ivan.drago@rocky.com
+
+#+OPTIONS: toc:nil num:nil ^:nil reveal_mathjax:t
+#+REVEAL_ROOT: ./reveal.js
+#+REVEAL_THEME: default
+
+* Image
+
+#+ATTR_HTML: :align center :width 1024px
+[[https://www.google.com/images/srpr/logo11w.png]]
+
+* Code block and notes
+
+#+BEGIN_SRC cpp
+  int main(int argc, char *argv[])
+  {
+      return 0;
+  }
+#+END_SRC
+
+#+BEGIN_NOTES
+-  Press 's' to show speaker notes (works only in local server mode)
+-  Press 'b' to fade out everything
+#+END_NOTES
+
+* Fragment attributes
+#+ATTR_REVEAL: :frag grow
+- grow
+
+#+ATTR_REVEAL: :frag fade-out
+- fade-out
+#+ATTR_REVEAL: :frag roll-in
+- roll-in
+#+ATTR_REVEAL: :frag current-visible
+- current-visible
+#+ATTR_REVEAL: :frag shrink
+- shrink
+#+ATTR_REVEAL: :frag highlight-current-blue
+- highlight-current-blue
+#+ATTR_REVEAL: :frag highlight-green
+- highlight-green
+#+ATTR_REVEAL: :frag highlight-red
+- highlight-red
+#+ATTR_REVEAL: :frag highlight-blue
+- highlight-blue
