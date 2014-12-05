@@ -38,6 +38,7 @@ do something in Emacs.
  - [[#hideshow-blocks][Hide/show blocks]]
  - [[#auto-completion][Auto-completion]]
  - [[#org][Org]]
+ - [[#expand-region][Expand region]]
  - [[#upcoming-sections][Upcoming sections]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
@@ -2565,16 +2566,14 @@ with the current table of contents before each save.
            (add-hook 'org-mode-hook 'org-toc-enable)
          (message "WARNING: org-toc not found"))))
 #+END_SRC
-
-* Upcoming sections
-** Expand region
+* Expand region
 
 =expand-region= increases the selected region by semantic units. For example, you have the
 following code - =(setq alphabet-start "abc def")=.
 
-With the cursor at the =c=, pressing "C-=" marks the entire word =abc=,
-successive press expends to the contents of the quotes =abc def=, and then it
-mark the quotes, and so on:
+With the cursor at the =c=, pressing *C-=* marks the entire word =abc=,
+successive press expands to the contents of the quotes =abc def=, then it marks
+the quotes, and so on:
 
 #+BEGIN_EXAMPLE
   "abc def"
@@ -2583,60 +2582,56 @@ mark the quotes, and so on:
 #+END_EXAMPLE
 
 It is a very nice package and I use it quite a lot with great pleasure. But I
-think that the author got a little bit carried away with it.
+think that the author got a little carried away with it.
 
 My guess is that it was started with editing of "lispy" code in mind (i.e. Lots
-of Irritating Stupid Parenthesis). When you start expanding inside a deeply
-nested form, it will expand to that form excluding parenthesis, then including
-them, then it will expand to the containing form excluding parenthesis, then
-including parenthesis and etc.
-
-It works fine flawlessly in that use case, but then, apparently, the author
-thought that applying it to a wider set of languages may be a good idea. Like,
-if Emacs understands the syntax of the language - we can try expanding.
+of Irritating Stupid Parenthesis). And it works almost flawlessly in that use
+case. But, apparently, author thought, that applying it to a wider set of
+languages may be a good idea. If Emacs understands the syntax of the language -
+we can try expanding.
 
 For example, if we have a statement, like =object.getHash();= and the cursor is
-at the beginning of it, then we can extend something like =object=, =object.=,
-=object.getHash=, =object.getHash()=, =object.getHash();=. It does sound kind of
-neat, right? But in practice - it's not all roses. Not even close.
+at the beginning of it, then we can expand to something like =object=,
+=object.=, =object.getHash=, =object.getHash()=, =object.getHash();=. It does
+sound kind of neat, right? But in practice - it's not all roses.
 
-There are at least 2 reasons for that. The first one is that syntax of
-LISP-languages is very simple. Basically, you're editing the Abstract Syntax
-Tree (AST) directly, using parenthesis to denote node boundaries and nesting.
-But the syntax of C-like languages (especially, C itself) is significantly more
-complex. C grammar isn't even context-free! So, it makes writing precise
-"expansion rules" unreasonable and which it leads to very awkward expansions. It
-may not be a big deal for a lot of people, if it works accurately at least half
-of the time. But I don't feel comfortable using a feature if I can't predict its
-result.
+There are at least 2 issues spoiling the party. First, syntax of LISP-languages
+is very simple. Basically, you're editing an Abstract Syntax Tree (AST)
+directly, using parenthesis to denote node boundaries and nesting. But the
+syntax of C-like languages (especially, C++) is significantly more complex. So,
+it makes writing precise "expansion rules" unreasonable, which leads to very
+awkward expansions sometimes. It may not be a big deal, if it works accurately
+at least half of the time for some people. But I don't feel comfortable using a
+feature if I can't predict its result.
 
-The second reason why it doesn't work very well for non-lisp languages is kind
+The second reason, why it doesn't work very well for non-lisp languages, is kind
 of fundamental to the design of this feature. In short, what does it mean to
 "expand the region"? It means that we try to mark some region around point using
 different rules, like "mark everything inside quotes", "mark everything inside
-quotes including the quotes", "mark everything inside parenthesis", "mark a
+quotes, including the quotes", "mark everything inside parenthesis", "mark a
 statement" and etc. We choose the "best" rule for currently marked region and
 use it as a next expansion. "Best" here means, that the region should expand as
-little as possible, but it should still contain the original region.
+little as possible, but containing the original region.
 
-But, for the =object.getHash();= example, try to define, which expansion is
-better, if =getHash= is already selected - =object.getHash= or =getHash()=? If
-you choose the first one, then you lose a chance to get the second expansion,
-and if you choose the second one, you won't ever get the first one.
+Consider the =object.getHash();= example again, and try to define, which
+expansion is better, if =getHash= is already selected - =object.getHash= or
+=getHash()=? If you choose the first one, then you lose a chance to get the
+second expansion, and if you choose the second one, you won't ever get the first
+one.
 
-Such situations are impossible in LISPs. Because nesting is strictly ordered
+Such situations are impossible in LISPs, because nesting is strictly ordered
 there. But in other languages, a sensible expansion can expand to the left,
 while another one will expand to the right. There's no way to have both within
 the design of =expand-region=. Currently, it will always choose the region, that
 expands to the left as little as possible.
 
-My experience showed that dots (sentences) and empty lines (paragraphs) were
-causing most of the confusion. So, I dropped the rules, relying on them to make
+In my experience, dots (sentences) and empty lines (paragraphs) were causing
+most of the confusion. So, I dropped the rules, relying on those symbols to make
 =expand-region= dumber, but more predictable.
 
-After using it for a while I think of =expand-region= when I need to mark words,
-strings (quotes) and parenthesis. That's the most complex description I can keep
-in my head.
+Now, after using it for a while, I think of =expand-region= when I need to mark
+words, strings (quotes) and parenthesis. That's the most complex description I
+can keep in my head.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "expand-region-autoloads"
@@ -2707,8 +2702,9 @@ in my head.
          (setq expand-region-fast-keys-enabled nil))))
 #+END_SRC
 
-
+* Upcoming sections
 ** Tags
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
