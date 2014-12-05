@@ -2723,20 +2723,6 @@ gradually move things from this section to separate ones.
             (newline arg)
           (newline-and-indent)))))
 
-  (defun notify-send (title msg &optional icon)
-    "Show a popup; TITLE is the title of the message, MSG is the
-  context. ICON is the optional filename or keyword.
-  Portable keywords are: error, important, info."
-    (interactive)
-    (if (or (eq window-system 'x)
-            (eq window-system 'w32))
-        (save-window-excursion
-          (async-shell-command (concat "notify-send "
-                                       (if icon (concat "-i " icon) "-i important")
-                                       " \"" title "\" \"" msg "\"")))
-      ;; text only version
-      (message (concat title ": " msg))))
-
   (defcustom pop-predefined-register ?}
     "Register for saving window configuration before jump"
     :type 'register
