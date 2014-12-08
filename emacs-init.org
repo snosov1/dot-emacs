@@ -2757,6 +2757,155 @@ can keep in my head.
 * Upcoming sections
 ** Tags
 
+One of the reasons I switched to Emacs from commonly used IDEs (Visual Studio,
+Qt Creator, Eclipse, etc.) was the enormous bloat that came with those. It
+resulted in waiting for minutes to open a "project", constant lags and glitches
+due to code indexing or something, tons of menus and options without good and
+unified documentation, etc.
+
+After I started using Emacs, it really became obvious that all this bloat is, in
+fact, a bloat - not comprehensiveness or rich functionality, but bloat.
+
+That's because most of the common IDE features are pretty complex in
+implementation, but have no real use. You may ask, why do they want to implement
+all these features, then? Because the features are "good looking", i.e. the
+concept is easy to explain, the usage is "intuitive", they solve a complex task
+in a simple way.
+
+But almost every such feature falls short when it's faced with a real-life
+problem. Because of the implementation complexity and lack of the "fine-tuning"
+mechanisms. In other words, they build a huge, complex machine and provide a
+single big red button out front with the label "Solve the problem!". To sell it
+to you, they showcase a problem, hit the button, the machine solves it -
+everybody is in awe. You take the machine home and try a simple example - it
+works as well, you are in complete awe.
+
+But then you fetch an Android source tree, push the button - the machine doesn't
+respond. You try again - no luck. And the worst part is that you have nothing
+else, but the big red button, which doesn't work. So, your options are to try
+pressing this button with different fingers, with your legs. You can try
+punching the button or asking your mother to press it, because, you know, she
+may have a good luck.
+
+In other words, such features are mostly pure marketing. And I wouldn't mind
+them if they were free. Heck, Emacs has a robot psychiatrist and a tower of
+hanoi - and I don't mind, since it costs me nothing else than a couple of
+kilobytes.
+
+Emacs has a different approach to solving complex problems. It doesn't pretend
+that complex problems are easy. On the contrary, it shows you the steps, that
+must be taken to solve it and what are the possible ways and their trade-offs.
+
+The problem we're going to talk about today is "jump to definition". Unlike,
+"intellectual" [[#auto-completion][Auto-completion]], which I find practically useless, jumping to
+definition is, actually, quite handy.
+
+The common IDE solution is to index the code in background with some heuristics.
+It works mostly reasonable, but there are at least 3 issues.
+
+First, you have to have IDE "project" files to be able to use it. This is not a
+critical problem, but it's still an issue. Your team may use different IDEs, so
+you have to either maintain multiple project files, or use some kind of
+generator program (like, CMake).
+
+Secondly, with code bases, like the Android OS tree (over 10GB), there is no
+grave to hold its body down. I mean, there is no IDE to load it at once.
+
+Third, I'm not aware of IDEs, that can be easily used to code on a remote
+machine via =ssh=.
+
+The alternative approach, used by Emacs and others, is to use a helper program,
+like =ctags=, to generate the index of the source code. The index has an
+information about all function and type definitions in the sources.
+
+TODO:
+- JUMP TO NEXT OCCURRENCE
+- MORE ABOUT UPDATE FUNCTION
+
+To generate the index you can use =M-x update-tags-file= (=C-x C-u=). Note, that
+the suggested command uses =-e= flag, which is not available in =ctags=,
+packaged with Emacs - you need to use Exuberant Ctags. Most likely, it can be
+found in your OS repositories (on Ubuntu, try =sudo apt-get install ctags=).
+
+If the index was already generated, you can use =M-x visit-tags-table= (=C-x
+C-v=) to simply load it. After the tags table is loaded you can:
+
+- call =M-x find-tag= (=M-.=) to jump to definition and =M-x pop-tag-mark=
+  (=M-*=) to jump back
+- call =M-x tags-apropos= (=C-x C-l=) to find all tags matching the regexp
+- call =M-x tags-reset-tags-tables= (=C-x C-t=) to forget about all of the
+  loaded tags tables.
+
+As you can see, the hard problem of indexing is not solved inside Emacs, but is
+delegated to specialized third-party software (=ctags= in that case). And the
+indexing program works offline, i.e. the index generation step is explicit -
+it's not a background process.
+
+As for the scaling issue, I've used =ctags= to index the aforementioned Android
+source tree. The snapshot I used was about 10 Gb. Obviously, there are binary
+and other "non-source" files there, but still.
+
+The indexing process took something like 15 minutes, which may seem like a lot,
+but, probably, you won't do this very often. The resulting tags file was about 1
+Gb, but it took roughly 2 seconds to jump to a definition. So, it's absolutely
+usable.
+
+Also, I carried out this experiment for academic purposes only. In practice, you
+won't need an index of the whole tree. Most likely, you will work on some
+sub-project and you can index only the code you're working on.
+
+#+BEGIN_SRC emacs-lisp
+  (defun parent-directory (dir)
+    "Returns parent directory of dir"
+    (when dir
+      (file-name-directory (directory-file-name (expand-file-name dir)))))
+
+  (defun search-file-up (name &optional path)
+    "Searches for file `name' in parent directories recursively"
+    (let* ((file-name (concat path name))
+           (parent (parent-directory path))
+           (path (or path default-directory)))
+      (cond
+       ((file-exists-p file-name) file-name)
+       ((string= parent path) nil)
+       (t (search-file-up name parent)))))
+
+  (define-key global-map "\C-x\C-u"
+    (defun update-tags-file (arg)
+      "Suggests options to update the TAGS file via ctags.
+
+  With prefix arg - makes a call as sudo. Works for remote hosts
+  also (>=23.4)"
+      (interactive "P")
+      (let ((tags-file-name
+             (read-file-name
+              "TAGS file: " (let ((fn (search-file-up "TAGS" default-directory)))
+                              (if fn
+                                  (parent-directory fn)
+                                default-directory))
+              nil nil "TAGS"))
+            (ctags-command "")
+            (languages (cl-case major-mode
+                         ((cc-mode c++-mode c-mode) "--languages=C,C++")
+                         ((d-mode) "--languages=D")
+                         (t ""))))
+        (when tags-file-name
+          (setq ctags-command (concat ctags-command "cd " (replace-regexp-in-string ".*:" "" (file-name-directory tags-file-name)) " && ")))
+
+        (setq ctags-command (concat ctags-command "ctags -e " languages " -R . "))
+
+        (with-temp-buffer
+          (when arg
+            (cd (add-sudo-to-filename (expand-file-name default-directory))))
+          (shell-command (read-from-minibuffer "ctags command: "  ctags-command)))
+        (visit-tags-table tags-file-name))))
+
+  (global-set-key "\C-x\C-v" 'visit-tags-table)
+  (global-set-key "\C-x\C-l" 'tags-apropos)
+  (global-set-key "\C-x\C-t" 'tags-reset-tags-tables)
+#+END_SRC
+
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -2788,50 +2937,6 @@ gradually move things from this section to separate ones.
               (setq answer (+ (expt 10 field-width) answer)))
             (replace-match (format (concat "%0" (int-to-string field-width) "d")
                                    answer)))))))
-
-  (defun parent-directory (dir)
-    "Returns parent directory of dir"
-    (when dir
-      (file-name-directory (directory-file-name (expand-file-name dir)))))
-
-  (defun search-file-up (name &optional path)
-    "Searches for file `name' in parent directories recursively"
-    (let* ((file-name (concat path name))
-           (parent (parent-directory path))
-           (path (or path default-directory)))
-      (cond
-       ((file-exists-p file-name) file-name)
-       ((string= parent path) nil)
-       (t (search-file-up name parent)))))
-
-  (defun update-tags-file (arg)
-    "Suggests options to update the TAGS file via ctags.
-
-  With prefix arg - makes a call as sudo. Works for remote hosts
-  also (>=23.4)"
-    (interactive "P")
-    (let ((tags-file-name
-           (read-file-name
-            "TAGS file: " (let ((fn (search-file-up "TAGS" default-directory)))
-                            (if fn
-                                (parent-directory fn)
-                              default-directory))
-            nil nil "TAGS"))
-          (ctags-command "")
-          (languages (cl-case major-mode
-                       ((cc-mode c++-mode c-mode) "--languages=C,C++")
-                       ((d-mode) "--languages=D")
-                       (t ""))))
-      (when tags-file-name
-        (setq ctags-command (concat ctags-command "cd " (replace-regexp-in-string ".*:" "" (file-name-directory tags-file-name)) " && ")))
-
-      (setq ctags-command (concat ctags-command "ctags -e " languages " -R . "))
-
-      (with-temp-buffer
-        (when arg
-          (cd (add-sudo-to-filename (expand-file-name default-directory))))
-        (shell-command (read-from-minibuffer "ctags command: "  ctags-command)))
-      (visit-tags-table tags-file-name)))
 
   (defcustom pop-predefined-register ?}
     "Register for saving window configuration before jump"
@@ -2911,10 +3016,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
   (global-set-key (kbd "C-z")         'undo)
   (global-set-key [escape]            'keyboard-escape-quit)
-  (global-set-key "\C-x\C-u"          'update-tags-file)
-  (global-set-key "\C-x\C-v"          'visit-tags-table)
-  (global-set-key "\C-x\C-t"          'tags-reset-tags-tables)
-  (global-set-key "\C-x\C-l"          'tags-apropos)
   (global-set-key "\C-c\C-c"          'compile)
   (global-set-key "\C-c+"             'increment-decimal-number-at-point)
 
@@ -2991,7 +3092,10 @@ gradually move things from this section to separate ones.
   (setq ring-bell-function 'ignore)
 
   ;; delete trailing whitespace before save
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (add-hook 'before-save-hook
+            (defun delete-trailing-whitespace-selectively ()
+              (when (not (member major-mode '(diff-mode fundamental-mode)))
+                (delete-trailing-whitespace))))
 
   ;; show matching parentheses
   (show-paren-mode 1)
