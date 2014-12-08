@@ -6,9 +6,11 @@
 This is a little novel for casual reading about a text editor. Incidentally, it
 also works as an Emacs 24.4 configuration file.
 
-Every chapter talks about some aspect of my day-to-day Emacs usage. Hopefully,
-you can find something useful for yourself and/or tell me about better ways to
-do something in Emacs.
+Every section talks about some aspect of my day-to-day Emacs usage. They are
+more or less independent from each other, so you can read them selectively.
+
+Hopefully, you will find something useful here and, maybe, you will tell me
+about better ways to do something in Emacs.
 
 * Contents                                                   :noexport:TOC_1:
  - [[#foreword][Foreword]]
@@ -17,7 +19,7 @@ do something in Emacs.
  - [[#smarter-alternatives-to-built-in-functionality]["Smarter" alternatives to built-in functionality]]
  - [[#dired][Dired]]
  - [[#better-buffer-names][Better buffer names]]
- - [[#spelling-fly][Spelling fly]]
+ - [[#spell-checking][Spell-checking]]
  - [[#fighting-escape-sequences-in-strings][Fighting escape sequences in strings]]
  - [[#parenthesis-for-dummies][Parenthesis for Dummies]]
  - [[#programming-languages][Programming languages]]
@@ -758,7 +760,7 @@ pressing =C-x C-r=.
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "\C-x\C-r") 'rename-buffer)
 #+END_SRC
-* Spelling fly
+* Spell-checking
 
 Can't tell it for sure, but I suspect that even the brightest spelling bee
 champions hit the wrong button once in a while. So, it's good to have an
