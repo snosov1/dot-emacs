@@ -2821,6 +2821,7 @@ information about all function and type definitions in the sources.
 TODO:
 - JUMP TO NEXT OCCURRENCE
 - MORE ABOUT UPDATE FUNCTION
+- CHECK CASE SENSITIVITY
 
 To generate the index you can use =M-x update-tags-file= (=C-x C-u=). Note, that
 the suggested command uses =-e= flag, which is not available in =ctags=,
