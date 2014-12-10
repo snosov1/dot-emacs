@@ -2796,9 +2796,9 @@ Emacs has a different approach to solving complex problems. It doesn't pretend
 that complex problems are easy. On the contrary, it shows you the steps, that
 must be taken to solve it and what are the possible ways and their trade-offs.
 
-The problem we're going to talk about today is "jump to definition". Unlike,
+The problem we're going to talk about today is "jump to declaration". Unlike,
 "intellectual" [[#auto-completion][Auto-completion]], which I find practically useless, jumping to
-definition is, actually, quite handy.
+declaration is, actually, quite handy.
 
 The common IDE solution is to index the code in background with some heuristics.
 It works mostly reasonable, but there are at least 3 issues.
@@ -2806,7 +2806,9 @@ It works mostly reasonable, but there are at least 3 issues.
 First, you have to have IDE "project" files to be able to use it. This is not a
 critical problem, but it's still an issue. Your team may use different IDEs, so
 you have to either maintain multiple project files, or use some kind of
-generator program (like, CMake).
+generator program (like, CMake). Besides, if you're working on a third party
+project, which uses a different IDE, or simply uses Makefiles, you have to
+create the project files by yourself.
 
 Secondly, with code bases, like the Android OS tree (over 10GB), there is no
 grave to hold its body down. I mean, there is no IDE to load it at once.
@@ -2816,30 +2818,41 @@ machine via =ssh=.
 
 The alternative approach, used by Emacs and others, is to use a helper program,
 like =ctags=, to generate the index of the source code. The index has an
-information about all function and type definitions in the sources.
+information about all function and type declarations in the sources. In case of
+=ctags= and similar programs, the index is also called a "tags file". Because
+it's just a single file with the name =TAGS=. Essentially, it consists of
+records, like "declaration string, source file, line in the file". However, the
+actual binary representation may be different.
 
-TODO:
-- JUMP TO NEXT OCCURRENCE
-- MORE ABOUT UPDATE FUNCTION
-- CHECK CASE SENSITIVITY
+To generate the index you can use =M-x update-tags-file= (=C-x C-u=).
 
-To generate the index you can use =M-x update-tags-file= (=C-x C-u=). Note, that
-the suggested command uses =-e= flag, which is not available in =ctags=,
-packaged with Emacs - you need to use Exuberant Ctags. Most likely, it can be
-found in your OS repositories (on Ubuntu, try =sudo apt-get install ctags=).
+This function will look for a tags file in the parent directories, and will
+suggest an execution command to update the existing tags file, or to generate a
+new one in the current directory.
+
+Note, that the suggested command uses =-e= flag, which is not available in
+=ctags=, packaged with Emacs - you need to use Exuberant Ctags. Most likely, it
+can be found in your OS repositories (on Ubuntu, try =sudo apt-get install
+ctags=).
 
 If the index was already generated, you can use =M-x visit-tags-table= (=C-x
-C-v=) to simply load it. After the tags table is loaded you can:
+C-v=) to simply load it. After the tags table is loaded you can call =M-x
+find-tag= (=M-.=) to jump to declaration and =M-x pop-tag-mark= (=M-*=) to jump
+back. If you jumped not to the declaration you wanted, you can provide a
+universal argument, like, =C-u M-.=, to jump to the next candidate. When I can't
+get to the desired declaration after several jumps, I resort to =M-x
+tags-apropos= (=C-x C-l=). It gives you a list of all tags matching the provided
+regexp.
 
-- call =M-x find-tag= (=M-.=) to jump to definition and =M-x pop-tag-mark=
-  (=M-*=) to jump back
-- call =M-x tags-apropos= (=C-x C-l=) to find all tags matching the regexp
-- call =M-x tags-reset-tags-tables= (=C-x C-t=) to forget about all of the
-  loaded tags tables.
+You can load multiple tags files at once. For example, one for a library and
+another one for application using the library. If you start getting a lot of
+matches in unrelated projects, you can call =M-x tags-reset-tags-tables= (=C-x
+C-t=) to forget about all of the loaded tags tables. And load only the relevant
+ones after that.
 
 As you can see, the hard problem of indexing is not solved inside Emacs, but is
-delegated to specialized third-party software (=ctags= in that case). And the
-indexing program works offline, i.e. the index generation step is explicit -
+delegated to specialized third-party software (=ctags= in that case). It is also
+noteworthy, that it works offline, i.e. the index generation step is explicit -
 it's not a background process.
 
 As for the scaling issue, I've used =ctags= to index the aforementioned Android
@@ -2847,13 +2860,26 @@ source tree. The snapshot I used was about 10 Gb. Obviously, there are binary
 and other "non-source" files there, but still.
 
 The indexing process took something like 15 minutes, which may seem like a lot,
-but, probably, you won't do this very often. The resulting tags file was about 1
-Gb, but it took roughly 2 seconds to jump to a definition. So, it's absolutely
-usable.
+but I doubt that you'll be doing this every day. The resulting tags file was
+about 1 Gb, which is not small as well, but it took roughly 2 seconds to jump to
+a declaration. So, it's absolutely usable.
 
-Also, I carried out this experiment for academic purposes only. In practice, you
-won't need an index of the whole tree. Most likely, you will work on some
-sub-project and you can index only the code you're working on.
+Also, mind, that I carried out this experiment for academic purposes only. In
+practice, you won't need an index of the whole tree. Most likely, you will work
+on some sub-project and you can index only the code you're working on.
+
+As an epilogue, I would like to note that this way of solving problems is very
+Emacs-y. Despite everybody is talking about how you do EVERYTHING in Emacs, it's
+not quite accurate. Often enough, Emacs simply provides an interface to external
+programs. Like, it doesn't fiddle around with git blobs, but provides a nice
+interface via =magit=.
+
+TODO
+And, as you can see, this way
+- has a lot of pros
+- doesn't look conventional (or common)
+- a possible rule of thumb - if you can't do this easily in Emacs, probably,
+  it should be done in another way
 
 #+BEGIN_SRC emacs-lisp
   (defun parent-directory (dir)
