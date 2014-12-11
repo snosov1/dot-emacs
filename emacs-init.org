@@ -42,7 +42,7 @@ about better ways to do something in Emacs.
  - [[#auto-completion][Auto-completion]]
  - [[#org][Org]]
  - [[#expand-region][Expand region]]
- - [[#tags][Tags]]
+ - [[#jump-to-declaration][Jump to declaration]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -1093,6 +1093,44 @@ There are just 3 minor things about C and C++:
 
                ;; set //-style comments for c-mode
                (setq comment-start "//" comment-end "")))
+#+END_SRC
+
+** Emacs Lisp
+
+Surprisingly, Emacs has really great support for writing Emacs Lisp. It has
+fabulous out-of-the-box solutions for debugging (via =edebug=), testing (via
+=ert=), documenting and navigating the source code. The tweaking I do is mostly
+cosmetic.
+
+When you run the tests using =M-x ert=, it creates a buffer with the results.
+And since I'm used to using =g= to revert the contents of such "not-really-text"
+buffers, it's better for it to work there as well.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ert)
+  (define-key ert-results-mode-map "g"
+    'ert-results-rerun-all-tests)
+#+END_SRC
+
+For jumping to symbol declarations I use the tags machinery. You can read about
+in the respective section - [[#jump-to-declaration][Jump to declaration]]. In short, you index your source
+code first, then load an index file (called "tags file" or "tags table") and
+search through it looking for necessary symbols.
+
+But since Emacs knows about all the Emacs Lisp symbols, that are defined, you
+don't need an explicit step of tags generation. However, you can use =M-.= and
+=M-*= commands in the exact same manner with just a little tweaking.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'etags)
+  (define-key emacs-lisp-mode-map (kbd "M-.")
+    (defun find-function-push-tag (function)
+      "This function is meant as a drop-in replacement for find-tag
+    in emacs-lisp-mode. It calls find-function and inserts current
+    position into find-tag-marker-ring."
+      (interactive (find-function-read))
+      (ring-insert find-tag-marker-ring (point-marker))
+      (find-function function)))
 #+END_SRC
 
 ** Misc
@@ -2504,7 +2542,8 @@ commands and =yasnippet= for everything else.
     (add-hook 'find-file-hook
               '(lambda()
                  (abbrev-mode -1)))
-    (setq-default abbrev-mode nil))
+    (setq-default abbrev-mode nil)
+    (add-to-list 'auto-mode-alist '("\\.abbrev_defs\\'" . emacs-lisp-mode)))
 #+END_SRC
 * Org
 ** Customization
@@ -2754,7 +2793,7 @@ can keep in my head.
          (setq expand-region-fast-keys-enabled nil))))
 #+END_SRC
 
-* Tags
+* Jump to declaration
 
 One of the reasons I switched to Emacs from commonly used IDEs (Visual Studio,
 Qt Creator, Eclipse, etc.) was the enormous bloat that came with those. It
@@ -2936,13 +2975,6 @@ gradually move things from this section to separate ones.
 
 #+BEGIN_SRC emacs-lisp
   ;; ------------------------------------------------------------
-  ;; PER-PACKAGE CONFIGURATION
-
-  (require 'ert)
-  (define-key ert-results-mode-map "g"
-    'ert-results-rerun-all-tests)
-
-  ;; ------------------------------------------------------------
   ;; DEFUNS
 
   (defun increment-decimal-number-at-point (&optional arg)
@@ -2975,15 +3007,6 @@ gradually move things from this section to separate ones.
       (unless (equal register pop-predefined-register)
         (window-configuration-to-register pop-predefined-register))
       (jump-to-register register delete)))
-
-  (require 'etags)
-  (defun find-function-push-tag (function)
-    "This function is meant as a drop-in replacement for find-tag
-  in emacs-lisp-mode. It calls find-function and inserts current
-  position into find-tag-marker-ring."
-    (interactive (find-function-read))
-    (ring-insert find-tag-marker-ring (point-marker))
-    (find-function function))
 
   ;; ------------------------------------------------------------
   ;; CUSTOMIZED
@@ -3063,11 +3086,6 @@ gradually move things from this section to separate ones.
                (define-key sh-mode-map "\C-c\C-o"
                  nil)))
 
-  (add-hook 'emacs-lisp-mode-hook
-            '(lambda ()
-               (define-key emacs-lisp-mode-map (kbd "M-.")
-                 'find-function-push-tag)))
-
   (add-hook 'tar-mode-hook
             '(lambda ()
                (define-key tar-mode-map (kbd "g")
@@ -3076,8 +3094,6 @@ gradually move things from this section to separate ones.
                    (revert-buffer nil t)))))
 
   (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
-
-  (add-to-list 'auto-mode-alist '("\\.abbrev_defs\\'" . emacs-lisp-mode))
 
   (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
 
