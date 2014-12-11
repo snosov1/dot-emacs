@@ -1298,6 +1298,10 @@ it will query for the text to be googled.
 Similarly, you can use =C-c l= to lingvo something (translate from Russian to
 English or vice versa) and =C-c u= to Urban Dictionary something.
 
+There's a built-in =webjump= mode serving the exact same purpose and maybe I
+will migrate to it someday. But for now, I just use these simple hand-written
+functions.
+
 #+BEGIN_SRC emacs-lisp
   (defmacro url-do-it (backend-name query-beginning docstring)
     `(defun ,(intern (format "%s-it" (mapconcat 'identity (split-string (downcase backend-name)) "-"))) ()
@@ -3056,7 +3060,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "<f5>")        'revert-buffer)
   (global-set-key (kbd "M-\\")        'fixup-whitespace)
   (global-set-key (kbd "\C-x k")      'kill-this-buffer)
-  (global-set-key (kbd "C-x w")       'webjump)
   (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
   (global-set-key (kbd "M-Z")         'zap-up-to-char)
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
