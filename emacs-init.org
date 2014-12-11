@@ -43,6 +43,7 @@ about better ways to do something in Emacs.
  - [[#org][Org]]
  - [[#expand-region][Expand region]]
  - [[#jump-to-declaration][Jump to declaration]]
+ - [[#emacs-server][Emacs server]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -2989,6 +2990,33 @@ still access it via unified Emacs-ish interface.
   (global-set-key "\C-x\C-t" 'tags-reset-tags-tables)
 #+END_SRC
 
+* Emacs server
+
+It takes a while (about 2 seconds) for my Emacs configuration to initialize. So
+if some external tool will use it as a default editor - I will have to wait
+those 2 seconds every time.
+
+To overcome this, I start an Emacs "server" mode. After that, =emacsclient= can
+be used instead of =emacs= as an editor. It will look for a running server and
+delegate editing to the already initialized (server) instance.
+
+I guess, it has way more potential than this, but I don't really need it for my
+work flow.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'server)
+  (when (equal window-system 'w32)
+    ;; Suppress error "directory ~/.emacs.d/server is unsafe" on
+    ;; windows.
+    (defun server-ensure-safe-dir (dir) "Noop" t))
+
+  ;; start emacs server on first run
+  (unless (server-running-p)
+    (server-start))
+
+  ;; do not disturb with "buffer still has active clients" on buffer killing
+  (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+#+END_SRC
 
 * Unstructured configuration
 
@@ -3127,17 +3155,6 @@ gradually move things from this section to separate ones.
                    (concat user-emacs-directory "backups")))))
   ;; make backups of files, even when they're under version control
   (setq vc-make-backup-files t)
-
-  (require 'server)
-  (when (equal window-system 'w32)
-    ;; Suppress error "directory ~/.emacs.d/server is unsafe" on
-    ;; windows.
-    (defun server-ensure-safe-dir (dir) "Noop" t))
-
-  ;; start emacs server on first run
-  (unless (server-running-p) (server-start))
-  ;; do not disturb with "buffer still has active clients" on buffer killing
-  (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
   ;; ftp dumb hosts
   (setq-default ange-ftp-dumb-unix-host-regexp
