@@ -927,6 +927,14 @@ HTML. So, I don't have a strong need for that kind of editing power.
          (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))))
 #+END_SRC
 
+Also, it's good to see matching symbols of the pairs. Packages, like
+=rainbow-delimeters=, are too much for me, and the built-in solution is
+precisely what the doctor ordered.
+
+#+BEGIN_SRC emacs-lisp
+  (show-paren-mode 1)
+#+END_SRC
+
 * Programming languages
 ** Compile
 
@@ -3138,9 +3146,6 @@ gradually move things from this section to separate ones.
             (defun delete-trailing-whitespace-selectively ()
               (when (not (member major-mode '(diff-mode fundamental-mode)))
                 (delete-trailing-whitespace))))
-
-  ;; show matching parentheses
-  (show-paren-mode 1)
 
   ;; replace selection with input or yank
   (delete-selection-mode 1)
