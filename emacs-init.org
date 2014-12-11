@@ -298,6 +298,16 @@ it.
       (interactive "*p")
       (move-text-internal arg)))
 #+END_SRC
+** (Non-) electric indentation
+
+I got used to the fact, that =C-j= inserts a newline and indents, and that =C-m=
+inserts a newline without indenting. Emacs 24.4 swapped them, switching
+=electric-indent-mode= on by default. Probably, they had their reasons for that,
+but I prefer the old-school behavior.
+
+#+BEGIN_SRC emacs-lisp
+  (electric-indent-mode -1)
+#+END_SRC
 * "Smarter" alternatives to built-in functionality
 
 The following functions try to be smarter about what they do, while closely
@@ -3158,9 +3168,6 @@ gradually move things from this section to separate ones.
 
   ;; Revolt, outrage, revolution! No double spaces in the end of sentences.
   (set-default 'sentence-end-double-space nil)
-
-  ;; Disable electric indent mode
-  (electric-indent-mode -1)
 
   ;; make backspace to always delete chars
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
