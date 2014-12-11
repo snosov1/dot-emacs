@@ -44,6 +44,7 @@ about better ways to do something in Emacs.
  - [[#expand-region][Expand region]]
  - [[#jump-to-declaration][Jump to declaration]]
  - [[#emacs-server][Emacs server]]
+ - [[#whitespaces][Whitespaces]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -3018,6 +3019,70 @@ work flow.
   (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 #+END_SRC
 
+* Whitespaces
+
+I prefer to never use tabs for indentation, so I make this rule default.
+However, there are cases when it is necessary to have tabs.
+
+First, tabs are required in Makefiles. But Emacs is smart enough to know about
+that, so you're fine as long as you're using =makefile-mode= for editing.
+
+The other situation is when you need to work on a third-party project, which
+uses tabs by default. Since consistency is more important than brilliance (at
+least in the case of whitespaces), you'll have to stick with that for this
+project.
+
+To override this, I create a file with the name =.dir-locals.el= in the root of
+this project. And expand the =dirlocals= snippet:
+
+#+BEGIN_EXAMPLE
+  ((d-mode . ((indent-tabs-mode . t)
+              (tab-width . 4)
+              (c-basic-offset . 4)
+              (fill-column . 80))))
+#+END_EXAMPLE
+
+After that, every file in that folder, that will be opened in =d-mode= will use
+alternative values for the specified variables. Obviously, you can change
+=d-mode= to any other mode, or you can set it to =nil=, then the settings will
+apply to any file in the project.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 4)
+#+END_SRC
+
+So, if the first whitespace commandment says that you can't mix tabs and spaces,
+the second one says that you can't have trailing whitespace. So, I kindly ask
+Emacs to remove it from each file upon saving.
+
+Some people do it conservatively, like, they fix only the lines that were
+actually edited. But I don't think there's anything wrong with committing
+trailing whitespace fixes. If the code maintainer doesn't look after it - he
+should suffer.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook
+            (defun delete-trailing-whitespace-selectively ()
+              (when (not (member major-mode '(diff-mode fundamental-mode)))
+                (delete-trailing-whitespace))))
+#+END_SRC
+
+In case you want to inspect the whitespace of the code, you can make it visible,
+by turning the =whitespace-mode= on. It also has a =whitespace-cleanup=
+function, which is more invasive, than trailing whitespace removal. So, I don't
+call it automatically because of that and prefer to use it consciously.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
+#+END_SRC
+
+To leave only one space around point, you can use a handy =M-\= binding.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-\\") 'fixup-whitespace)
+#+END_SRC
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -3075,7 +3140,6 @@ gradually move things from this section to separate ones.
    '(create-lockfiles nil)
    '(default-input-method "russian-computer")
    '(frame-background-mode (quote dark))
-   '(indent-tabs-mode nil)
    '(initial-major-mode (quote emacs-lisp-mode))
    '(initial-scratch-message nil)
    '(ls-lisp-dirs-first t)
@@ -3086,10 +3150,8 @@ gradually move things from this section to separate ones.
    '(scroll-conservatively 1)
    '(scroll-error-top-bottom t)
    '(show-paren-delay 0)
-   '(tab-width 4)
    '(tags-case-fold-search nil)
-   '(truncate-lines t)
-   '(whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark))))
+   '(truncate-lines t))
 
   ;; ------------------------------------------------------------
   ;; KEY BINDINGS
@@ -3104,7 +3166,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "\C-x v a")    'vc-annotate)
   (global-set-key (kbd "\C-x v b")    'vc-annotate)
   (global-set-key (kbd "<f5>")        'revert-buffer)
-  (global-set-key (kbd "M-\\")        'fixup-whitespace)
   (global-set-key (kbd "\C-x k")      'kill-this-buffer)
   (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
   (global-set-key (kbd "M-Z")         'zap-up-to-char)
@@ -3167,12 +3228,6 @@ gradually move things from this section to separate ones.
 
   ;; shut up the bell
   (setq ring-bell-function 'ignore)
-
-  ;; delete trailing whitespace before save
-  (add-hook 'before-save-hook
-            (defun delete-trailing-whitespace-selectively ()
-              (when (not (member major-mode '(diff-mode fundamental-mode)))
-                (delete-trailing-whitespace))))
 
   ;; replace selection with input or yank
   (delete-selection-mode 1)
