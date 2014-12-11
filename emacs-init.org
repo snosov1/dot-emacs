@@ -42,7 +42,7 @@ about better ways to do something in Emacs.
  - [[#auto-completion][Auto-completion]]
  - [[#org][Org]]
  - [[#expand-region][Expand region]]
- - [[#upcoming-sections][Upcoming sections]]
+ - [[#tags][Tags]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -2754,8 +2754,7 @@ can keep in my head.
          (setq expand-region-fast-keys-enabled nil))))
 #+END_SRC
 
-* Upcoming sections
-** Tags
+* Tags
 
 One of the reasons I switched to Emacs from commonly used IDEs (Visual Studio,
 Qt Creator, Eclipse, etc.) was the enormous bloat that came with those. It
@@ -2871,15 +2870,12 @@ on some sub-project and you can index only the code you're working on.
 As an epilogue, I would like to note that this way of solving problems is very
 Emacs-y. Despite everybody is talking about how you do EVERYTHING in Emacs, it's
 not quite accurate. Often enough, Emacs simply provides an interface to external
-programs. Like, it doesn't fiddle around with git blobs, but provides a nice
+programs - it doesn't fiddle around with git blobs, but provides a nice
 interface via =magit=.
 
-TODO
-And, as you can see, this way
-- has a lot of pros
-- doesn't look conventional (or common)
-- a possible rule of thumb - if you can't do this easily in Emacs, probably,
-  it should be done in another way
+And this approach has a lot of positive outcomes. The complex task is delegated
+to a specialized software, you can choose among different backends and you can
+still access it via unified Emacs-ish interface.
 
 #+BEGIN_SRC emacs-lisp
   (defun parent-directory (dir)
