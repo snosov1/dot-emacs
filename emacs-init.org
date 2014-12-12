@@ -3163,6 +3163,17 @@ gradually move things from this section to separate ones.
             (replace-match (format (concat "%0" (int-to-string field-width) "d")
                                    answer)))))))
 
+  (define-key global-map (kbd "M-\"")
+    (defun double-quote-word ()
+      "Put word at point in double quotes"
+      (interactive)
+      (setq boundaries (bounds-of-thing-at-point 'word))
+      (save-excursion
+        (goto-char (car boundaries))
+        (insert ?\")
+        (goto-char (+ 1 (cdr boundaries)))
+        (insert ?\"))))
+
   ;; ------------------------------------------------------------
   ;; CUSTOMIZED
 
