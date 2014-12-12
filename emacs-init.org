@@ -312,6 +312,16 @@ but I prefer the old-school behavior.
 #+BEGIN_SRC emacs-lisp
   (electric-indent-mode -1)
 #+END_SRC
+** String manipulations
+
+Emacs 24.4 came with a =subr-x= library with routines for string manipulations,
+like =string-trim=, =string-join= and etc. It's better to always have these at
+hand.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'subr-x)
+#+END_SRC
+
 * "Smarter" alternatives to built-in functionality
 
 The following functions try to be smarter about what they do, while closely
