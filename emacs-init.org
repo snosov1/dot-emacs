@@ -45,6 +45,7 @@ about better ways to do something in Emacs.
  - [[#jump-to-declaration][Jump to declaration]]
  - [[#emacs-server][Emacs server]]
  - [[#whitespaces][Whitespaces]]
+ - [[#user-friendliness][User-friendliness]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -71,7 +72,8 @@ black.
      (load-theme 'tango-dark)
      (enable-theme 'tango-dark)
      ;; make background a little bit darker
-     (set-background-color "#1d1f21")))
+     (set-background-color "#1d1f21")
+     (setq-default frame-background-mode (quote dark))))
 #+END_SRC
 
 ** Deja Vu
@@ -713,20 +715,6 @@ first guess.
                               " "
                               (mapconcat 'identity files " "))))))
 #+END_SRC
-** Mouse
-
-I don't really use the mouse, when I'm inside Emacs, but I want this
-configuration to provide more or less intuitive behavior out-of-the-box. I don't
-go as far as enabling CUA mode, because it would hurt the overall productivity.
-But I try at least to gather low-hanging fruits.
-
-One of those fruits is that mouse click in dired should open files and
-directories in the same window.
-
-#+BEGIN_SRC emacs-lisp
-  (define-key dired-mode-map (kbd "<mouse-2>") 'dired-find-file)
-#+END_SRC
-
 * Better buffer names
 ** Default uniquification
 
@@ -1086,12 +1074,13 @@ I don't feel like dropping it after putting so much effort into it.
 
 ** C and C++
 
-There are just 3 minor things about C and C++:
+There are just a couple of minor things about C and C++:
 - I don't make a difference between them and treat everything as C++. It also
   goes for CUDA sources as well.
 - =C-c C-o= is bound to =ff-find-other-file=. This function is pretty simple and
   it doesn't work very well for a lot of common source code layouts, but it
   comes in handy, when you can use it.
+- I use the "bsd" code formatting style with basic offset of 4 by default.
 - =C-c .= is bound to =c-guess-buffer= for cases, when I have to modify the code
   that has some alien formatting style.
 
@@ -1113,6 +1102,9 @@ There are just 3 minor things about C and C++:
 
                ;; set //-style comments for c-mode
                (setq comment-start "//" comment-end "")))
+
+  (setq-default c-basic-offset 4)
+  (setq-default c-default-style (quote ((c-mode . "bsd") (c++-mode . "bsd") (d-mode . "bsd") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
 #+END_SRC
 
 ** Emacs Lisp
@@ -3083,6 +3075,59 @@ To leave only one space around point, you can use a handy =M-\= binding.
   (global-set-key (kbd "M-\\") 'fixup-whitespace)
 #+END_SRC
 
+* User-friendliness
+
+There are several settings in my configuration, that I don't really use myself.
+But I found that lack of thereof spoils first impression for people, that try it
+out. And I want this configuration to provide more or less intuitive behavior
+out-of-the-box to not scare those people. I don't go as far as enabling CUA
+mode, because it would hurt the overall productivity. But I try to gather
+low-hanging fruits at least.
+
+** Dired mouse
+
+For example, I don't use the mouse, when I'm inside Emacs, but other people do.
+And one of the things is that a click in Dired creates windows by default and it
+looks pretty strange. So, I make it that the files and directories are opened in
+the same window.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key dired-mode-map (kbd "<mouse-2>") 'dired-find-file)
+#+END_SRC
+
+** Undo
+
+Undo in Emacs is bound to =C-/=, =C-_= and =C-x u=, which are not that common.
+Personally, I use =C-/= for undo and over time I found, that I don't really use
+the default =C-z= binding. So I figured, why not to make it undo as well.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-z") 'undo)
+#+END_SRC
+
+One thing about undo is that, as I've said, I use =C-/= myself, but it's not
+representable with an ASCII control code, so it can't be sent to terminals.
+Mapping it to a "traditional" UNIX undo sequence =C-_= is a cute way around.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key key-translation-map [?\C-/] [?\C-_])
+#+END_SRC
+
+** Escape
+
+By default, =ESC= key works as another =M-= modifier. But personally, I don't
+use it that way. And I noticed that hitting =ESC= is the first reaction of
+people, when they are lost and don't know what's happening.
+
+If you hit =ESC= three times, then it will call =keyboard-escape-quit=, which
+will most likely put everything into ordinary places. But I noticed that most of
+the people won't hit it three times - they become even more confused when =ESC=
+does nothing. Hitting =ESC= just once should be really enough.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [escape] 'keyboard-escape-quit)
+#+END_SRC
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -3117,14 +3162,11 @@ gradually move things from this section to separate ones.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
    '(async-shell-command-buffer (quote new-buffer))
-   '(c-basic-offset 4)
-   '(c-default-style (quote ((c-mode . "bsd") (c++-mode . "bsd") (d-mode . "bsd") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
    '(calendar-week-start-day 1)
    '(compilation-scroll-output (quote first-error))
    '(confirm-kill-emacs (quote y-or-n-p))
    '(create-lockfiles nil)
    '(default-input-method "russian-computer")
-   '(frame-background-mode (quote dark))
    '(initial-major-mode (quote emacs-lisp-mode))
    '(initial-scratch-message nil)
    '(ls-lisp-dirs-first t)
@@ -3155,15 +3197,8 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
   (global-set-key (kbd "M-Z")         'zap-up-to-char)
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
-  (global-set-key (kbd "C-z")         'undo)
-  (global-set-key [escape]            'keyboard-escape-quit)
   (global-set-key "\C-c\C-c"          'compile)
   (global-set-key "\C-c+"             'increment-decimal-number-at-point)
-
-  ;; C-/ is not representable with an ASCII control code, so it cannot be sent to
-  ;; terminals, but it is a convenient keybinding for undo. So mapping it to
-  ;; "traditional" undo sequence C-_ is a cute way around
-  (define-key key-translation-map [?\C-/] [?\C-_]) ;; translate C-/ to C-_
 
   (add-hook 'shell-mode-hook
             '(lambda ()
