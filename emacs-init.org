@@ -3052,9 +3052,9 @@ apply to any file in the project.
   (setq-default tab-width 4)
 #+END_SRC
 
-So, if the first whitespace commandment says that you can't mix tabs and spaces,
-the second one says that you can't have trailing whitespace. So, I kindly ask
-Emacs to remove it from each file upon saving.
+If the first whitespace commandment says that you can't mix tabs and spaces, the
+second one says that you can't have trailing whitespace. So, I kindly ask Emacs
+to remove it from each file upon saving.
 
 Some people do it conservatively, like, they fix only the lines that were
 actually edited. But I don't think there's anything wrong with committing
@@ -3068,10 +3068,10 @@ should suffer.
                 (delete-trailing-whitespace))))
 #+END_SRC
 
-In case you want to inspect the whitespace of the code, you can make it visible,
+In case you want to inspect the whitespace in the code, you can make it visible,
 by turning the =whitespace-mode= on. It also has a =whitespace-cleanup=
-function, which is more invasive, than trailing whitespace removal. So, I don't
-call it automatically because of that and prefer to use it consciously.
+function, which is more invasive, than simple trailing whitespace removal. So, I
+call it manually when needed.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default whitespace-style (quote (face tabs trailing space-before-tab newline indentation empty space-after-tab tab-mark newline-mark)))
@@ -3107,21 +3107,6 @@ gradually move things from this section to separate ones.
               (setq answer (+ (expt 10 field-width) answer)))
             (replace-match (format (concat "%0" (int-to-string field-width) "d")
                                    answer)))))))
-
-  (defcustom pop-predefined-register ?}
-    "Register for saving window configuration before jump"
-    :type 'register
-    :group 'ediff)
-
-  (define-key global-map [remap jump-to-register]
-    (defun jump-to-register-with-save (register &optional delete)
-      "Like jump-to-register, but saves current window configuration
-  to predefined register"
-      (interactive "cJump to register: \nP")
-      ;; autosave current window configuration unless we're jumping back
-      (unless (equal register pop-predefined-register)
-        (window-configuration-to-register pop-predefined-register))
-      (jump-to-register register delete)))
 
   ;; ------------------------------------------------------------
   ;; CUSTOMIZED
