@@ -725,6 +725,17 @@ first guess.
                               " "
                               (mapconcat 'identity files " "))))))
 #+END_SRC
+
+While we're at it, let's make =tar-mode= more confident in reverting buffers.
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'tar-mode nil t)
+    (define-key tar-mode-map (kbd "g")
+      (defun revert-buffer-without-query ()
+        (interactive)
+        (revert-buffer nil t))))
+#+END_SRC
+
 * Better buffer names
 ** Default uniquification
 
@@ -1155,9 +1166,21 @@ don't need an explicit step of tags generation. However, you can use =M-.= and
       (find-function function)))
 #+END_SRC
 
+** Log files
+
+Log files are not specific to any particular programming language. But the thing
+all logs have in common is that they are most often cumulative. So, you probably
+want to update the contents of log files as they appear. =auto-revert-tail-mode=
+makes it possible.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
+#+END_SRC
+
 ** Misc
 
-Nothing special, really.
+Nothing special, really. Here, I mostly disable the mode-local bindings, so
+global bindings are used instead.
 
 *** YAML
 
@@ -1194,6 +1217,33 @@ Nothing special, really.
                        auto-mode-alist)))))
 #+END_SRC
 
+*** Shell scripts
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'sh-script nil t)
+    (define-key sh-mode-map "\C-c\C-c" nil)
+    (define-key sh-mode-map "\C-c\C-o" nil))
+#+END_SRC
+
+*** .ini configs
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'conf-mode nil t)
+    (define-key conf-mode-map "\C-c\C-c" nil))
+#+END_SRC
+
+*** Shell
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'shell nil t)
+    (define-key shell-mode-map (kbd "\C-c\C-o") nil))
+#+END_SRC
+
+*** Octave
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+#+END_SRC
 * Magit
 
 There's not enough words in any human language to describe the brilliance of
@@ -3234,33 +3284,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
   (global-set-key "\C-c\C-c"          'compile)
   (global-set-key "\C-c+"             'increment-decimal-number-at-point)
-
-  (add-hook 'shell-mode-hook
-            '(lambda ()
-               (define-key shell-mode-map (kbd "\C-c\C-o") nil)))
-
-  (add-hook 'conf-mode-hook
-            '(lambda ()
-               (define-key conf-mode-map "\C-c\C-c"
-                 nil)))
-
-  (add-hook 'sh-mode-hook
-            '(lambda ()
-               (define-key sh-mode-map "\C-c\C-c"
-                 nil)
-               (define-key sh-mode-map "\C-c\C-o"
-                 nil)))
-
-  (add-hook 'tar-mode-hook
-            '(lambda ()
-               (define-key tar-mode-map (kbd "g")
-                 (defun revert-buffer-without-query ()
-                   (interactive)
-                   (revert-buffer nil t)))))
-
-  (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
-
-  (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
 
   ;; ------------------------------------------------------------
   ;; MISCELLANEOUS CONFIGS
