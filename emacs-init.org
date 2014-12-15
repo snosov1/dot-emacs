@@ -1216,8 +1216,12 @@ in silence.
              (set-face-attribute 'magit-item-highlight nil
                                  :background "black")
 
-             (global-set-key (kbd "\C-c m")      'magit-status)
-             (global-set-key (kbd "\C-c RET")    'magit-status))
+             ;; push stashes to the bottom of the status buffer
+             (delete 'magit-insert-stashes magit-status-sections-hook)
+             (add-to-list 'magit-status-sections-hook 'magit-insert-stashes t)
+
+             (global-set-key (kbd "\C-c m")   'magit-status)
+             (global-set-key (kbd "\C-c RET") 'magit-status))
          (message "WARNING: magit not found"))))
 #+END_SRC
 
