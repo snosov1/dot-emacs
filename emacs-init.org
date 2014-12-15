@@ -46,6 +46,7 @@ about better ways to do something in Emacs.
  - [[#emacs-server][Emacs server]]
  - [[#whitespaces][Whitespaces]]
  - [[#user-friendliness][User-friendliness]]
+ - [[#regional-settings][Regional settings]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -220,11 +221,11 @@ There's a nice binding =M-z=, which kills up to and including next occurrence of
 the provided character.
 
 But there's also an alternative function in the =misc= module, which kills up to
-the provided character, EXCLUDING it. It is automatically bound to =M-Z= upon
-=misc= module loading.
+the provided character, EXCLUDING it.
 
 #+BEGIN_SRC emacs-lisp
   (require 'misc)
+  (global-set-key (kbd "M-Z") 'zap-up-to-char)
 #+END_SRC
 
 ** Upcase, lowercase and capitalize
@@ -972,6 +973,8 @@ flexible, convenient and simple at the same time. Truly, great stuff.
 #+BEGIN_SRC emacs-lisp
   (require 'compile)
   (make-variable-buffer-local 'compile-command)
+  (global-set-key "\C-c\C-c" 'compile)
+
   ;; those patterns are used by dmd compiler
   (setq-default compilation-error-regexp-alist
                 (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
@@ -2893,7 +2896,6 @@ characters =expand-region= alternative.
           (insert ?\"))))
 #+END_SRC
 
-
 * Jump to declaration
 
 One of the reasons I switched to Emacs from commonly used IDEs (Visual Studio,
@@ -3213,6 +3215,30 @@ does nothing. Hitting =ESC= just once should be really enough.
   (global-set-key [escape] 'keyboard-escape-quit)
 #+END_SRC
 
+* Regional settings
+
+I live in Nizhniy Novgorod (formerly, Gorkiy), which is a third largest city
+Russia. Obviously, I speak Russian, so I need to specify it as a default second
+language.
+
+If you try to use your system-level bindings for this, you'll find that
+bindings, like, =C-f= stop working. Because =f= is replaced with an alternative
+character, which is not recognized by Emacs.
+
+So, you should change the input method inside Emacs - not on the system-level.
+The default binding is =C-\=.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default default-input-method "russian-computer")
+#+END_SRC
+
+Also, we regard Monday as a first week day.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default calendar-week-start-day 1)
+#+END_SRC
+
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -3247,11 +3273,9 @@ gradually move things from this section to separate ones.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
    '(async-shell-command-buffer (quote new-buffer))
-   '(calendar-week-start-day 1)
    '(compilation-scroll-output (quote first-error))
    '(confirm-kill-emacs (quote y-or-n-p))
    '(create-lockfiles nil)
-   '(default-input-method "russian-computer")
    '(initial-major-mode (quote emacs-lisp-mode))
    '(initial-scratch-message nil)
    '(ls-lisp-dirs-first t)
@@ -3280,9 +3304,7 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "<f5>")        'revert-buffer)
   (global-set-key (kbd "\C-x k")      'kill-this-buffer)
   (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
-  (global-set-key (kbd "M-Z")         'zap-up-to-char)
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
-  (global-set-key "\C-c\C-c"          'compile)
   (global-set-key "\C-c+"             'increment-decimal-number-at-point)
 
   ;; ------------------------------------------------------------
