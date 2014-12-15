@@ -2693,8 +2693,8 @@ with the current table of contents before each save.
 following code - =(setq alphabet-start "abc def")=.
 
 With the cursor at the =c=, pressing *C-=* marks the entire word =abc=,
-successive press expands to the contents of the quotes =abc def=, then it marks
-the quotes, and so on:
+successive pressing expands to the contents of the quotes =abc def=, then it
+marks the quotes, and so on:
 
 #+BEGIN_EXAMPLE
   "abc def"
@@ -2703,7 +2703,7 @@ the quotes, and so on:
 #+END_EXAMPLE
 
 It is a very nice package and I use it quite a lot with great pleasure. But I
-think that the author got a little carried away with it.
+think the author was carried away a little bit.
 
 My guess is that it was started with editing of "lispy" code in mind (i.e. Lots
 of Irritating Stupid Parenthesis). And it works almost flawlessly in that use
@@ -2721,9 +2721,12 @@ is very simple. Basically, you're editing an Abstract Syntax Tree (AST)
 directly, using parenthesis to denote node boundaries and nesting. But the
 syntax of C-like languages (especially, C++) is significantly more complex. So,
 it makes writing precise "expansion rules" unreasonable, which leads to very
-awkward expansions sometimes. It may not be a big deal, if it works accurately
-at least half of the time for some people. But I don't feel comfortable using a
-feature if I can't predict its result.
+awkward expansions sometimes. Not always, but often enough to feel
+uncomfortable, because I can't predict its result.
+
+In my experience, dots (sentences) and empty lines (paragraphs) were causing
+most of the confusion. So, I dropped the rules, relying on those symbols to make
+=expand-region= dumber, but more predictable.
 
 The second reason, why it doesn't work very well for non-lisp languages, is kind
 of fundamental to the design of this feature. In short, what does it mean to
@@ -2731,28 +2734,26 @@ of fundamental to the design of this feature. In short, what does it mean to
 different rules, like "mark everything inside quotes", "mark everything inside
 quotes, including the quotes", "mark everything inside parenthesis", "mark a
 statement" and etc. We choose the "best" rule for currently marked region and
-use it as a next expansion. "Best" here means, that the region should expand as
-little as possible, but containing the original region.
+use it as a next expansion. "Best" rule must contain the original region, and
+expand it as little as possible.
 
-Consider the =object.getHash();= example again, and try to define, which
-expansion is better, if =getHash= is already selected - =object.getHash= or
-=getHash()=? If you choose the first one, then you lose a chance to get the
+Now, consider the =object.getHash();= example again. Assuming that =getHash= is
+already selected, try to define, which expansion is better - =object.getHash= or
+=getHash()=? If you choose the first one, then you lose a chance to ever get the
 second expansion, and if you choose the second one, you won't ever get the first
 one.
 
 Such situations are impossible in LISPs, because nesting is strictly ordered
 there. But in other languages, a sensible expansion can expand to the left,
-while another one will expand to the right. There's no way to have both within
-the design of =expand-region=. Currently, it will always choose the region, that
-expands to the left as little as possible.
+while another sensible expansion will expand to the right. There's no way to
+have both within the design of =expand-region=.
 
-In my experience, dots (sentences) and empty lines (paragraphs) were causing
-most of the confusion. So, I dropped the rules, relying on those symbols to make
-=expand-region= dumber, but more predictable.
+Currently, it will always chooses the region, that expands to the left as little
+as possible. I tried different heuristics, but neither was good enough -
+sometimes I wanted a "left" expansion, and sometimes I wanted a "right" one.
 
-Now, after using it for a while, I think of =expand-region= when I need to mark
-words, strings (quotes) and parenthesis. That's the most complex description I
-can keep in my head.
+So, after using =expand-region= for a while, I think of it only in "lisp"-alike
+cases - marking words, strings (quotes) and parenthesis.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "expand-region-autoloads"
@@ -2822,6 +2823,26 @@ can keep in my head.
          (global-set-key (kbd "C-=") 'er/expand-region)
          (setq expand-region-fast-keys-enabled nil))))
 #+END_SRC
+
+I think I added the following function even before =expand-region= was
+implemented. It puts quotes around the word at point. I thought =expand-region=
+will make it obsolete and I will stop using it eventually. But it didn't happen.
+I got used to it so much, that my fingers simply refuse to accept the 2
+characters =expand-region= alternative.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map (kbd "M-\"")
+      (defun double-quote-word ()
+        "Put word at point in double quotes"
+        (interactive)
+        (setq boundaries (bounds-of-thing-at-point 'word))
+        (save-excursion
+          (goto-char (car boundaries))
+          (insert ?\")
+          (goto-char (+ 1 (cdr boundaries)))
+          (insert ?\"))))
+#+END_SRC
+
 
 * Jump to declaration
 
@@ -3166,17 +3187,6 @@ gradually move things from this section to separate ones.
               (setq answer (+ (expt 10 field-width) answer)))
             (replace-match (format (concat "%0" (int-to-string field-width) "d")
                                    answer)))))))
-
-  (define-key global-map (kbd "M-\"")
-    (defun double-quote-word ()
-      "Put word at point in double quotes"
-      (interactive)
-      (setq boundaries (bounds-of-thing-at-point 'word))
-      (save-excursion
-        (goto-char (car boundaries))
-        (insert ?\")
-        (goto-char (+ 1 (cdr boundaries)))
-        (insert ?\"))))
 
   ;; ------------------------------------------------------------
   ;; CUSTOMIZED
