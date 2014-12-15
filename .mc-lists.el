@@ -22,6 +22,7 @@
         double-quote-word
         downcase-dispatch
         dp-self-insert-command
+        electric-newline-and-maybe-indent
         end-of-buffer
         eval-dispatch
         fixup-whitespace
