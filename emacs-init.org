@@ -955,6 +955,7 @@ precisely what the doctor ordered.
 
 #+BEGIN_SRC emacs-lisp
   (show-paren-mode 1)
+  (setq-default show-paren-delay 0)
 #+END_SRC
 
 * Programming languages
@@ -3285,7 +3286,6 @@ gradually move things from this section to separate ones.
    '(read-file-name-completion-ignore-case t)
    '(scroll-conservatively 1)
    '(scroll-error-top-bottom t)
-   '(show-paren-delay 0)
    '(tags-case-fold-search nil)
    '(truncate-lines t))
 
