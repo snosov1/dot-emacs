@@ -17,6 +17,7 @@ about better ways to do something in Emacs.
  - [[#ui-customization][UI customization]]
  - [[#text-manipulations][Text manipulations]]
  - [[#smarter-alternatives-to-built-in-functionality]["Smarter" alternatives to built-in functionality]]
+ - [[#shortcuts-longcuts-and-backups][Shortcuts, "Longcuts" and Backups]]
  - [[#dired][Dired]]
  - [[#better-buffer-names][Better buffer names]]
  - [[#spell-checking][Spell-checking]]
@@ -530,6 +531,58 @@ most of the time you still have to go there and hit =TAB=. Let's fix that.
         (if (looking-at-p "\\s-*$") ;; how in earth does this work?
             (newline arg)
           (newline-and-indent)))))
+#+END_SRC
+
+* Shortcuts, "Longcuts" and Backups
+** Shortcuts
+
+If I want to kill a buffer, it's always the current one. So, there's no need to
+ask for a name.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "\C-x k") 'kill-this-buffer)
+#+END_SRC
+
+When Emacs asks a question, sometimes you have to type "yes" and sometimes it's
+simply "y". I say "y" is sufficient in both cases.
+
+#+BEGIN_SRC emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+When you press =C-x=, for example, and hesitate with a next character, =C-x=
+will displayed in the echo-area after some time. But I don't see any reason why
+you should wait for it.
+
+#+BEGIN_SRC emacs-lisp
+  (setq echo-keystrokes 0.001)
+#+END_SRC
+
+Some functions are "disabled" by default, because new users may find them
+confusing. So, you have to enable functions you got used to manually.
+
+#+BEGIN_SRC emacs-lisp
+  (put 'narrow-to-region 'disabled nil)
+#+END_SRC
+
+** "Longcuts"
+
+It's too easy to accidentally press =C-x C-c= and exit Emacs. Let's make it a
+bit harder.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default confirm-kill-emacs (quote y-or-n-p))
+#+END_SRC
+
+** Backups
+
+It was hard for me to remember, whether you have to press =C-x C-f= to find a
+file or =C-x f=. Also, sometimes I simply made a typo. Making both bindings to
+do the same turned out to be a reasonable solution, which I applied in other
+cases as well.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x f") 'find-file)
 #+END_SRC
 
 * Dired
@@ -3239,7 +3292,6 @@ Also, we regard Monday as a first week day.
   (setq-default calendar-week-start-day 1)
 #+END_SRC
 
-
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -3275,7 +3327,6 @@ gradually move things from this section to separate ones.
    ;; If there is more than one, they won't work right.
    '(async-shell-command-buffer (quote new-buffer))
    '(compilation-scroll-output (quote first-error))
-   '(confirm-kill-emacs (quote y-or-n-p))
    '(create-lockfiles nil)
    '(initial-major-mode (quote emacs-lisp-mode))
    '(initial-scratch-message nil)
@@ -3293,7 +3344,6 @@ gradually move things from this section to separate ones.
   ;; KEY BINDINGS
 
   ;; global
-  (global-set-key (kbd "C-x f")       'find-file)
   (global-set-key (kbd "C-M-p")       'backward-paragraph)
   (global-set-key (kbd "C-M-n")       'forward-paragraph)
   (global-set-key (kbd "C-M-l")       'recenter-top-bottom)
@@ -3302,7 +3352,6 @@ gradually move things from this section to separate ones.
   (global-set-key (kbd "\C-x v a")    'vc-annotate)
   (global-set-key (kbd "\C-x v b")    'vc-annotate)
   (global-set-key (kbd "<f5>")        'revert-buffer)
-  (global-set-key (kbd "\C-x k")      'kill-this-buffer)
   (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
   (global-set-key "\C-c+"             'increment-decimal-number-at-point)
@@ -3323,17 +3372,11 @@ gradually move things from this section to separate ones.
                               "files.itseez.com"
                               )))
 
-  ;; disable 'confusing' functions disabling
-  (put 'narrow-to-region 'disabled nil)
-
   ;; shut up the bell
   (setq ring-bell-function 'ignore)
 
   ;; replace selection with input or yank
   (delete-selection-mode 1)
-
-  ;; Show keystrokes in progress
-  (setq echo-keystrokes 0.01)
 
   ;; Allow recursive minibuffers
   (setq enable-recursive-minibuffers t)
@@ -3344,9 +3387,6 @@ gradually move things from this section to separate ones.
   ;; make backspace to always delete chars
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
   (define-key isearch-mode-map [escape] 'isearch-cancel)
-
-  ;; Answering just 'y' or 'n' will do
-  (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
 # Local Variables:
