@@ -337,9 +337,17 @@ maintaining the original intent and implementation.
 
 ** Searching
 
-If you select a region, that entirely lies on a single line, then incremental
-searching (=C-s= and =C-r=) will use it as an initial value and make a first
-jump. The common way I use it is:
+First of all, let's make =isearch= more "stateless". By default, after you make
+a first jump to the next occurrence, =backspace= will stop deleting characters
+and start moving to previous occurrences. I find it pretty confusing.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+#+END_SRC
+
+Then, if you select a region, that entirely lies on a single line, then
+incremental searching (=C-s= and =C-r=) will use it as an initial value and make
+a first jump. The common way I use it is:
 
 - mark a word or a longer unit with =er/expand-region= (=C-==)
 - press =C-s= or =C-r= to jump to the next or previous occurrence
@@ -589,6 +597,8 @@ cases as well.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x f") 'find-file)
+  (global-set-key (kbd "\C-x v a") 'vc-annotate)
+  (global-set-key (kbd "\C-x v b") 'vc-annotate)
 #+END_SRC
 
 * Dired
@@ -3278,6 +3288,16 @@ does nothing. Hitting =ESC= just once should be really enough.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key [escape] 'keyboard-escape-quit)
+  (define-key isearch-mode-map [escape] 'isearch-cancel)
+#+END_SRC
+
+** Revert buffer
+
+Most browsers bind "refresh" to =<f5>=. So, I think it's reasonable to bind it
+to =revert-buffer= for updating buffer contents to the latest state.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<f5>") 'revert-buffer)
 #+END_SRC
 
 * Regional settings
@@ -3383,9 +3403,6 @@ gradually move things from this section to separate ones.
   ;; KEY BINDINGS
 
   ;; global
-  (global-set-key (kbd "\C-x v a")    'vc-annotate)
-  (global-set-key (kbd "\C-x v b")    'vc-annotate)
-  (global-set-key (kbd "<f5>")        'revert-buffer)
   (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
   (global-set-key "\C-c+"             'increment-decimal-number-at-point)
@@ -3414,10 +3431,6 @@ gradually move things from this section to separate ones.
 
   ;; Revolt, outrage, revolution! No double spaces in the end of sentences.
   (set-default 'sentence-end-double-space nil)
-
-  ;; make backspace to always delete chars
-  (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
-  (define-key isearch-mode-map [escape] 'isearch-cancel)
 #+END_SRC
 
 # Local Variables:
