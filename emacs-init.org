@@ -48,6 +48,7 @@ about better ways to do something in Emacs.
  - [[#whitespaces][Whitespaces]]
  - [[#user-friendliness][User-friendliness]]
  - [[#regional-settings][Regional settings]]
+ - [[#scrolling][Scrolling]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -60,6 +61,11 @@ clean. And it should look good on the screen.
   (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
   (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
   (setq inhibit-startup-message t)
+
+  (setq-default initial-major-mode (quote emacs-lisp-mode))
+  (setq-default initial-scratch-message nil)
+
+  (setq ring-bell-function 'ignore) ;; shut up the bell
 #+END_SRC
 
 ** Dark tango
@@ -1019,15 +1025,17 @@ being able to jump to the line with the error from the compilation buffer.
 
 The only nifty trick I find particularly useful is to make =compile-command=
 variable buffer-local. After that each buffer will remember what compilation
-command was issued from it and suggest it on the successive call.
-
-This replaces all the "project management" nonsense for me. It's incredibly
-flexible, convenient and simple at the same time. Truly, great stuff.
+command was issued from it and suggest it on a successive call. This replaces
+all the "project management" nonsense for me. It's very simple, flexible and
+convenient at the same time. Truly, great stuff.
 
 #+BEGIN_SRC emacs-lisp
   (require 'compile)
   (make-variable-buffer-local 'compile-command)
   (global-set-key "\C-c\C-c" 'compile)
+
+  ;; auto-scroll until first error
+  (setq-default compilation-scroll-output (quote first-error))
 
   ;; those patterns are used by dmd compiler
   (setq-default compilation-error-regexp-alist
@@ -1373,6 +1381,9 @@ handled specially in =term-mode=. But it's not as convenient as =C-TAB=.
   (when (require 'ido nil t)
     (ido-mode 1)
     (setq-default ido-enable-flex-matching t)
+    (setq-default read-buffer-completion-ignore-case t)
+    (setq-default read-file-name-completion-ignore-case t)
+
     (global-set-key [C-tab] 'ido-switch-buffer))
 #+END_SRC
 
@@ -3292,6 +3303,44 @@ Also, we regard Monday as a first week day.
   (setq-default calendar-week-start-day 1)
 #+END_SRC
 
+* Scrolling
+
+Emacs will make some kind of "scrolling jump", when you move past the beginning
+or the end of the visible part of the buffer, which is really confusing. I
+expect the scrolling to happen line-by-line in that case.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default scroll-conservatively 1)
+#+END_SRC
+
+Another thing is that, when I you try to move the point past the beginning or
+the of the buffer - it will report an error. However, I find that moving cursor
+to the extreme position before reporting an error is more convenient.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default scroll-error-top-bottom t)
+#+END_SRC
+
+Scrolling one line without moving the cursor seems like a good idea, so I
+allocated a couple of bindings for that. Admittedly, I don't really use it on a
+common basis, but maybe one day I will.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-P") 'scroll-down-line)
+  (global-set-key (kbd "M-N") 'scroll-up-line)
+#+END_SRC
+
+A lot of the time scrolling and moving the cursor come close together. For
+example, you can scroll the screen using =C-p= and =C-n=, when the cursor is
+near the border. Or you can move the cursor using =C-v= and =M-v=. Moving the
+cursor by paragraph is something in between those 2 options.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-M-p") 'backward-paragraph)
+  (global-set-key (kbd "C-M-n") 'forward-paragraph)
+  (global-set-key (kbd "C-M-l") 'recenter-top-bottom)
+#+END_SRC
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
@@ -3326,17 +3375,7 @@ gradually move things from this section to separate ones.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
    '(async-shell-command-buffer (quote new-buffer))
-   '(compilation-scroll-output (quote first-error))
    '(create-lockfiles nil)
-   '(initial-major-mode (quote emacs-lisp-mode))
-   '(initial-scratch-message nil)
-   '(ls-lisp-dirs-first t)
-   '(ls-lisp-ignore-case t)
-   '(ls-lisp-verbosity nil)
-   '(read-buffer-completion-ignore-case t)
-   '(read-file-name-completion-ignore-case t)
-   '(scroll-conservatively 1)
-   '(scroll-error-top-bottom t)
    '(tags-case-fold-search nil)
    '(truncate-lines t))
 
@@ -3344,11 +3383,6 @@ gradually move things from this section to separate ones.
   ;; KEY BINDINGS
 
   ;; global
-  (global-set-key (kbd "C-M-p")       'backward-paragraph)
-  (global-set-key (kbd "C-M-n")       'forward-paragraph)
-  (global-set-key (kbd "C-M-l")       'recenter-top-bottom)
-  (global-set-key (kbd "M-P")         'scroll-down-line)
-  (global-set-key (kbd "M-N")         'scroll-up-line)
   (global-set-key (kbd "\C-x v a")    'vc-annotate)
   (global-set-key (kbd "\C-x v b")    'vc-annotate)
   (global-set-key (kbd "<f5>")        'revert-buffer)
@@ -3371,9 +3405,6 @@ gradually move things from this section to separate ones.
                 (regexp-opt '(
                               "files.itseez.com"
                               )))
-
-  ;; shut up the bell
-  (setq ring-bell-function 'ignore)
 
   ;; replace selection with input or yank
   (delete-selection-mode 1)
