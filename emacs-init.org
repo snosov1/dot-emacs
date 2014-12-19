@@ -51,9 +51,9 @@ about better ways to do something in Emacs.
  - [[#regional-settings][Regional settings]]
  - [[#scrolling][Scrolling]]
  - [[#line-wrap][Line wrap]]
- - [[#increment-number-at-point][Increment number at point]]
+ - [[#do-thing-at-point][Do thing at point]]
  - [[#auxiliary-files][Auxiliary files]]
- - [[#unstructured-configuration][Unstructured configuration]]
+ - [[#recursive-minibuffers][Recursive minibuffers]]
 
 * UI customization
 ** Lean and mean
@@ -123,6 +123,18 @@ Mac, please, enlighten me!
 Some people mistakenly call Emacs a text editor. But, hey, what can you do -
 total ignorance has become a common practice long time ago. And, frankly
 speaking, these people have a point.
+
+** Delete selection
+
+If you have a selected region and perform a delete, yank or insert operation,
+the selected region should be deleted. It's not a default Emacs behavior, and if
+you think about it, the default behavior seems to make more sense. But,
+practically, everybody else has it by default, and the whole thing is not that
+big of a deal, so what the hell.
+
+#+BEGIN_SRC emacs-lisp
+  (delete-selection-mode 1)
+#+END_SRC
 
 ** Join following line
 
@@ -3394,7 +3406,7 @@ the whole line at once, I use =C-x t=.
   (global-set-key (kbd "C-x t") 'toggle-truncate-lines)
 #+END_SRC
 
-* Increment number at point
+* Do thing at point
 
 When I just started using Emacs, I came upon a blog post. It described how you
 can define a function to do something with the value at point. I don't remember
@@ -3404,8 +3416,7 @@ time I thought - "Why would anybody want to do that?".
 But after I got more familiar with Emacs Lisp and writing a small function was
 no longer a problem to me, I'm thinking "Why wouldn't you do that?".
 
-Not every such operation deserves a dedicated binding, but incrementing a number
-at point is, probably, universal enough.
+** Increment a number
 
 #+BEGIN_SRC emacs-lisp
   (define-key "\C-c+"
@@ -3424,6 +3435,12 @@ at point is, probably, universal enough.
                 (setq answer (+ (expt 10 field-width) answer)))
               (replace-match (format (concat "%0" (int-to-string field-width) "d")
                                      answer))))))))
+#+END_SRC
+
+** Find file or URL
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "\C-c\C-o") 'find-file-at-point)
 #+END_SRC
 
 * Auxiliary files
@@ -3451,35 +3468,13 @@ Emacs creates some auxiliary files for operation. Some examples include:
     (setq vc-make-backup-files t)
   #+END_SRC
 
-* Unstructured configuration
+* Recursive minibuffers
 
-Right now this section is simply a copy-paste of my old configuration. I
-gradually move things from this section to separate ones.
+Emacs will issue an error if some command needs a minibuffer when you're already
+in the minibuffer. But it's an unnecessary limitation.
 
 #+BEGIN_SRC emacs-lisp
-  ;; ------------------------------------------------------------
-  ;; KEY BINDINGS
-
-  ;; global
-  (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
-
-  ;; ------------------------------------------------------------
-  ;; MISCELLANEOUS CONFIGS
-
-  ;; ftp dumb hosts
-  (setq-default ange-ftp-dumb-unix-host-regexp
-                (regexp-opt '(
-                              "files.itseez.com"
-                              )))
-
-  ;; replace selection with input or yank
-  (delete-selection-mode 1)
-
-  ;; Allow recursive minibuffers
   (setq enable-recursive-minibuffers t)
-
-  ;; Revolt, outrage, revolution! No double spaces in the end of sentences.
-  (set-default 'sentence-end-double-space nil)
 #+END_SRC
 
 # Local Variables:
