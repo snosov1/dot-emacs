@@ -27,6 +27,7 @@ about better ways to do something in Emacs.
  - [[#shell-commands][Shell commands]]
  - [[#magit][Magit]]
  - [[#ido-selection][Ido selection]]
+ - [[#buffer-list][Buffer list]]
  - [[#using-external-websites][Using external websites]]
  - [[#window-management][Window management]]
  - [[#embedded-lisp-evaluation][Embedded lisp evaluation]]
@@ -59,7 +60,8 @@ about better ways to do something in Emacs.
 ** Lean and mean
 
 Emacs doesn't need a lot of UI elements - it should be lean and mean. Well, and
-clean. And it should look good on the screen.
+clean. And it should look good on the screen. So, let's get rid of unnecessary
+UI elements, like scroll-bar, tool-bar and the ring-bell.
 
 #+BEGIN_SRC emacs-lisp
   (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -121,16 +123,15 @@ Mac, please, enlighten me!
 * Text manipulations
 
 Some people mistakenly call Emacs a text editor. But, hey, what can you do -
-total ignorance has become a common practice long time ago. And, frankly
-speaking, these people have a point.
+total ignorance has become a common practice long time ago. And, admittedly,
+these people have a point.
 
 ** Delete selection
 
-If you have a selected region and perform a delete, yank or insert operation,
-the selected region should be deleted. It's not a default Emacs behavior, and if
-you think about it, the default behavior seems to make more sense. But,
-practically, everybody else has it by default, and the whole thing is not that
-big of a deal, so what the hell.
+If you perform a delete, yank or insert operation after selecting a region, the
+region should be deleted. It's not a default Emacs behavior, but, practically,
+everybody else does it by default. I don't have a strong opinion on whether it's
+a good thing or not, so I follow the fashion.
 
 #+BEGIN_SRC emacs-lisp
   (delete-selection-mode 1)
@@ -141,7 +142,7 @@ big of a deal, so what the hell.
 There's a default binding =M-^=, which takes the current line and puts in the
 end of the previous one. A fell in love with it from the first day I came
 across. But, actually, putting the next line in the end of the current one is a
-better design for the same functionality.
+much better design for the same functionality.
 
 #+BEGIN_SRC emacs-lisp
   (define-key global-map (kbd "M-j")
@@ -178,8 +179,8 @@ nicely complements subword functionality in that regard:
 ** Backspace
 
 Emacs has 2 bindings with slightly different meaning for the =Enter= key - =C-j=
-and =C-m=. That's a good thing, because =Enter= is a frequently used, but pretty
-distant key.
+and =C-m=. That's a good thing, because =Enter= is a frequently used, but a
+pretty distant key.
 
 And you may wonder - what about =Backspace=? Why doesn't it have a better
 binding as well?
@@ -193,7 +194,7 @@ beginning of Emacs history. Don't believe me? Want evidence? You can check
 everything yourself!
 
 Clone an Emacs git repository and checkout the revision number
-d7cc518448c8af66db86a842bbd0372e7e13a95a.
+=d7cc518448c8af66db86a842bbd0372e7e13a95a=.
 
 You'll find yourself in a distant 1988. That's a first time known by Emacs
 revision history, when a =C-h= binding was mentioned.
@@ -220,17 +221,16 @@ following, very suspicious code there:
 Pay attention to the first 2 lines of the code and to the very last one.
 
 You see now? Those darn villains sabotaged Emacs, when they understood that
-everything is finished for them. That they cannot hold a competition against
-Emacs. So, they came up with their evil plan.
+everything is finished for them. So, they came up with their evil plan.
 
-Don't know about you, but I've seen enough evidence to be totally confident,
+Don't know about you, but it's enough evidence for me to be totally confident,
 that it was a planned Vi fans demarche against Emacs. I can even assume, that
 FBI and CIA were also involved. Which is the most likely reason, why Mr.
 Stallman is so opposed to them. And what a disgusting, smug name for a mode -
 VIP.
 
-But it's not the time to enjoy ourselves with this finding. It's time to fight
-and restore justice! Time to take back what rightly belongs to us!
+But it's time to fight and restore justice! Time to take back what rightly
+belongs to us!
 
 #+BEGIN_SRC emacs-lisp
   (define-key key-translation-map [?\C-h] [?\C-?]) ;; translate C-h to DEL
@@ -244,7 +244,7 @@ There's a nice binding =M-z=, which kills up to and including next occurrence of
 the provided character.
 
 But there's also an alternative function in the =misc= module, which kills up to
-the provided character, EXCLUDING it.
+the provided character, /excluding/ it.
 
 #+BEGIN_SRC emacs-lisp
   (require 'misc)
@@ -276,10 +276,9 @@ but the bindings are pretty awkward. So I make it much easier to access:
 #+END_SRC
 ** Move text
 
-If you need to move text to some pretty distant place, then, of course, it's
-easier to kill and yank it. But if you simply need to swizzle lines around a
-bit, then =M-n= and =M-p= bindings are a natural way to think about it and do
-it.
+If you need to move the text to some pretty distant place, then, of course, it's
+easier to kill and yank it. But if you simply need to lines around a bit, then
+=M-n= and =M-p= bindings are a natural way to think about it.
 
 #+BEGIN_SRC emacs-lisp
   (defun move-text-internal (arg)
@@ -361,9 +360,9 @@ and start moving to previous occurrences. I find it rather confusing.
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 #+END_SRC
 
-Then, if you select a region that lies on a single line entirely, then
-incremental searching (=C-s= and =C-r=) will use it as an initial value and make
-a first jump. The common way I use it is:
+If you select a region that lies on a single line entirely, then incremental
+searching (=C-s= and =C-r=) should use it as an initial value and make a first
+jump. The common way I use it is:
 
 - mark a word or a longer unit with =er/expand-region= (=C-==)
 - press =C-s= or =C-r= to jump to the next or previous occurrence
@@ -392,9 +391,9 @@ a first jump. The common way I use it is:
   (define-key global-map [remap isearch-backward] (smart-isearch backward))
 #+END_SRC
 
-Similarly, =occur= (=M-s o=) will use the selected region, if any, without
-prompting. By the way, you can press =M-s o= during incremental search to
-call =occur= for the current search string.
+Similarly, =occur= (=M-s o=) should use the selected region, if any, without
+prompting. By the way, you can press =M-s o= during incremental search to call
+=occur= for the current search string.
 
 #+BEGIN_SRC emacs-lisp
   (define-key global-map [remap occur]
@@ -415,11 +414,10 @@ read-only buffer states. It's better for occur mode to follow this convention.
 
 ** Beginning of line
 
-When jumping to the beginning of line, more often than not you actually want to
-jump to the first non-whitespace character. So, the default behavior of
-=beginning-of-line= (=C-a=) is remapped to =back-to-indentation=. In case you
-actually wanted to go to the very beginning of the line, you should hit =C-a=
-one more time.
+More often than not, you want to jump to the first non-whitespace character,
+when you jump to the beginning of the line. So, it makes sense to rebind the
+default behavior of =beginning-of-line= (=C-a=). In case you actually wanted to
+go to the very beginning of the line, you should hit =C-a= one more time.
 
 #+BEGIN_SRC emacs-lisp
   (define-key global-map [remap move-beginning-of-line]
@@ -435,11 +433,12 @@ one more time.
              (beginning-of-line)))))
 #+END_SRC
 
-** Free advice
+** Auto-indent after yank
 
 It is so natural and convenient for the just yanked region to be properly
 indented, that I got used to this functionality even before I turned it on. On
-the rare occasions you can use universal argument to suppress auto indentation.
+the rare occasions, when you don't need it, you can use the universal argument
+to suppress auto indentation.
 
 #+BEGIN_SRC emacs-lisp
   (defadvice insert-for-yank-1 (after indent-region activate)
@@ -462,10 +461,10 @@ that don't follow it.
 
 However, I find that =view-mode= for most of the buffers provides a better
 alternative to simple read-only toggle. It has some additional navigation
-functions, and also, you can use shorter bindings (leaving the =C-= modifier)
+functions, and also, you can use shorter bindings (omitting the =C-= modifier)
 for common operations.
 
-There's some kind of Vimy flavor to it and, eventually, when I use it I find
+There's some kind of Vimy flavor to it and, eventually, when I use it, I find
 myself thinking "How can those Vim people live switching between editing and
 viewing modes all the time? Weirdest guys."
 
@@ -500,8 +499,8 @@ seem like a useless function, but it turns out to be pretty handy as well.
 
 Consider a case, when you're writing an e-mail which is going to be posted to
 some news group and displayed via web interface. If the width of the field for
-your e-mail is lesser that your =fill-column= value, then it will look ugly.
-E.g. you send the following text:
+your e-mail is lesser that your =fill-column= value, it will look ugly. E.g. you
+send the following text:
 
 #+BEGIN_EXAMPLE
   This is not a very long sentence, but it's long enough to occupy 2 lines for your
@@ -524,8 +523,8 @@ look something like this:
 You get those 2 short, ugly lines.
 
 In order to workaround this, you can rely on the web interface (or any other
-client, that will render an e-mail) and perform =unfill-region= before sending
-it.
+client, that will render an e-mail) to perform "filling" and issue an
+=unfill-region= command before sending.
 
 To do this, simply select the text and provide a universal argument: =C-u M-q=.
 
@@ -581,8 +580,8 @@ simply "y". I say "y" is sufficient in both cases.
 #+END_SRC
 
 When you press =C-x=, for example, and hesitate with a next character, =C-x=
-will displayed in the echo-area after some time. But I don't see any reason why
-you should wait for it.
+will be displayed in the echo-area after some time. But I don't see any reason
+why you should wait for it.
 
 #+BEGIN_SRC emacs-lisp
   (setq echo-keystrokes 0.001)
@@ -607,9 +606,9 @@ bit harder.
 ** Backups
 
 It was hard for me to remember, whether you have to press =C-x C-f= to find a
-file or =C-x f=. Also, sometimes I simply made a typo. Making both bindings to
-do the same turned out to be a reasonable solution, which I applied in other
-cases as well.
+file or =C-x f=. Also, sometimes I simply was making typos. Assigning both
+bindings to the same function turned out to be a reasonable solution, which I
+applied in other cases as well.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x f") 'find-file)
@@ -623,7 +622,7 @@ As you may know, dired stands for DIRectory EDitor and it is, basically, a file
 manager inside Emacs.
 
 I consider dired a truly amazing piece of software. More than anything, it makes
-the job done without over-complication on implementation or interface side.
+the job done without over-complication on implementation and interface side.
 
 #+BEGIN_SRC emacs-lisp
   (require 'dired-x nil t)
@@ -635,7 +634,7 @@ module. When visiting a file, =C-x C-j= opens current directory in dired. When
 already in dired, it jumps to the parent directory. With universal argument -
 =C-u C-x C-j= - it opens dired in other window.
 
-Note, that in Dired and in View mode it is also bound to a nice shortcut - =j=.
+Note, that Dired and View mode allow you to omit the =C-= modifier quite often.
 So, if you want to traverse some tree and have a quick look into some files, you
 can use one-letter commands for navigation. You only need to use =v= to open
 files in =view-mode= and =j= - to jump back to dired.
@@ -652,7 +651,7 @@ files in =view-mode= and =j= - to jump back to dired.
 #+END_SRC
 
 ** Dired details
-=dired-details= module helps to hide a lot of unnecessary information inside
+=dired-details= module helps you to hide a lot of unnecessary information inside
 dired. You can toggle its visibility by pressing =h=:
 
 #+BEGIN_SRC emacs-lisp
@@ -812,7 +811,8 @@ first guess.
                               (mapconcat 'identity files " "))))))
 #+END_SRC
 
-While we're at it, let's make =tar-mode= more confident in reverting buffers.
+While we're at it, let's make =tar-mode= more self-confident in reverting
+buffers.
 
 #+BEGIN_SRC emacs-lisp
   (when (require 'tar-mode nil t)
@@ -827,7 +827,7 @@ While we're at it, let's make =tar-mode= more confident in reverting buffers.
 
 If you open several files with the same name, then a good way to distinguish
 between those is to prepend parent directory names to file names. If the names
-still conflict, you can add another parent directory levels, until the clash is
+still conflict, you can add other parent directory levels, until the clash is
 resolved
 
 #+BEGIN_SRC emacs-lisp
@@ -861,8 +861,8 @@ the buffer name.
 
 ** Rename buffer
 
-In case you have a better name for a buffer, you can always rename it by
-pressing =C-x C-r=.
+In case you have a better name for a buffer in your head, you can always rename
+it by pressing =C-x C-r=.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "\C-x\C-r") 'rename-buffer)
@@ -878,11 +878,11 @@ identifiers like "src", "lhs", "rhs", "ptr", "uniq", "img", "gl", "qq" and a
 gazillion of other pretty names. But, for that, we have a =flyspell-prog-mode=
 which checks spelling only in strings and comments.
 
-By default, only words under the cursor are checked for correctness. So, if you
-want to spell check the whole buffer (or region), hit =C-x M-$=. When the cursor
-is under the red-highlighted word, you can press =M-$= to look for alternative
-spellings. To go to the next error, hit "C-,". To auto-correct the next word,
-hit =C-.=.
+By default, only the words under the cursor are checked for correctness. So, if
+you want to spell check the whole buffer (or region), hit =C-x M-$=. When the
+cursor is under the red-highlighted word, you can press =M-$= to look for
+alternative spellings. To go to the next error, hit "C-,". To auto-correct the
+next word, hit =C-.=.
 
 I edit texts in both Russian and English and I have to spell-check both of the
 languages. To toggle between those dictionaries I use =C-c M-$=. If you want to
@@ -920,9 +920,9 @@ the =ispell-common-dictionaries= variable.
 * Fighting escape sequences in strings
 
 It is frustratingly difficult to follow special characters and sequences in
-strings. Especially, in regular expressions, where you have 2 levels deep
-languages hierarchy. This leads to strings, like, =\\\\= (4 backslashes) for
-matching a =\= (single backslash).
+strings. Especially, in regular expressions, where you have languages hierarchy
+2 levels deep. This leads to strings, like, =\\\\= (4 backslashes) for matching
+a =\= (single backslash).
 
 With string-edit mode you can press =C-c e= to edit a string at point without
 escape sequences, breaking one level of nesting.
@@ -972,10 +972,9 @@ with it:
   opening parenthesis - =c-electric-paren=, which sometimes indents the current
   line among other things. So, if you're using =autopair=, you're losing this
   behavior.
-- And, kind of a follow-up, =autopair= was doing a lot of fancy stuff
-  out-of-the-box and I constantly had to fight my way through to make it as
-  unobtrusive as possible. And still, I kept encountering corner cases, when it
-  tried to be smarter than it should.
+- And =autopair= was doing a lot of fancy stuff out-of-the-box, so I constantly
+  had to fight my way through to make it as unobtrusive as possible. And still,
+  I kept encountering corner cases, when it tried to be smarter than it should.
 
 Probably, after fighting long enough, I could make =autopair= work as I wanted
 it to. But why fight so hard, if I knew I could implement the desired
@@ -1011,7 +1010,7 @@ rather uses =self-insert-command=, which is not correct in general case. Also,
 it has an annoying half-of-a-second delay after inserting the closing pair. And
 it doesn't have the shiny auto-indentation functionality for ={=, which I became
 addicted to over the years! And also... forget it, simply use =dummyparens= -
-this whole topic isn't worth so many words. AND I'M NOT MAD!
+this whole topic isn't worth so many words.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "dummyparens-autoloads"
@@ -1021,22 +1020,22 @@ this whole topic isn't worth so many words. AND I'M NOT MAD!
          (message "WARNING: dummyparens not found"))))
 #+END_SRC
 
-For the opposite functionality - removing parenthesis in pair - I use the
-=C-S-h= binding, backed by the =paredit= mode. It has far more features and,
-actually, provides a somewhat revolutionary way to edit Abstract Syntax Trees
-(AST) directly. But I don't write a lot of Lisp and I even don't write a lot of
-HTML. So, I don't have a strong need for that kind of editing power.
+For the opposite functionality - removing parenthesis in pair - I use the =C-H=
+binding, backed by the =paredit= mode. It has far more features and, actually,
+provides a somewhat revolutionary way to edit Abstract Syntax Trees (AST)
+directly. But I don't write a lot of Lisp and I even don't write a lot of HTML.
+So, I don't have a strong need for that kind of editing power.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "paredit-autoloads"
     '(progn
        (when (require 'paredit nil t)
-         (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))))
+         (global-set-key (kbd "C-H") 'paredit-splice-sexp))))
 #+END_SRC
 
 Also, it's good to see matching symbols of the pairs. Packages, like
-=rainbow-delimeters=, are too much for me, and the built-in solution is
-precisely what the doctor ordered.
+=rainbow-delimeters=, are too much for me and the built-in solution is precisely
+what the doctor ordered.
 
 #+BEGIN_SRC emacs-lisp
   (show-paren-mode 1)
@@ -1105,8 +1104,8 @@ If I were to implement a Markdown mode, I would try to mimic it as closely to
 =org-mode= as possible. But, apparently, =markdown-mode= authors have another
 point of view, so the mode is different in almost everything it does.
 
-So, the only things, that I actually use in this mode is syntax highlighting and
-a =markdown-export= function (=C-c C-e=).
+The only things, that I actually use in this mode are syntax highlighting and a
+=markdown-export= function (=C-c C-e=).
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "markdown-mode-autoloads"
@@ -1138,8 +1137,8 @@ There's kind of a funny story around this functionality. Somebody asked a
 started to dig.
 
 Surprisingly, there was a built-in function for that, called
-=c-lineup-cascaded-calls=, so you all you had to do is to put it in the right
-place. But where is that place?
+=c-lineup-cascaded-calls=, so all you had to do is to put it in the right place.
+But where is that place?
 
 Turns out there's a =c-offsets-alist= variable, which contains the indentation
 rules in the following format: =(<applicable place> . <rule>)=. Here,
@@ -1167,7 +1166,7 @@ didn't work in some important cases:
 I posted a dirty rewrite of =c-lineup-cascaded-calls= to the StackOverflow
 answer and it went right down to the =d-mode= repository, so I had to enable it
 in my setup. Not that I find this indentation strategy particularly useful, but
-I don't feel like dropping it after putting so much effort into it.
+I don't feel like dropping it after spending so much effort.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "d-mode-autoloads"
@@ -1221,10 +1220,9 @@ There are just a couple of minor things about C and C++:
 
 ** Emacs Lisp
 
-Surprisingly, Emacs has really great support for writing Emacs Lisp. It has
-fabulous out-of-the-box solutions for debugging (via =edebug=), testing (via
-=ert=), documenting and navigating the source code. The tweaking I do is mostly
-cosmetic.
+Emacs has a surprisingly great support for writing Emacs Lisp. It has fabulous
+out-of-the-box solutions for debugging (=edebug=), testing (=ert=), documenting
+and navigating the source code. The tweaking I do is mostly cosmetic.
 
 When you run the tests using =M-x ert=, it creates a buffer with the results.
 And since I'm used to using =g= to revert the contents of such "not-really-text"
@@ -1242,8 +1240,8 @@ source code first, then load an index file (called "tags file" or "tags table")
 and search through it looking for necessary symbols.
 
 But since Emacs knows about all the Emacs Lisp symbols, that are defined, you
-don't need an explicit step of tags generation. However, you can use =M-.= and
-=M-*= commands in the exact same manner with just a little tweaking.
+don't need an explicit step of tags generation. You can use =M-.= and =M-*=
+commands in the exact same manner with just a little tweaking.
 
 #+BEGIN_SRC emacs-lisp
   (require 'etags)
@@ -1260,7 +1258,7 @@ don't need an explicit step of tags generation. However, you can use =M-.= and
 ** Log files
 
 Log files are not specific to any particular programming language. But the thing
-all logs have in common is that they are most often cumulative. So, you probably
+all logs have in common is that those are often cumulative. So, you, probably,
 want to update the contents of log files as they appear. =auto-revert-tail-mode=
 makes it possible.
 
@@ -1268,10 +1266,10 @@ makes it possible.
   (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
 #+END_SRC
 
-** Misc
+** Miscellaneous
 
-Nothing special, really. Here, I mostly disable the mode-local bindings, so
-global bindings are used instead.
+Nothing special, really. Here, I mostly specify mode extensions and disable the
+mode-local bindings, so global bindings are used instead.
 
 *** YAML
 
@@ -1341,12 +1339,12 @@ Most of the time, I use one of two ways to issue a shell command - =M-&= or =C-c
 C-c=. The differences between those is not that big, but quite important:
 
 - There can exist only one compile buffer at a given moment. So, if a
-  compilation is in progress, another execution will ask you if you want to
-  terminate it. But you can have arbitrarily many asynchronous shell commands at
-  any time.
+  compilation is in progress, =compile= execution will ask you if you want to
+  terminate the ongoing thing. On the contrary, you can have arbitrarily many
+  asynchronous shell commands at any time.
 - Compile buffer is read-only and async-shell buffers are editable.
-- Compile buffer colors the output and parses the output to be able to jump to
-  source code. Async-shell buffer doesn't do anything fancy.
+- =compile-mode= colors and parses the output to be able to jump to source code.
+  =shell-mode= doesn't do anything fancy.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default async-shell-command-buffer (quote new-buffer))
@@ -1391,25 +1389,25 @@ employ it. And when sometimes you see a different solution - you feel awkward,
 at least.
 
 Like, for example, it's not that easy to find a modern widespread editor without
-"tabs", i.e. some kind of bookmarks at the top for different files. Also, every
-desktop browser, that I know of, uses this "tabs" design to allow switching
-among different pages.
+"tabs", i.e. some kind of bookmarks at the top. Also, every desktop browser,
+that I know of, uses this "tabs" design to allow switching among different
+pages.
 
-Emacs windows and buffers system serves the same purpose as this "tabs" design.
-And the more I used it, the more I realized, that it was a way better design for
-what it does.
+Windows and buffers system of Emacs serves the same purpose as "tabs". And the
+more I use it, the more I realize, that it's a way better design.
 
-But I was feeling awkward using it. And =ido= made this awkwardness feel really
-pleasant. Now I'll give it away only when you pry it from my cold, dead hands.
+But I was feeling awkward using it at first. =ido= really made this awkwardness
+feel pleasant. Now I'll give it away only when you pry it from my cold, dead
+hands.
 
 For me, it works great as-is with flexible matching enabled. Personally, I don't
-see the point of =ido-flx= and relatives. I really don't get what problems those
+see the point of =ido-flx= and relatives. I simply don't get what problems those
 packages are trying to solve. Also, I like the vanilla "horizontal" ido more,
 not the "vertical" modification.
 
 So, the only interesting thing I can tell about my =ido= setup is that buffer
-switching is bound to =C-TAB=. The idea came to me from desktop browsers. One
-thing about it - it's a shorter and easier alternative to =C-x b=. And the other
+switching is bound to =C-TAB=. The idea came from desktop browsers. One thing
+about it - it's a shorter and easier alternative to =C-x b=. And the other
 thing, which was a nice surprise to me, but may be a controversy to others - it
 is not representable by an ASCII sequence, so it won't work in a terminal.
 
@@ -1433,7 +1431,7 @@ handled specially in =term-mode=. But it's not as convenient as =C-TAB=.
 There are some modes, like, =ido-ubiquitous=, which enable =ido= in almost every
 "completing situation". But I find that =ido= doesn't really shine in a lot of
 other situations, so I prefer using it only for buffers, files and =M-x=
-completions. For the latter I use =smex=, because it does it right.
+completions. For the latter I use =smex=, because it does things right.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "smex-autoloads"
@@ -1444,6 +1442,8 @@ completions. For the latter I use =smex=, because it does it right.
              (global-set-key (kbd "M-x") 'smex))
          (message "WARNING: smex not found"))))
 #+END_SRC
+
+* Buffer list
 
 Not a lot of people know this, but the trend to add "i"s to words to make them
 look iCool was popular in Emacs long before Apple had came about. Behold another
@@ -1479,7 +1479,7 @@ Googling today became so common, that the corresponding word became an official
 English word according to the Oxford dictionary. Now, we take it to another
 level, and add an Emacs keybinding to google even faster!
 
-If the region is selected, when you press =C-c g=, it will google it. Otherwise,
+If the region is selected when you press =C-c g=, it will google it. Otherwise,
 it will query for the text to be googled.
 
 Similarly, you can use =C-c l= to lingvo something (translate from Russian to
@@ -1509,8 +1509,8 @@ functions.
 * Window management
 ** Selecting windows
 
-For some reason, Emacs has at least 4 different bindings to provide a prefix
-argument to a function:
+Emacs has at least 4 different bindings to provide a prefix argument to a
+function:
 1. =C-u <argument> <command>=
 2. =C-<argument> <command>=
 3. =M-<argument> <command>=
@@ -1518,31 +1518,31 @@ argument to a function:
 
 I can more or less understand why you need an alternative to the first option.
 But why do you need all 2-3-4, which are about the same? Especially, given those
-bindings are quite good bindings - brief and convenient. Something you have a
-shortage of in Emacs.
+bindings are quite good - brief and convenient. Something you have a shortage of
+in Emacs.
 
-So, it's obvious, we should bind 2 of those to something else. We only have to
-find an appropriate functionality. And the =window-numbering= mode author has a
-brilliant idea for third option rebinding.
+I believe, it's obvious, that we should bind 2 of those to something else. We
+only have to find an appropriate functionality. And the =window-numbering= mode
+author has a brilliant idea in mind.
 
-My only way of windows switching was to use the =C-x o= binding, which works
-fine, when you have only 2 windows. Admittedly, it is the case for me 95% of the
-time. I was struggling during the last 5% of the time, but thought, that it's
-something I can live with.
+Previously, I used =C-x o= binding to switch windows. And it works fine, when
+you have only 2 of those. Admittedly, it's the case for me 95% of the time. The
+remaining 5% weren't very pleasant, but I thought, that it's something I can
+live with.
 
-And then I came across the =window-numbering= mode which made a lot of sense to
-me. Using =M-<number>= to switch between windows is a perfect crime.
+Then I came across the =window-numbering= mode which made a lot of sense to me.
+Using =M-<number>= to switch windows is a perfect match!
 
-At first, I didn't use it that much, because of the habit. But every time I was
-in the "5% zone" I immediately remembered about this mode and used it happily.
-Now, having this mode around for quite some time already, I find myself using it
+At first, I didn't use it that often, because of the habit. But every time I was
+in the "5% zone" I immediately remembered about =window-numbering= and used it
+happily. Having this mode around for quite some time, I find myself using it
 more and more often.
 
 In fact, this mode makes so much sense to me, that when I advertise Emacs to
-others, I present =window-numbering= way of windows switching as the default
-one. And I haven't yet seen anybody to have issues with that.
+others, I present =window-numbering= way of windows switching as default. And I
+haven't yet seen anybody to have any issues with that.
 
-The last thing I should say about is that =M-0= takes you to minibuffer by
+The last thing I should mention is that =M-0= takes you to minibuffer by
 default, which is also very handy.
 
 A very nice mode.
@@ -1558,7 +1558,7 @@ A very nice mode.
          (message "WARNING: window-numbering-mode not found"))))
 #+END_SRC
 
-** Messing around
+** Messing windows around
 
 As I've said, I use 2 buffers almost all the time. And I have 2 handy functions
 for that case.
