@@ -43,12 +43,14 @@ about better ways to do something in Emacs.
  - [[#auto-completion][Auto-completion]]
  - [[#org][Org]]
  - [[#expand-region][Expand region]]
- - [[#jump-to-declaration][Jump to declaration]]
+ - [[#jump-to-definition][Jump to definition]]
  - [[#emacs-server][Emacs server]]
  - [[#whitespaces][Whitespaces]]
  - [[#user-friendliness][User-friendliness]]
  - [[#regional-settings][Regional settings]]
  - [[#scrolling][Scrolling]]
+ - [[#line-wrap][Line wrap]]
+ - [[#increment-number-at-point][Increment number at point]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -339,13 +341,13 @@ maintaining the original intent and implementation.
 
 First of all, let's make =isearch= more "stateless". By default, after you make
 a first jump to the next occurrence, =backspace= will stop deleting characters
-and start moving to previous occurrences. I find it pretty confusing.
+and start moving to previous occurrences. I find it rather confusing.
 
 #+BEGIN_SRC emacs-lisp
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 #+END_SRC
 
-Then, if you select a region, that entirely lies on a single line, then
+Then, if you select a region that lies on a single line entirely, then
 incremental searching (=C-s= and =C-r=) will use it as an initial value and make
 a first jump. The common way I use it is:
 
@@ -1220,10 +1222,10 @@ buffers, it's better for it to work there as well.
     'ert-results-rerun-all-tests)
 #+END_SRC
 
-For jumping to symbol declarations I use the tags machinery. You can read about
-in the respective section - [[#jump-to-declaration][Jump to declaration]]. In short, you index your source
-code first, then load an index file (called "tags file" or "tags table") and
-search through it looking for necessary symbols.
+For jumping to symbol definitions I use the tags machinery. You can read about
+it in the respective section - [[#jump-to-definition][Jump to definition]]. In short, you index your
+source code first, then load an index file (called "tags file" or "tags table")
+and search through it looking for necessary symbols.
 
 But since Emacs knows about all the Emacs Lisp symbols, that are defined, you
 don't need an explicit step of tags generation. However, you can use =M-.= and
@@ -2971,7 +2973,7 @@ characters =expand-region= alternative.
           (insert ?\"))))
 #+END_SRC
 
-* Jump to declaration
+* Jump to definition
 
 One of the reasons I switched to Emacs from commonly used IDEs (Visual Studio,
 Qt Creator, Eclipse, etc.) was the enormous bloat that came with those. It
@@ -3012,9 +3014,9 @@ Emacs has a different approach to solving complex problems. It doesn't pretend
 that complex problems are easy. On the contrary, it shows you the steps, that
 must be taken to solve it and what are the possible ways and their trade-offs.
 
-The problem we're going to talk about today is "jump to declaration". Unlike,
+The problem we're going to talk about today is "jump to definition". Unlike,
 "intellectual" [[#auto-completion][Auto-completion]], which I find practically useless, jumping to
-declaration is, actually, quite handy.
+definition is, actually, quite handy.
 
 The common IDE solution is to index the code in background with some heuristics.
 It works mostly reasonable, but there are at least 3 issues.
@@ -3034,10 +3036,10 @@ machine via =ssh=.
 
 The alternative approach, used by Emacs and others, is to use a helper program,
 like =ctags=, to generate the index of the source code. The index has an
-information about all function and type declarations in the sources. In case of
+information about all function and type definitions in the sources. In case of
 =ctags= and similar programs, the index is also called a "tags file". Because
 it's just a single file with the name =TAGS=. Essentially, it consists of
-records, like "declaration string, source file, line in the file". However, the
+records, like "definition string, source file, line in the file". However, the
 actual binary representation may be different.
 
 To generate the index you can use =M-x update-tags-file= (=C-x C-u=).
@@ -3053,10 +3055,10 @@ ctags=).
 
 If the index was already generated, you can use =M-x visit-tags-table= (=C-x
 C-v=) to simply load it. After the tags table is loaded you can call =M-x
-find-tag= (=M-.=) to jump to declaration and =M-x pop-tag-mark= (=M-*=) to jump
-back. If you jumped not to the declaration you wanted, you can provide a
+find-tag= (=M-.=) to jump to definition and =M-x pop-tag-mark= (=M-*=) to jump
+back. If you jumped not to the definition you wanted, you can provide a
 universal argument, like, =C-u M-.=, to jump to the next candidate. When I can't
-get to the desired declaration after several jumps, I resort to =M-x
+get to the desired definition after several jumps, I resort to =M-x
 tags-apropos= (=C-x C-l=). It gives you a list of all tags matching the provided
 regexp.
 
@@ -3078,7 +3080,7 @@ and other "non-source" files there, but still.
 The indexing process took something like 15 minutes, which may seem like a lot,
 but I doubt that you'll be doing this every day. The resulting tags file was
 about 1 Gb, which is not small as well, but it took roughly 2 seconds to jump to
-a declaration. So, it's absolutely usable.
+a definition. So, it's absolutely usable.
 
 Also, mind, that I carried out this experiment for academic purposes only. In
 practice, you won't need an index of the whole tree. Most likely, you will work
@@ -3140,6 +3142,7 @@ still access it via unified Emacs-ish interface.
           (shell-command (read-from-minibuffer "ctags command: "  ctags-command)))
         (visit-tags-table tags-file-name))))
 
+  (setq-default tags-case-fold-search nil)
   (global-set-key "\C-x\C-v" 'visit-tags-table)
   (global-set-key "\C-x\C-l" 'tags-apropos)
   (global-set-key "\C-x\C-t" 'tags-reset-tags-tables)
@@ -3361,31 +3364,56 @@ cursor by paragraph is something in between those 2 options.
   (global-set-key (kbd "C-M-l") 'recenter-top-bottom)
 #+END_SRC
 
+* Line wrap
+
+I guess, it's a matter of taste, whether long lines should be wrapped or
+truncated. I prefer the latter by default. In the rare cases, when I need to see
+the whole line at once, I use =C-x t=.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default truncate-lines t)
+  (global-set-key (kbd "C-x t") 'toggle-truncate-lines)
+#+END_SRC
+
+* Increment number at point
+
+When I just started using Emacs, I came upon a blog post. It described how you
+can define a function to do something with the value at point. I don't remember
+precisely, but it was something about converting geographic coordinates. At that
+time I thought - "Why would anybody want to do that?".
+
+But after I got more familiar with Emacs Lisp and writing a small function was
+no longer a problem to me, I'm thinking "Why wouldn't you do that?".
+
+Not every such operation deserves a dedicated binding, but incrementing a number
+at point is, probably, universal enough.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key "\C-c+"
+    (defun increment-decimal-number-at-point (&optional arg)
+      "Increment the number at point by `arg'."
+      (interactive "p*")
+      (save-excursion
+        (save-match-data
+          (let (inc-by field-width answer)
+            (setq inc-by (if arg arg 1))
+            (skip-chars-backward "0123456789")
+            (when (re-search-forward "[0-9]+" nil t)
+              (setq field-width (- (match-end 0) (match-beginning 0)))
+              (setq answer (+ (string-to-number (match-string 0) 10) inc-by))
+              (when (< answer 0)
+                (setq answer (+ (expt 10 field-width) answer)))
+              (replace-match (format (concat "%0" (int-to-string field-width) "d")
+                                     answer))))))))
+#+END_SRC
+
+
 * Unstructured configuration
 
 Right now this section is simply a copy-paste of my old configuration. I
 gradually move things from this section to separate ones.
 
 #+BEGIN_SRC emacs-lisp
-  ;; ------------------------------------------------------------
-  ;; DEFUNS
-
-  (defun increment-decimal-number-at-point (&optional arg)
-    "Increment the number at point by `arg'."
-    (interactive "p*")
-    (save-excursion
-      (save-match-data
-        (let (inc-by field-width answer)
-          (setq inc-by (if arg arg 1))
-          (skip-chars-backward "0123456789")
-          (when (re-search-forward "[0-9]+" nil t)
-            (setq field-width (- (match-end 0) (match-beginning 0)))
-            (setq answer (+ (string-to-number (match-string 0) 10) inc-by))
-            (when (< answer 0)
-              (setq answer (+ (expt 10 field-width) answer)))
-            (replace-match (format (concat "%0" (int-to-string field-width) "d")
-                                   answer)))))))
-
   ;; ------------------------------------------------------------
   ;; CUSTOMIZED
 
@@ -3395,17 +3423,13 @@ gradually move things from this section to separate ones.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
    '(async-shell-command-buffer (quote new-buffer))
-   '(create-lockfiles nil)
-   '(tags-case-fold-search nil)
-   '(truncate-lines t))
+   '(create-lockfiles nil))
 
   ;; ------------------------------------------------------------
   ;; KEY BINDINGS
 
   ;; global
-  (global-set-key (kbd "C-x t")       'toggle-truncate-lines)
   (global-set-key (kbd "\C-c\C-o")    'find-file-at-point)
-  (global-set-key "\C-c+"             'increment-decimal-number-at-point)
 
   ;; ------------------------------------------------------------
   ;; MISCELLANEOUS CONFIGS
