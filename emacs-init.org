@@ -24,6 +24,7 @@ about better ways to do something in Emacs.
  - [[#fighting-escape-sequences-in-strings][Fighting escape sequences in strings]]
  - [[#parenthesis-for-dummies][Parenthesis for Dummies]]
  - [[#programming-languages][Programming languages]]
+ - [[#shell-commands][Shell commands]]
  - [[#magit][Magit]]
  - [[#ido-selection][Ido selection]]
  - [[#using-external-websites][Using external websites]]
@@ -37,7 +38,7 @@ about better ways to do something in Emacs.
  - [[#sudo-edit][Sudo edit]]
  - [[#ediff][Ediff]]
  - [[#diff][Diff]]
- - [[#term][Term]]
+ - [[#terminal][Terminal]]
  - [[#grepping][Grepping]]
  - [[#hideshow-blocks][Hide/show blocks]]
  - [[#auto-completion][Auto-completion]]
@@ -1322,6 +1323,23 @@ global bindings are used instead.
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
 #+END_SRC
+* Shell commands
+
+Most of the time, I use one of two ways to issue a shell command - =M-&= or =C-c
+C-c=. The differences between those is not that big, but quite important:
+
+- There can exist only one compile buffer at a given moment. So, if a
+  compilation is in progress, another execution will ask you if you want to
+  terminate it. But you can have arbitrarily many asynchronous shell commands at
+  any time.
+- Compile buffer is read-only and async-shell buffers are editable.
+- Compile buffer colors the output and parses the output to be able to jump to
+  source code. Async-shell buffer doesn't do anything fancy.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default async-shell-command-buffer (quote new-buffer))
+#+END_SRC
+
 * Magit
 
 There's not enough words in any human language to describe the brilliance of
@@ -2181,7 +2199,7 @@ So, I need to perform surgery on the =diff-mode= and override its
   (set-face-attribute 'diff-removed nil :background nil :foreground "tomato")
   (set-face-attribute 'diff-refine-removed nil :background "#553333")
 #+END_SRC
-* Term
+* Terminal
 
 I don't need an actual terminal emulator often, because I can issue shell
 commands with =M-&= and =C-c C-c=. But sometimes I do need a terminal. And when
@@ -3439,16 +3457,6 @@ Right now this section is simply a copy-paste of my old configuration. I
 gradually move things from this section to separate ones.
 
 #+BEGIN_SRC emacs-lisp
-  ;; ------------------------------------------------------------
-  ;; CUSTOMIZED
-
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(async-shell-command-buffer (quote new-buffer)))
-
   ;; ------------------------------------------------------------
   ;; KEY BINDINGS
 
