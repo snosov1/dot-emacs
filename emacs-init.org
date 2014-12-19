@@ -51,6 +51,7 @@ about better ways to do something in Emacs.
  - [[#scrolling][Scrolling]]
  - [[#line-wrap][Line wrap]]
  - [[#increment-number-at-point][Increment number at point]]
+ - [[#auxiliary-files][Auxiliary files]]
  - [[#unstructured-configuration][Unstructured configuration]]
 
 * UI customization
@@ -3407,6 +3408,30 @@ at point is, probably, universal enough.
                                      answer))))))))
 #+END_SRC
 
+* Auxiliary files
+
+Emacs creates some auxiliary files for operation. Some examples include:
+
+- Lock files (symbolic links starting with =.#=). Those files are created when
+  the buffer goes to the "modified" state and denote this fact everybody else.
+  I.e. if the lock file exists it may not be safe for other applications to
+  modify it.
+
+- Auto-save files (start and end with =#=). If the buffer stays in a modified
+  state for some time (1 minute or something), Emacs dumps its contents to an
+  auto-save file.
+
+- Backup files (end with =~=) - second-to-last saved version. It's possible to
+  save those in a separate directory, so they don't create clutter.
+
+  #+BEGIN_SRC emacs-lisp
+    ;; write backup files to own directory
+    (setq backup-directory-alist
+          `(("." . ,(expand-file-name
+                     (concat user-emacs-directory "backups")))))
+    ;; make backups of files, even when they're under version control
+    (setq vc-make-backup-files t)
+  #+END_SRC
 
 * Unstructured configuration
 
@@ -3422,8 +3447,7 @@ gradually move things from this section to separate ones.
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
-   '(async-shell-command-buffer (quote new-buffer))
-   '(create-lockfiles nil))
+   '(async-shell-command-buffer (quote new-buffer)))
 
   ;; ------------------------------------------------------------
   ;; KEY BINDINGS
@@ -3433,13 +3457,6 @@ gradually move things from this section to separate ones.
 
   ;; ------------------------------------------------------------
   ;; MISCELLANEOUS CONFIGS
-
-  ;; write backup files to own directory
-  (setq backup-directory-alist
-        `(("." . ,(expand-file-name
-                   (concat user-emacs-directory "backups")))))
-  ;; make backups of files, even when they're under version control
-  (setq vc-make-backup-files t)
 
   ;; ftp dumb hosts
   (setq-default ange-ftp-dumb-unix-host-regexp
