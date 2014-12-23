@@ -342,7 +342,7 @@ like =string-trim=, =string-join= and etc. It's better to always have these at
 hand.
 
 #+BEGIN_SRC emacs-lisp
-  (require 'subr-x)
+  (require 'subr-x nil t)
 #+END_SRC
 
 * "Smarter" alternatives to built-in functionality
