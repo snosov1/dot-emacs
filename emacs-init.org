@@ -3419,7 +3419,7 @@ no longer a problem to me, I'm thinking "Why wouldn't you do that?".
 ** Increment a number
 
 #+BEGIN_SRC emacs-lisp
-  (define-key "\C-c+"
+  (define-key global-map "\C-c+"
     (defun increment-decimal-number-at-point (&optional arg)
       "Increment the number at point by `arg'."
       (interactive "p*")
