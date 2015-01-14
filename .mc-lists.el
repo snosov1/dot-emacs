@@ -34,6 +34,7 @@
         kill-region
         kmacro-end-or-call-macro
         markdown-cycle
+        markdown-exdent-or-delete
         open-line-indent
         org-backward-sentence
         org-beginning-of-line
