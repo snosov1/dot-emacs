@@ -25,7 +25,10 @@ about better ways to do something in Emacs.
  - [[#parenthesis-for-dummies][Parenthesis for Dummies]]
  - [[#programming-languages][Programming languages]]
  - [[#shell-commands][Shell commands]]
+ - [[#get-full-path][Get full path]]
  - [[#magit][Magit]]
+ - [[#ediff][Ediff]]
+ - [[#diff][Diff]]
  - [[#ido-selection][Ido selection]]
  - [[#buffer-list][Buffer list]]
  - [[#using-external-websites][Using external websites]]
@@ -34,12 +37,9 @@ about better ways to do something in Emacs.
  - [[#field-applications][Field applications]]
  - [[#browse-kill-ring][Browse kill ring]]
  - [[#navigate-to-previous-position][Navigate to previous position]]
- - [[#get-full-path][Get full path]]
  - [[#multiple-cursors][Multiple cursors]]
  - [[#sudo-edit][Sudo edit]]
- - [[#ediff][Ediff]]
- - [[#diff][Diff]]
- - [[#terminal][Terminal]]
+ - [[#terminal-emulator-and-ssh][Terminal emulator and SSH]]
  - [[#grepping][Grepping]]
  - [[#hideshow-blocks][Hide/show blocks]]
  - [[#auto-completion][Auto-completion]]
@@ -1349,6 +1349,59 @@ C-c=. The differences between those is not that big, but quite important:
 #+BEGIN_SRC emacs-lisp
   (setq-default async-shell-command-buffer (quote new-buffer))
 #+END_SRC
+* Get full path
+
+Quite often you need a full path to some file, and there's a plenty of ways to
+get it.
+
+- First, obviously, you can press =C-x C-f= and find your file there.
+- Then, in Dired you can press =w= to get only the name or =C-0 w= to get the
+  full path.
+- Also, you can use the =C-c w= binding to get full path to the current file
+  #+BEGIN_SRC emacs-lisp
+    (define-key global-map (kbd "\C-c w")
+      (defun show-file-name ()
+        "Show the full path file name in the minibuffer and add it to kill ring"
+        (interactive)
+        (message (buffer-file-name))
+        (kill-new (buffer-file-name))))
+  #+END_SRC
+- And the last, but not least, if you have a short path around point, you can
+  use =C-x /= to expand it to a full path. I use this quite often in conjunction
+  with buffer-local =compile-command= setting. If I have a script that I want to
+  run using =compile=, I do the following:
+  - open the script (say, "build-and-run.bash") and press =C-c C-c=
+  - then write "cd ."
+  - press =C-x /= to expand the dot (say, "cd /home/sergei/project/build")
+  - append script execution - "cd /home/sergei/project/build && bash
+    build-and-run.bash"
+
+  Now I can switch to another buffer, press =M-p= after =C-c C-c= and use the
+  same compile command, because the path is absolute.
+
+  #+BEGIN_SRC emacs-lisp
+    (define-key global-map (kbd "C-x /")
+      (defun replace-path-with-truename ()
+        "Replaces the region or the path around point with its true name.
+
+    To get the true name it follows the symbolic links and converts
+    relative paths to absolute."
+        (interactive)
+        (let (bds p1 p2 inputStr resultStr)
+          ;; get current selection or filename
+          (if (region-active-p)
+              (setq bds (cons (region-beginning) (region-end) ))
+            (setq bds (bounds-of-thing-at-point 'filename)))
+          (setq p1 (car bds))
+          (setq p2 (cdr bds))
+
+          (let ((fn (buffer-substring-no-properties p1 p2)))
+            (if (file-exists-p fn)
+                (progn
+                  (delete-region p1 p2 )
+                  (insert (file-truename fn)))
+              (message "Path \"%s\" doesn't exist" fn))))))
+  #+END_SRC
 
 * Magit
 
@@ -1379,6 +1432,111 @@ in silence.
              (global-set-key (kbd "\C-c m")   'magit-status)
              (global-set-key (kbd "\C-c RET") 'magit-status))
          (message "WARNING: magit not found"))))
+#+END_SRC
+* Ediff
+
+In the pre-magit era I had to provide the ediff interface as an external tool to
+the version control systems. It wasn't the most clean experience, but it worked.
+
+Fortunately, now we don't have to resort to hacks like this - we can simply
+press =e= in magit buffer - both to see the diff and resolve conflicts.
+
+The only thing is that the default ediff user experience comes from a stone age,
+so I had to tweak it a bit.
+
+First, a couple of functions to automatically save and restore window
+configuration after ediff session.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ediff)
+
+  (defun ediff-save-window-configuration ()
+    (window-configuration-to-register ?E))
+  (defun ediff-restore-window-configuration ()
+    (jump-to-register ?E))
+
+  (setq-default ediff-before-setup-hook (quote (ediff-save-window-configuration)))
+  (setq-default ediff-quit-hook (quote (ediff-cleanup-mess ediff-restore-window-configuration exit-recursive-edit)))
+  (setq-default ediff-suspend-hook (quote (ediff-default-suspend-function ediff-restore-window-configuration)))
+#+END_SRC
+
+Then, I don't want ediff to create other frames. Everything should stay in the
+same frame I'm working in. And splitting should be horizontal (i.e.
+side-by-side).
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default ediff-window-setup-function (quote ediff-setup-windows-plain))
+  (setq-default ediff-split-window-function (quote split-window-horizontally))
+#+END_SRC
+
+Also, I prefer that the difference regions are always highlighted, not just when
+those are "active". And, of course, it's more convenient when the diff is
+refined by chars, not words.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default ediff-highlight-all-diffs t)
+  (setq-default ediff-forward-word-function 'forward-char)
+#+END_SRC
+
+The last thing is that the default colors are not very pretty, so I replaced
+them with something that looks like the kdiff3 default theme, because it was my
+previous favorite diff viewing tool.
+
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'ediff-current-diff-A nil :background "white" :foreground "black")
+  (set-face-attribute 'ediff-current-diff-Ancestor nil :background "white" :foreground "black")
+  (set-face-attribute 'ediff-current-diff-B nil :background "white" :foreground "black")
+  (set-face-attribute 'ediff-current-diff-C nil :background "white" :foreground "black")
+  (set-face-attribute 'ediff-even-diff-A nil :background "antique white" :foreground "Black")
+  (set-face-attribute 'ediff-even-diff-Ancestor nil :background "antique white" :foreground "black")
+  (set-face-attribute 'ediff-even-diff-B nil :background "antique white" :foreground "black")
+  (set-face-attribute 'ediff-even-diff-C nil :background "antique white" :foreground "Black")
+  (set-face-attribute 'ediff-fine-diff-A nil :background "gainsboro" :foreground "blue")
+  (set-face-attribute 'ediff-fine-diff-Ancestor nil :background "gainsboro" :foreground "red")
+  (set-face-attribute 'ediff-fine-diff-B nil :background "gainsboro" :foreground "forest green")
+  (set-face-attribute 'ediff-fine-diff-C nil :background "gainsboro" :foreground "purple")
+  (set-face-attribute 'ediff-odd-diff-A nil :background "antique white" :foreground "black")
+  (set-face-attribute 'ediff-odd-diff-Ancestor nil :background "antique white" :foreground "black")
+  (set-face-attribute 'ediff-odd-diff-B nil :background "antique white" :foreground "Black")
+  (set-face-attribute 'ediff-odd-diff-C nil :background "antique white" :foreground "black")
+#+END_SRC
+* Diff
+
+I would really love to have only color-theme-related configuration in that
+section. But there's something completely wrong with the default behavior of
+diff-mode.
+
+The darn thing changes the headers of the patch upon saving. It does it by
+default, without asking and even if it cannot fix them properly. I guess, this
+feature was so useful in the stone age that everybody was taking it as a given.
+And, probably, everybody always kept the patches in the directories where they
+apply.
+
+Well, believe it or not, but sometimes I do put patches in the directories,
+where they don't apply. For example, patches generated by =git diff= usually
+don't apply no matter where you put them (because of the =a/=, =b/= prefixes).
+
+I don't need Emacs to ruin the headers when I edit such patches. Luckily,
+there's a variable =diff-update-on-the-fly= that turns this behavior on and off.
+Unluckily, it doesn't work. It seemed to work one day, so maybe it's a
+regression. But it clearly doesn't work in Emacs 24.4.
+
+So, I need to perform surgery on the =diff-mode= and override its
+=diff-write-contents-hooks= to do nothing.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default diff-update-on-the-fly nil)
+
+  (defun diff-write-contents-hooks ()
+    "PLEASE, DO NOTHING WITH MY DIFFS!!!!"
+    nil)
+
+  (set-face-attribute 'diff-added nil :background nil :foreground "green")
+  (set-face-attribute 'diff-refine-added nil :background "#335533")
+  (set-face-attribute 'diff-file-header nil :background "black" :weight 'bold)
+  (set-face-attribute 'diff-header nil :background "black")
+  (set-face-attribute 'diff-removed nil :background nil :foreground "tomato")
+  (set-face-attribute 'diff-refine-removed nil :background "#553333")
 #+END_SRC
 
 * Ido selection
@@ -1540,7 +1698,8 @@ more and more often.
 
 In fact, this mode makes so much sense to me, that when I advertise Emacs to
 others, I present =window-numbering= way of windows switching as default. And I
-haven't yet seen anybody to have any issues with that.
+haven't yet seen anybody to have any issues with that. (That said, probably, it
+won't work on terminal emulators).
 
 The last thing I should mention is that =M-0= takes you to minibuffer by
 default, which is also very handy.
@@ -1717,13 +1876,13 @@ that I had to look them up every time I needed those, and often enough to be
 annoyed by this. Add to the annoyance, that after I found the formula, I had to
 perform something like 5 operations in =calc= to evaluate it.
 
-And at some point it struck me, that I'm using Emacs. A text editor with a
-primary goal to allow me to build the best working environment for myself. Just
-for me, you know? It's not that some guy or a big company is sitting somewhere
-trying to think of everything I might need. It cannot ever work like that.
-Because how should they know that I need those formulas? If I was working in
-some other place - I wouldn't need those formulas. Or, more likely, I would need
-some other ones.
+And at some point it struck me - I'm using Emacs, a text editor with a primary
+goal to allow me to build the best working environment for myself. Just for me,
+you know? It's not that some guy or a big company is sitting somewhere trying to
+think of everything I might need. It cannot ever work like that. Because how
+should they know that I need those formulas? If I was working in some other
+place - I wouldn't need those formulas. Or, more likely, I would need some other
+ones.
 
 And maybe not even formulas, but something else. Like, just now, while I was
 writing this, a colleague of mine asked me "How you can take 2 videos and stack
@@ -1736,15 +1895,15 @@ many times as needed, because I always have it at hand.
 
 Anyway, long story short. That time I was thinking of focal lengths was the time
 when I really appreciated the "extensibility" part of Emacs. I wasn't too
-thrilled about it when I just started using it. I was always, like, "Somebody
-else must have already built a perfect environment. I should simply find it and
-use it". Needless to say, I'm still looking for this "perfect environment".
+thrilled about it when I just started using the editor. I was always, like,
+"Somebody else must have already built a perfect environment. I should simply
+find it and use it".
 
-But at that day, I put the following functions to my init file and moved on
+Needless to say, I'm still looking for this "perfect environment". But at that
+day, I have put the following functions to my init file and moved on
 enlightened. From that moment, when I need a conversion I just write something
-like =(fov2focal (deg2rad 55))= and hit =C-x C-e=.
-
-Yeah. At that day, I became a bit closer to a perfect working environment.
+like =(fov2focal (deg2rad 55))= and hit =C-x C-e=. Yeah. At that day, I became a
+bit closer to a perfect working environment.
 
 #+BEGIN_SRC emacs-lisp
   (defun deg2rad (x)
@@ -1795,9 +1954,10 @@ When you find what you need, simply press =C-m= (=Enter=) and that's it.
 * Navigate to previous position
 
 Oddly enough, Emacs doesn't really have a solid functionality to jump to a
-previous editing position. The closest solution is to use =C-u C-SPC= to jump to
-a previous mark in the current buffer and =C-x C-SPC= to jump to a previous mark
-across buffers. It's not great, but a small fish is better than an empty dish.
+"previous editing position". The closest solution is to use =C-u C-SPC= to jump
+to a previous mark in the current buffer and =C-x C-SPC= to jump to a previous
+mark across buffers. It's not fantastic, but a small fish is better than an
+empty dish.
 
 The only thing is that quite often you have a lot of duplicate marks in the ring
 and it's tedious to pop those by one. So, I bind a simple wrapper to =C-M-\= -
@@ -1814,59 +1974,6 @@ C-SPC= when used with a universal argument =C-u C-M-\=.
         (delete-dups mark-ring)
         (set-mark-command '(4)))))
 #+END_SRC
-* Get full path
-
-Quite often you need a full path to some file, and there's a plenty of ways to
-get it.
-
-- First, obviously, you can press =C-x C-f= and find your file there.
-- Then, in Dired you can press =w= to get only the name or =C-0 w= to get the
-  full path.
-- Also, you can use the =C-c w= binding to get full path to the current file
-  #+BEGIN_SRC emacs-lisp
-    (define-key global-map (kbd "\C-c w")
-      (defun show-file-name ()
-        "Show the full path file name in the minibuffer and add it to kill ring"
-        (interactive)
-        (message (buffer-file-name))
-        (kill-new (buffer-file-name))))
-  #+END_SRC
-- And the last, but not least, if you have a short path around point, you can
-  use =C-x /= to expand it to a full path. I use this quite often in conjunction
-  with buffer-local =compile-command= setting. If I have a script that I want to
-  run using =compile=, I do the following:
-  - open the script (say, "build-and-run.bash") and press =C-c C-c=
-  - then write "cd ."
-  - press =C-x /= to expand the dot (say, "cd /home/sergei/project/build")
-  - append script execution - "cd /home/sergei/project/build && bash
-    build-and-run.bash"
-
-  Now I can switch to another buffer, press =M-p= after =C-c C-c= and use the
-  same compile command, because the path is absolute.
-
-  #+BEGIN_SRC emacs-lisp
-    (define-key global-map (kbd "C-x /")
-      (defun replace-path-with-truename ()
-        "Replaces the region or the path around point with its true name.
-
-    To get the true name it follows the symbolic links and converts
-    relative paths to absolute."
-        (interactive)
-        (let (bds p1 p2 inputStr resultStr)
-          ;; get current selection or filename
-          (if (region-active-p)
-              (setq bds (cons (region-beginning) (region-end) ))
-            (setq bds (bounds-of-thing-at-point 'filename)))
-          (setq p1 (car bds))
-          (setq p2 (cdr bds))
-
-          (let ((fn (buffer-substring-no-properties p1 p2)))
-            (if (file-exists-p fn)
-                (progn
-                  (delete-region p1 p2 )
-                  (insert (file-truename fn)))
-              (message "Path \"%s\" doesn't exist" fn))))))
-  #+END_SRC
 * Multiple cursors
 
 "Multiple cursors" is a kind of feature that doesn't sound like a very good idea
@@ -1879,7 +1986,7 @@ implementation of multiple cursors in Emacs. I got the impression that he,
 himself, didn't really know how to use them properly, but somehow it had a ring
 to him.
 
-The idea from the video that also rang to me was selecting a word and adding
+The idea from the video, that also rang to me was selecting a word and adding
 auxiliary cursors on other occurrences of the same word. I didn't know how
 useful it was when I saw it, but I decided to give it a try.
 
@@ -1888,7 +1995,7 @@ to be honest, the concept is indeed a bit alien if you've never used it. But
 eventually, I worked out a style of using multiple cursors, which goes for me.
 It turned out to be so convenient, that now I can't imagine myself giving it up.
 
-The 2 most commonly used bindings are =C->= and =C-<=:
+The 2 most common bindings are =C->= and =C-<=:
 
 - If the region is active (e.g. a word is selected), then =C->= searches for the
   next occurrence of this region and creates an additional cursor when it finds
@@ -1929,9 +2036,9 @@ Consider, for example, that you want to write the following code:
 What you do is:
 
 - place the cursor in the beginning of the line and add 6 cursors =C-6 C->=
-- type "array["
+- type =array[=
 - hit =M-#= to add the digits
-- type the closing "]" (if it's not already there)
+- type the closing =]= (if it's not already there)
 - then type " = ", "(* 2 ", =M-#= and ")"
 
 What we have at this point is:
@@ -1970,7 +2077,7 @@ Confused? Don't be - if you evaluate the lisp forms you will get "x", "y" and
 function.
 
 BTW, I have this scary form =(char-to-string (+ ?x ))= in the abbrev table, so
-all I have to do is type "char" and hit =M-/=.
+all I have to do is to type "char" and hit =M-/=.
 
 Last, but not least - M-', which is an experimental function written by me. It
 aligns all of your cursors by adding the necessary number of spaces in the
@@ -1984,7 +2091,7 @@ For example, if you have a code, like
   object.temperature = 300;
 #+END_EXAMPLE
 
-You can select the word =object=, hit =M-@=, =M-f=, =C-g= and M-' to make it
+You can select the word =object=, hit =M-@=, =M-f=, =M-f=, =C-g= and M-' to make it
 look like this:
 
 #+BEGIN_EXAMPLE
@@ -2106,112 +2213,7 @@ It works for remote files opened via TRAMP ssh protocol as well.
           (find-alternate-file (add-sudo-to-filename buffer-file-name))
           (goto-char position)))))
 #+END_SRC
-* Ediff
-
-In the pre-magit era I had to provide the ediff interface as an external tool to
-the version control systems. It wasn't the most clean experience, but it worked.
-
-Fortunately, now we don't have to resort to hacks like this - we can simply
-press =e= in magit buffer - both to see the diff and resolve conflicts.
-
-The only thing is that the default ediff user experience comes from stone age,
-so I had to tweak it a bit.
-
-First, a couple of functions to automatically save and restore window
-configuration after ediff session.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'ediff)
-
-  (defun ediff-save-window-configuration ()
-    (window-configuration-to-register ?E))
-  (defun ediff-restore-window-configuration ()
-    (jump-to-register ?E))
-
-  (setq-default ediff-before-setup-hook (quote (ediff-save-window-configuration)))
-  (setq-default ediff-quit-hook (quote (ediff-cleanup-mess ediff-restore-window-configuration exit-recursive-edit)))
-  (setq-default ediff-suspend-hook (quote (ediff-default-suspend-function ediff-restore-window-configuration)))
-#+END_SRC
-
-Then, I don't want ediff to create other frames. Everything should stay in the
-same frame I'm working in. And splitting should be horizontal (i.e.
-side-by-side).
-
-#+BEGIN_SRC emacs-lisp
-  (setq-default ediff-window-setup-function (quote ediff-setup-windows-plain))
-  (setq-default ediff-split-window-function (quote split-window-horizontally))
-#+END_SRC
-
-Also, I prefer that the difference regions are always highlighted, not just when
-those are "active". And, of course, it's more convenient when the diff is
-refined by chars, not words.
-
-#+BEGIN_SRC emacs-lisp
-  (setq-default ediff-highlight-all-diffs t)
-  (setq-default ediff-forward-word-function 'forward-char)
-#+END_SRC
-
-The last thing is that the default colors are not very pretty, so I replaced
-them with something that looks like the kdiff3 default theme, because it was my
-previous favorite diff viewing tool.
-
-#+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'ediff-current-diff-A nil :background "white" :foreground "black")
-  (set-face-attribute 'ediff-current-diff-Ancestor nil :background "white" :foreground "black")
-  (set-face-attribute 'ediff-current-diff-B nil :background "white" :foreground "black")
-  (set-face-attribute 'ediff-current-diff-C nil :background "white" :foreground "black")
-  (set-face-attribute 'ediff-even-diff-A nil :background "antique white" :foreground "Black")
-  (set-face-attribute 'ediff-even-diff-Ancestor nil :background "antique white" :foreground "black")
-  (set-face-attribute 'ediff-even-diff-B nil :background "antique white" :foreground "black")
-  (set-face-attribute 'ediff-even-diff-C nil :background "antique white" :foreground "Black")
-  (set-face-attribute 'ediff-fine-diff-A nil :background "gainsboro" :foreground "blue")
-  (set-face-attribute 'ediff-fine-diff-Ancestor nil :background "gainsboro" :foreground "red")
-  (set-face-attribute 'ediff-fine-diff-B nil :background "gainsboro" :foreground "forest green")
-  (set-face-attribute 'ediff-fine-diff-C nil :background "gainsboro" :foreground "purple")
-  (set-face-attribute 'ediff-odd-diff-A nil :background "antique white" :foreground "black")
-  (set-face-attribute 'ediff-odd-diff-Ancestor nil :background "antique white" :foreground "black")
-  (set-face-attribute 'ediff-odd-diff-B nil :background "antique white" :foreground "Black")
-  (set-face-attribute 'ediff-odd-diff-C nil :background "antique white" :foreground "black")
-#+END_SRC
-* Diff
-
-I would really love to have only color-theme-related configuration in that
-section. But there's something completely wrong with the default behavior of
-diff-mode.
-
-The darn thing changes the headers of the patch upon saving. It does it by
-default, without asking and even if it cannot fix them properly. I guess, this
-feature was so useful in the stone age that everybody was taking it as a given.
-And, probably, everybody always kept the patches in the directories where they
-apply.
-
-Well, believe it or not, but sometimes I do put patches in the directories,
-where they don't apply. For example, patches generated by =git diff= usually
-don't apply no matter where you put them (because of the =a/=, =b/= prefixes).
-
-I don't need Emacs to ruin the headers when I edit such patches. Luckily,
-there's a variable =diff-update-on-the-fly= that turns this behavior on and off.
-Unluckily, it doesn't work. It seemed to work one day, so maybe it's a
-regression. But it clearly doesn't work in Emacs 24.4.
-
-So, I need to perform surgery on the =diff-mode= and override its
-=diff-write-contents-hooks= to do nothing.
-
-#+BEGIN_SRC emacs-lisp
-  (setq-default diff-update-on-the-fly nil)
-
-  (defun diff-write-contents-hooks ()
-    "PLEASE, DO NOTHING WITH MY DIFFS!!!!"
-    nil)
-
-  (set-face-attribute 'diff-added nil :background nil :foreground "green")
-  (set-face-attribute 'diff-refine-added nil :background "#335533")
-  (set-face-attribute 'diff-file-header nil :background "black" :weight 'bold)
-  (set-face-attribute 'diff-header nil :background "black")
-  (set-face-attribute 'diff-removed nil :background nil :foreground "tomato")
-  (set-face-attribute 'diff-refine-removed nil :background "#553333")
-#+END_SRC
-* Terminal
+* Terminal emulator and SSH
 
 I don't need an actual terminal emulator often, because I can issue shell
 commands with =M-&= and =C-c C-c=. But sometimes I do need a terminal. And when
@@ -2298,7 +2300,7 @@ With those records you can use a shorthand command, like =ssh distant-ws= to
 connect to the server without specifying username, host and port. Pretty neat.
 
 But there's more. When you start Emacs, my little function
-=term-parse-ssh-config= will parse this config file and save a list of then
+=term-parse-ssh-config= will parse this config file and save a list of the
 hosts. Then, you can issue =M-x remote-term= command and it will ask you for a
 hostname (with enabled completion) and open an ssh session in the =ansi-term=
 window. Not bad, huh?
@@ -2356,7 +2358,7 @@ But wait, there's even more.
   #+END_EXAMPLE
 - =M-x remote-enable-dired= will modify the ".profile" file on the remote, so
   that when you'll press =C-x C-j= for a =dired-jump= in the remote terminal
-  (opened with =M-x remote-term=), it will open dired for the remote directory.
+  (opened with =M-x remote-term=), it will open dired for the remote directory!
 
 Those functions enable you to work with the remote exactly as you would work
 with a local workstation. No need to resort to terminal, no need to install
@@ -2373,9 +2375,14 @@ And all of this is enabled with just 3 simple steps:
 - call =M-x remote-authorize=
 - call =M-x remote-enable-dired=
 
-It is a tremendously convenient and useful functionality. The only caveat is
-that you should name the hosts in your ssh config file with the same names that
-are specified in the =/etc/hostname= on the remotes.
+It is a tremendously convenient and useful functionality. There are few caveats, though:
+
+- You should name the hosts in your ssh config file with the same names that are
+  specified in the =/etc/hostname= on the remotes.
+- =remote-authorize= and =remote-enable-dired= are very thin wrappers for
+  respective shell commands, which, in turn, are very simplistic. They work for
+  Ubuntu workstations and remotes, and they should, probably, work on other
+  Linux flavors. But you might need to tailor them to your needs.
 
 #+BEGIN_SRC emacs-lisp
   (defcustom ssh-public-key-filename "~/.ssh/id_rsa.pub"
@@ -2408,9 +2415,9 @@ I use simple grep commands to search through files:
 - git-grep (=C-u C-F=) to search in the whole repository.
 
 There are "modern" alternatives to these tools, like, =ack= and =ag=. But I
-can't really appreciate the benefits they bring over the "stock" programs, i.e.
-the benefits seam too small to me to bother. Simplicity and "always there"
-aspects are much more valuable to me in that case.
+can't really appreciate the benefits they bring over the "stock" programs - the
+benefits seam too small to me to bother. Simplicity and "always there" aspects
+are much more valuable to me in that case.
 
 If I want to limit the search, most of the time =git-grep= will be a decent
 option. If I want to limit it even further, then I provide something like "-name
@@ -2469,9 +2476,9 @@ buffer, provided by =wgrep= package.
 * Hide/show blocks
 
 There are some situations when you want to have a glance of functions defined in
-a file. For elisp, you can use a trick, like =M-x occur defun=. Something like
-Python could also be approached with a similar solution. But it's not that easy
-to do so for the C-family languages. And that's where the =hideshow= module can
+a file. For elisp, you can use a trick, like =M-x occur defun=. Languages, like
+Python could also be approached in a similar fashion. But it's not that easy to
+do so for the C-family languages. And that's where the =hideshow= module can
 help you.
 
 It has plenty of decent functions for collapsing code blocks. For example,
@@ -2482,7 +2489,8 @@ file with a class definition. Those files have just a single top-level entry,
 which is not very informative.
 
 So, I came up with this little function, that serves pretty much every need I
-have regarding the hiding functionality, bound to =C-c h= in C-derived modes.
+have regarding the hiding functionality. It's bound to =C-c h= in C-derived
+modes.
 
 First of all, it's a toggling function - so, on one execution it collapses
 blocks and on the next one it expands those. For collapsing, it uses every
@@ -2524,8 +2532,8 @@ Studio and considered it a given. I was under impression that no good work can
 be done without it.
 
 To be clear - I'm talking about "smart" or "intellisense" kind of
-auto-completion. I.e. if I write "reader.", then an editor should provide
-precise list of public members and methods of the "reader" object.
+auto-completion. I.e. if I write =reader.=, then an editor should provide a
+precise list of public members and methods of the =reader= object.
 
 So, I spent something like 2 weeks to make it work. If I recall correctly, it
 was some clang-based solution for C++. It worked decently well, but occasional
@@ -2537,14 +2545,14 @@ And guess what? I've found myself never using it in about a month. Also, when I
 tried to use it - there were always some rough edges. It didn't work perfectly,
 it needed some variables to be set... It was Always Something. So, I turned it
 off and guess again? I have never felt the need for it during my work. Not once.
-I lived like that happily starting to appreciate Emacs more and more. And,
-eventually, I began advocating Emacs to others.
+I lived like that happily, started to appreciate Emacs more and more.
 
-Not very surprisingly, a first question from almost everybody was about
-auto-completion. And believe it or not, the answer "You don't actually need
-auto-completion!" wasn't really helping. Everybody just stopped listening. For
-good reasons or bad, they just didn't want to listen further, because I was
-denying something they work with all the time.
+Eventually, I began advocating Emacs to others. Not very surprisingly, a first
+question from almost everybody was about auto-completion. And believe it or not,
+the answer "You don't actually need auto-completion!" wasn't really convincing.
+Almost everybody just stopped listening after that. For good reasons or bad,
+they just wasn't interested, because I was denying something they work with all
+the time.
 
 And I cannot blame them. I had the exact same first expectations, it took some
 time to figure out the redundancy of auto-completion.
@@ -2554,9 +2562,10 @@ employ it into my work. I spent some time again, made it work decently, but I
 didn't really notice the gain. Yeah, it was nice and all, but it literally
 didn't make any difference.
 
-But to make it work, most of the time you have to install external tools, add
-quite a lot of configuration and you have to maintain everything. Once again, it
-seemed too much for an absolutely useless functionality, so I removed it, again.
+At the same time to make it work, most of the time you have to install external
+tools, add quite a lot of configuration and you have to maintain everything.
+Once again, it seemed too much for an absolutely useless functionality, so I
+removed it, again.
 
 Since then I keep changing my mind about auto-completion back and forth. For
 some time I'm convinced that it's absolutely useless. Then I start thinking that
@@ -2573,7 +2582,7 @@ is convincing enough.
 
 ** Hippie expand
 
-Obviously, you need auto-completion when you need to type a long word or piece
+Obviously, you need auto-completion when you need to type a long word or a piece
 of text. You don't need it for short sequences. And there are only 2
 fundamentally different cases:
 
@@ -2582,8 +2591,8 @@ fundamentally different cases:
   remember its name (or at least the beginning); and you want to start typing
   it - enter a few characters (like, "doEv") and then hit a button to complete
   the whole thing.
-- You don't know the text you want to write - you want to choose between
-  candidates. E.g. you entered "reader." and you expect the reader object to
+- You DON'T know the text you want to write - you want to choose between
+  candidates. E.g. you entered =reader.= and you expect the reader object to
   have a method that skips some characters while reading. You don't know its
   name - it might be "skip", "seek", "jump" or something else. But you want to
   see the list of all public methods of the reader and maybe find something
@@ -2631,6 +2640,10 @@ reader object and consult it:
   to definition via =find-tag= (=M-.=) and look through the members and/or
   comments. =C-c h= will help you to hide the unnecessary details.
 
+And that's, basically, it. Both use cases can be dealt with using alternative
+and, arguably, superior approaches. In conclusion, I want to talk about the
+argument which I hear quite often, and which I find pretty weak.
+
 One might argue that the main reason to use auto-completion is to increase
 typing speed. But you really start asking questions after that statement. Like,
 what is your current typing speed? If you're touch typing then it won't take
@@ -2655,9 +2668,9 @@ something like 40 hours with the keyboard. Is it really too much?
 
 First case from the previous section, when you know the text you want to write
 and just don't want to type every character, has an important sub-case. What if
-the text you want to write is quite long or cryptographic-looking? You
-definitely don't want to remember those kind of things and =hippie-expand= won't
-help you, since it completes only words.
+the text you want to write is quite long or crypto-looking? You definitely don't
+want to remember those kind of things and =hippie-expand= won't help you, since
+it completes only words.
 
 There are multiple options in Emacs for this. Unfortunately, I couldn't find the
 one, that fits me entirely, but I'm kind of pleased with a combo of =abbrev= and
@@ -2710,8 +2723,8 @@ may not suite your way of writing the code.
 
 One particular place where =yasnippet= doesn't really work well is minibuffer. I
 don't know if it's just me, or it's not supposed to work there. But anyway, I
-use minibuffer to issue shell commands (=M-&=) quite often, and the =abbrev=
-package comes to the rescue.
+use minibuffer to issue shell commands (with =M-&=) quite often, and the
+=abbrev= package comes to the rescue.
 
 There are commands that I use rarely enough to forget their actual spelling, but
 often enough to be annoyed every time I have to look them up somewhere. As a
@@ -2785,10 +2798,9 @@ file), then you can use =C-+= or =M-+= to fix the numbering if it is broken.
 #+END_SRC
 ** Presentations with reveal.js
 
-There's a nice "framework" (or something) for creating presentations using plain
-text files - reveal.js. Originally, you were supposed to write the content in
-HTML, but now you can use a lot of popular lightweight markups, like Org or
-Markdown.
+There's a nice "framework" for creating presentations using plain text files -
+reveal.js. Originally, you were supposed to write the content in HTML, but now
+you can use a lot of popular lightweight markups, like Org or Markdown.
 
 To start working on a presentation using Org, you should simply create a folder
 and execute =M-x org-reveal-init= (it is not a stock function, the definition is
