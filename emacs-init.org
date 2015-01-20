@@ -2862,12 +2862,12 @@ with the current table of contents before each save.
 #+END_SRC
 * Expand region
 
-=expand-region= increases the selected region by semantic units. For example, you have the
-following code - =(setq alphabet-start "abc def")=.
+=expand-region= increases the selected region by semantic units. For example,
+you have the following code - =(setq alphabet-start "abc def")=.
 
-With the cursor at the =c=, pressing *C-=* marks the entire word =abc=,
-successive pressing expands to the contents of the quotes =abc def=, then it
-marks the quotes, and so on:
+With the cursor before the =c= letter, pressing *C-=* marks the entire word
+=abc=, successive pressing expands to the contents of the quotes =abc def=, then
+it marks the quotes, and so on:
 
 #+BEGIN_EXAMPLE
   "abc def"
@@ -2875,27 +2875,28 @@ marks the quotes, and so on:
   (setq alphabet-start "abc def")
 #+END_EXAMPLE
 
-It is a very nice package and I use it quite a lot with great pleasure. But I
-think the author was carried away a little bit.
+It is a very nice package, I use quite a lot with great pleasure. But I think
+the author was carried away a little bit with the implementation.
 
-My guess is that it was started with editing of "lispy" code in mind (i.e. Lots
-of Irritating Stupid Parenthesis). And it works almost flawlessly in that use
-case. But, apparently, author thought, that applying it to a wider set of
-languages may be a good idea. If Emacs understands the syntax of the language -
-we can try expanding.
+My guess is that editing of "lispy" (i.e. Lots of Irritating Stupid Parenthesis)
+code was the primary motivation for the package. And it works almost flawlessly
+in that use case. But, apparently, the author thought, that applying it to a
+wider set of languages may be a good idea. If Emacs understands the syntax of
+the language - we can try expanding.
 
 For example, if we have a statement, like =object.getHash();= and the cursor is
 at the beginning of it, then we can expand to something like =object=,
 =object.=, =object.getHash=, =object.getHash()=, =object.getHash();=. It does
 sound kind of neat, right? But in practice - it's not all roses.
 
-There are at least 2 issues spoiling the party. First, syntax of LISP-languages
-is very simple. Basically, you're editing an Abstract Syntax Tree (AST)
-directly, using parenthesis to denote node boundaries and nesting. But the
+There are at least 2 issues spoiling the party. First, the syntax of Lisp-like
+languages is very simple. Basically, you're editing an Abstract Syntax Tree
+(AST) directly, using parenthesis to denote node boundaries and nesting. But the
 syntax of C-like languages (especially, C++) is significantly more complex. So,
-it makes writing precise "expansion rules" unreasonable, which leads to very
-awkward expansions sometimes. Not always, but often enough to feel
-uncomfortable, because I can't predict its result.
+it makes writing precise "expansion rules" unreasonable. =expand-region= relies
+on the built-in Emacs parsers most of the time. But those parsers are forced to
+resort to imprecise heuristics too. This leads to very awkward expansions
+sometimes. Not always, but often enough for me to feel uncomfortable.
 
 In my experience, dots (sentences) and empty lines (paragraphs) were causing
 most of the confusion. So, I dropped the rules, relying on those symbols to make
@@ -2906,9 +2907,9 @@ of fundamental to the design of this feature. In short, what does it mean to
 "expand the region"? It means that we try to mark some region around point using
 different rules, like "mark everything inside quotes", "mark everything inside
 quotes, including the quotes", "mark everything inside parenthesis", "mark a
-statement" and etc. We choose the "best" rule for currently marked region and
-use it as a next expansion. "Best" rule must contain the original region, and
-expand it as little as possible.
+statement" and etc. We choose the "best" rule for currently the marked region
+and use it as a next expansion. The "best" rule must contain the original
+region, and expand it "as little as possible".
 
 Now, consider the =object.getHash();= example again. Assuming that =getHash= is
 already selected, try to define, which expansion is better - =object.getHash= or
@@ -2921,12 +2922,14 @@ there. But in other languages, a sensible expansion can expand to the left,
 while another sensible expansion will expand to the right. There's no way to
 have both within the design of =expand-region=.
 
-Currently, it will always chooses the region, that expands to the left as little
-as possible. I tried different heuristics, but neither was good enough -
-sometimes I wanted a "left" expansion, and sometimes I wanted a "right" one.
+Currently, it will always choose the region, that expands as little as possible
+to the left. I tried different heuristics, but neither was significantly better,
+because of the fundamental fact - sometimes you need a "left" expansion, and
+sometimes you need a "right" one.
 
-So, after using =expand-region= for a while, I think of it only in "lisp"-alike
-cases - marking words, strings (quotes) and parenthesis.
+I use =expand-region= everywhere for quite some time already. And now, when my
+habits regarding it are established, I find myself using it only in "lisp"-alike
+situations - marking words, strings (quotes) and parenthesis.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "expand-region-autoloads"
@@ -2997,11 +3000,11 @@ cases - marking words, strings (quotes) and parenthesis.
          (setq expand-region-fast-keys-enabled nil))))
 #+END_SRC
 
-I think I added the following function even before =expand-region= was
-implemented. It puts quotes around the word at point. I thought =expand-region=
-will make it obsolete and I will stop using it eventually. But it didn't happen.
-I got used to it so much, that my fingers simply refuse to accept the 2
-characters =expand-region= alternative.
+The following function puts quotes around the word at point. I added it to my
+config even before =expand-region= was implemented. In theory, =expand-region=
+should have made this function obsolete. But it never really happened. I got
+used to it so much, that my fingers simply refuse to accept the 2 characters
+=expand-region= alternative.
 
 #+BEGIN_SRC emacs-lisp
   (define-key global-map (kbd "M-\"")
@@ -3036,28 +3039,28 @@ in a simple way.
 But almost every such feature falls short when it's faced with a real-life
 problem. Because of the implementation complexity and lack of the "fine-tuning"
 mechanisms. In other words, they build a huge, complex machine and provide a
-single big red button out front with the label "Solve the problem!". To sell it
-to you, they showcase a problem, hit the button, the machine solves it -
-everybody is in awe. You take the machine home and try a simple example - it
-works as well, you are in complete awe.
+single big red button on the front with the label "Solve the problem!". In order
+to sell it to you, they showcase a problem, hit the button, the machine solves
+it - everybody is in awe. You take the machine home and try a simple example -
+it works as well - you are in total awe.
 
 But then you fetch an Android source tree, push the button - the machine doesn't
 respond. You try again - no luck. And the worst part is that you have nothing
-else, but the big red button, which doesn't work. So, your options are to try
-pressing this button with different fingers, with your legs. You can try
-punching the button or asking your mother to press it, because, you know, she
-may have a good luck.
+else, but the big red button, which doesn't work. So, your options are to press
+the button with different fingers, with your legs. You can try punching the
+button or asking your mother to press it, because, you know, she may have a good
+luck.
 
 In other words, such features are mostly pure marketing. And I wouldn't mind
 them if they were free. Heck, Emacs has a robot psychiatrist and a tower of
-hanoi - and I don't mind, since it costs me nothing else than a couple of
-kilobytes.
+hanoi, which I don't mind at all, since it costs me nothing else than a couple
+of kilobytes.
 
 Emacs has a different approach to solving complex problems. It doesn't pretend
 that complex problems are easy. On the contrary, it shows you the steps, that
 must be taken to solve it and what are the possible ways and their trade-offs.
 
-The problem we're going to talk about today is "jump to definition". Unlike,
+The problem we're going to talk about now is "jump to definition". Unlike,
 "intellectual" [[#auto-completion][Auto-completion]], which I find practically useless, jumping to
 definition is, actually, quite handy.
 
@@ -3071,8 +3074,8 @@ generator program (like, CMake). Besides, if you're working on a third party
 project, which uses a different IDE, or simply uses Makefiles, you have to
 create the project files by yourself.
 
-Secondly, with code bases, like the Android OS tree (over 10GB), there is no
-grave to hold its body down. I mean, there is no IDE to load it at once.
+Secondly, with code bases, like the Android OS tree, there is no grave to hold
+its body down. I mean, there is no IDE to load it at once.
 
 Third, I'm not aware of IDEs, that can be easily used to code on a remote
 machine via =ssh=.
@@ -3080,9 +3083,9 @@ machine via =ssh=.
 The alternative approach, used by Emacs and others, is to use a helper program,
 like =ctags=, to generate the index of the source code. The index has an
 information about all function and type definitions in the sources. In case of
-=ctags= and similar programs, the index is also called a "tags file". Because
-it's just a single file with the name =TAGS=. Essentially, it consists of
-records, like "definition string, source file, line in the file". However, the
+=ctags= and similar programs, the index is also called "tags file". Because most
+often it's just a single file with the name =TAGS=. Essentially, it consists of
+records, like "definition string + source file + line in the file". However, the
 actual binary representation may be different.
 
 To generate the index you can use =M-x update-tags-file= (=C-x C-u=).
@@ -3099,14 +3102,16 @@ ctags=).
 If the index was already generated, you can use =M-x visit-tags-table= (=C-x
 C-v=) to simply load it. After the tags table is loaded you can call =M-x
 find-tag= (=M-.=) to jump to definition and =M-x pop-tag-mark= (=M-*=) to jump
-back. If you jumped not to the definition you wanted, you can provide a
-universal argument, like, =C-u M-.=, to jump to the next candidate. When I can't
-get to the desired definition after several jumps, I resort to =M-x
+back.
+
+If you jumped not to the definition you wanted, you can provide a universal
+argument, like, =C-u M-.=, to jump to the next candidate. Personally, when I
+can't get to the desired definition after several attempts, I resort to =M-x
 tags-apropos= (=C-x C-l=). It gives you a list of all tags matching the provided
 regexp.
 
 You can load multiple tags files at once. For example, one for a library and
-another one for application using the library. If you start getting a lot of
+another one for an application using the library. If you start getting a lot of
 matches in unrelated projects, you can call =M-x tags-reset-tags-tables= (=C-x
 C-t=) to forget about all of the loaded tags tables. And load only the relevant
 ones after that.
@@ -3117,7 +3122,7 @@ noteworthy, that it works offline, i.e. the index generation step is explicit -
 it's not a background process.
 
 As for the scaling issue, I've used =ctags= to index the aforementioned Android
-source tree. The snapshot I used was about 10 Gb. Obviously, there are binary
+source tree. The snapshot I used was about 10 Gb. Obviously, there was binary
 and other "non-source" files there, but still.
 
 The indexing process took something like 15 minutes, which may seem like a lot,
@@ -3286,10 +3291,10 @@ To leave only one space around point, you can use a handy =M-\= binding.
 * User-friendliness
 
 There are several settings in my configuration, that I don't really use myself.
-But I found that lack of thereof spoils first impression for people, that try it
-out. And I want this configuration to provide more or less intuitive behavior
-out-of-the-box to not scare those people. I don't go as far as enabling CUA
-mode, because it would hurt the overall productivity. But I try to gather
+But I found that lack of thereof spoils first impression for people, that try
+this config out. And I want this configuration to provide more or less intuitive
+behavior out-of-the-box to not scare these people. I don't go as far as enabling
+CUA mode, because it would hurt the overall productivity. But I try to gather
 low-hanging fruits at least.
 
 ** Dired mouse
@@ -3306,8 +3311,9 @@ the same window.
 ** Undo
 
 Undo in Emacs is bound to =C-/=, =C-_= and =C-x u=, which are not that common.
-Personally, I use =C-/= for undo and over time I found, that I don't really use
-the default =C-z= binding. So I figured, why not to make it undo as well.
+Personally, I use =C-/= for undo. But over time I found, that I don't really use
+the default =C-z= binding, which hides the frame. So I figured, why not to make
+it undo as well.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-z") 'undo)
@@ -3398,8 +3404,8 @@ common basis, but maybe one day I will.
 
 A lot of the time scrolling and moving the cursor come close together. For
 example, you can scroll the screen using =C-p= and =C-n=, when the cursor is
-near the border. Or you can move the cursor using =C-v= and =M-v=. Moving the
-cursor by paragraph is something in between those 2 options.
+near the border. Or you can move the cursor using =C-v= and =M-v= to scroll by
+pages. Moving the cursor by paragraph is something in between those 2 options.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-M-p") 'backward-paragraph)
@@ -3426,7 +3432,7 @@ precisely, but it was something about converting geographic coordinates. At that
 time I thought - "Why would anybody want to do that?".
 
 But after I got more familiar with Emacs Lisp and writing a small function was
-no longer a problem to me, I'm thinking "Why wouldn't you do that?".
+no longer a problem to me, I'm thinking "Why WOULDN'T you do that?".
 
 ** Increment a number
 
@@ -3469,7 +3475,7 @@ Emacs creates some auxiliary files for operation. Some examples include:
   auto-save file.
 
 - Backup files (end with =~=) - second-to-last saved version. It's possible to
-  save those in a separate directory, so they don't create clutter.
+  save those in a separate directory, so they don't create litter.
 
   #+BEGIN_SRC emacs-lisp
     ;; write backup files to own directory
