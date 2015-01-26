@@ -176,6 +176,7 @@
     ("ffmpeg-crop" "ffmpeg -i in.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v:0]crop=w=100:h=100:x=12:y=34\" out.mp4")
     ("ffmpeg-side-by-side" "ffmpeg -i left.mp4 -i right.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v:0]pad=iw*2:ih[bg]; [bg][1:v:0]overlay=w\" out.mp4" nil 0)
     ("ffmpeg-top-bottom" "ffmpeg -i top.mp4 -i bottom.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v]pad=iw:ih*2[bg]; [bg][1:v]overlay=0:h\" out.mp4" nil 0)
+    ("ffmpeg-scale" "ffmpeg -i in.mp4 -vf scale=320:240 out.mp4" nil 0)
     ("ln" "ln -s target link" nil 0)
     ("mencoder-concat" "mencoder -oac copy -ovc copy -idx -o output.mp4 *.mp4" nil 0)
     ("sshgen" "ssh-keygen -t rsa -C \"your_email@example.com\"" nil 0)
