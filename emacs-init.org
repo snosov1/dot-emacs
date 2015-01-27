@@ -2796,6 +2796,29 @@ file), then you can use =C-+= or =M-+= to fix the numbering if it is broken.
   (define-key org-mode-map (kbd "C-c .") 'org-time-stamp-inactive)
   (define-key org-mode-map (kbd "C-c !") 'org-time-stamp)
 #+END_SRC
+
+I'm not really a great user of different tools for planning and organizing. It's
+really a shame, because if you think about it, those are absolutely necessary to
+actually get things done. So, I'm not losing hope that someday I will make my
+life and work more organized.
+
+One step towards this goal for me is to make the tools as simple and unobtrusive
+as possible. Maintaining a list of highly structured org-files every day will
+never work for me.
+
+Instead, when I face a lot of problems I can't keep in my head, I put everything
+into a single org-file and maintain it until the fire is extinguished. The
+following function to create an agenda of the current buffer comes in pretty
+handy.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key org-mode-map (kbd "C-c a")
+    (defun org-agenda-current-buffer ()
+      (interactive)
+      (let ((org-agenda-files (list (buffer-file-name))))
+        (org-agenda-list))))
+#+END_SRC
+
 ** Presentations with reveal.js
 
 There's a nice "framework" for creating presentations using plain text files -
