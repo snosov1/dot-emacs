@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: base name of a file
-# key: filename
+# key: base
 # --
 $\{${1:VAR}%.*\}
