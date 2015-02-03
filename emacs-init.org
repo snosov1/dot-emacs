@@ -386,7 +386,6 @@ jump. The common way I use it is:
 
          (when smart-p
            (isearch-yank-kill)
-           (setq kill-ring (cdr kill-ring))
            (,(intern (format "isearch-repeat-%s" direction)))))))
   (define-key global-map [remap isearch-forward]  (smart-isearch forward))
   (define-key global-map [remap isearch-backward] (smart-isearch backward))
