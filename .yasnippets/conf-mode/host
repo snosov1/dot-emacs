@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name : example entry in ~/.ssh/config
+# key: host
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --
+Host sergei-ws
+     User sergei
+     HostName 192.168.0.80

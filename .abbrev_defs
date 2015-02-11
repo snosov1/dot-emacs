@@ -77,6 +77,7 @@
   '(
     ("char" "(char-to-string (+ ?x ))" nil 0)
     ("today" "(format-time-string \"%d, %b, %Y\")" nil 0)
+    ("date" "(format-time-string \"%d, %b, %Y\")" nil 0)
    ))
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
