@@ -3450,12 +3450,13 @@ the whole line at once, I use =C-x t=.
 * Do thing at point
 
 When I just started using Emacs, I came upon a blog post. It described how you
-can define a function to do something with the value at point. I don't remember
-precisely, but it was something about converting geographic coordinates. At that
-time I thought - "Why would anybody want to do that?".
+can define a function to do something with the value at point. It was something
+about converting geographic coordinates, if I recall correctly. At that time I
+thought - "Why would anybody want to do this?".
 
 But after I got more familiar with Emacs Lisp and writing a small function was
-no longer a problem to me, I'm thinking "Why WOULDN'T you do that?".
+no longer a problem to me, I started thinking "Why WOULDN'T you want to do
+this?!".
 
 ** Increment a number
 
