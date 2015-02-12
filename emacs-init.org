@@ -3408,9 +3408,9 @@ expect the scrolling to happen line-by-line in that case.
   (setq-default scroll-conservatively 1)
 #+END_SRC
 
-Another thing is that, when I you try to move the point past the beginning or
-the of the buffer - it will report an error. However, I find that moving cursor
-to the extreme position before reporting an error is more convenient.
+Another thing is that, when you try to move the point past the beginning or the
+of the buffer - it will report an error. However, I find that moving cursor to
+the extreme position before reporting an error is more convenient.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default scroll-error-top-bottom t)
