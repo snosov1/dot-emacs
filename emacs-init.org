@@ -2797,6 +2797,15 @@ file), then you can use =C-+= or =M-+= to fix the numbering if it is broken.
   (define-key org-mode-map (kbd "C-c !") 'org-time-stamp)
 #+END_SRC
 
+Org has a neat functionality to render LaTeX formulas not only on export, but in
+the source itself. The function for this is =org-preview-latex-fragment= (=C-c
+C-x C-l=). Two available backends for rendering are =dvipng= and =imagemagick=,
+with the latter being my backend of choice.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default org-latex-create-formula-image-program 'imagemagick)
+#+END_SRC
+
 I'm not really a great user of different tools for planning and organizing. It's
 really a shame, because if you think about it, those are absolutely necessary to
 actually get things done. So, I'm not losing hope that someday I will make my
