@@ -1104,7 +1104,7 @@ If I were to implement a Markdown mode, I would try to mimic it as closely to
 =org-mode= as possible. But, apparently, =markdown-mode= authors have another
 point of view, so the mode is different in almost everything it does.
 
-The only things, that I actually use in this mode are syntax highlighting and a
+Personally, I use only 2 features of this mode: syntax highlighting and a
 =markdown-export= function (=C-c C-e=).
 
 #+BEGIN_SRC emacs-lisp
@@ -1220,7 +1220,7 @@ There are just a couple of minor things about C and C++:
 
 ** Emacs Lisp
 
-Emacs has a surprisingly great support for writing Emacs Lisp. It has fabulous
+Emacs has a surprisingly good support for writing Emacs Lisp. It has fabulous
 out-of-the-box solutions for debugging (=edebug=), testing (=ert=), documenting
 and navigating the source code. The tweaking I do is mostly cosmetic.
 
@@ -1235,9 +1235,9 @@ buffers, it's better for it to work there as well.
 #+END_SRC
 
 For jumping to symbol definitions I use the tags machinery. You can read about
-it in the respective section - [[#jump-to-definition][Jump to definition]]. In short, you index your
-source code first, then load an index file (called "tags file" or "tags table")
-and search through it looking for necessary symbols.
+it in the respective section. In short, you index your source code first, then
+load an index file (called "tags file" or "tags table") and search through it
+looking for necessary symbols.
 
 But since Emacs knows about all the Emacs Lisp symbols, that are defined, you
 don't need an explicit step of tags generation. You can use =M-.= and =M-*=
