@@ -2157,10 +2157,11 @@ start using other functions - little by little.
 
 Sometimes you need root rights to edit a file, e.g. some config in the "/etc"
 directory. Most of the time, you will open it in Emacs as usual to find out that
-you cannot edit it and you actually need the root rights.
+you cannot edit it and you actually need to be root.
 
-In that case you can simply press =C-x != to re-open it using a "sudo" protocol.
-It works for remote files opened via TRAMP ssh protocol as well.
+In that case, simply use =C-x != to re-open the file using "sudo"
+protocol. Noteworthy, it works for remote files opened via TRAMP ssh protocol as
+well.
 
 #+BEGIN_SRC emacs-lisp
   (defun add-sudo-to-filename (filename)
@@ -2407,13 +2408,13 @@ I use simple grep commands to search through files:
 - git-grep (=C-u C-F=) to search in the whole repository.
 
 There are "modern" alternatives to these tools, like, =ack= and =ag=. But I
-can't really appreciate the benefits they bring over the "stock" programs - the
-benefits seam too small to me to bother. Simplicity and "always there" aspects
-are much more valuable to me in that case.
+can't really appreciate the benefits they bring over the "stock"
+programs. Simplicity and "always there" aspects are much more valuable to me in
+that case.
 
 If I want to limit the search, most of the time =git-grep= will be a decent
 option. If I want to limit it even further, then I provide something like "-name
-'*.c'" option to =find=.
+'*.c'" to =find=.
 
 #+BEGIN_SRC emacs-lisp
   (require 'vc-git)
@@ -2467,25 +2468,25 @@ buffer, provided by =wgrep= package.
 
 * Hide/show blocks
 
-There are some situations when you want to have a glance of functions defined in
-a file. For elisp, you can use a trick, like =M-x occur defun=. Languages, like
-Python could also be approached in a similar fashion. But it's not that easy to
-do so for the C-family languages. And that's where the =hideshow= module can
-help you.
+There are some situations when you want to have a glance at functions defined in
+a file. For elisp, you can use something, like =M-x occur= and search for
+=defun=. Languages, like Python could also be approached in a similar
+fashion. But it's not that easy to do so for the C-family languages. That's
+where =hideshow= module can help.
 
-It has plenty of decent functions for collapsing code blocks. For example,
-=hs-hide-all=, which is supposed to solve the aforementioned problem. But it
-doesn't really work very well beyond the C language itself. Consider, for
-example, a C++ file which defines all the symbols inside a namespace, or a Java
-file with a class definition. Those files have just a single top-level entry,
-which is not very informative.
+=hideshow= has plenty of decent functions for collapsing code blocks. For
+example, =hs-hide-all=, which is supposed to solve the aforementioned
+problem. But it doesn't really work very well beyond the C language
+itself. Consider, for example, a C++ file which defines all the symbols inside a
+namespace, or a Java file with a class definition. Those files have just a
+single top-level entry, which is not very informative.
 
 So, I came up with this little function, that serves pretty much every need I
 have regarding the hiding functionality. It's bound to =C-c h= in C-derived
 modes.
 
 First of all, it's a toggling function - so, on one execution it collapses
-blocks and on the next one it expands those. For collapsing, it uses every
+blocks and on the next one it expands them. For collapsing, it uses every
 top-level block inside the current one.
 
 E.g. if you're at the top level of a C file, then it will leave only function
@@ -2519,7 +2520,7 @@ I was postponing the writing of Auto-completion section for a long time. The
 reason is - I'm still uncertain about my attitude to it.
 
 When I first started using Emacs, obviously, auto-completion was one of the main
-features I wanted to be there. Because I was working in (shrug) Microsoft Visual
+features I wanted to be there, since I was working in (shrug) Microsoft Visual
 Studio and considered it a given. I was under impression that no good work can
 be done without it.
 
@@ -2533,31 +2534,31 @@ one second glitches were annoying, so I turned off the automatic start of
 auto-completion in favor of explicit binding. This way I could trigger the
 completion only when I needed it.
 
-And guess what? I've found myself never using it in about a month. Also, when I
-tried to use it - there were always some rough edges. It didn't work perfectly,
-it needed some variables to be set... It was Always Something. So, I turned it
-off and guess again? I have never felt the need for it during my work. Not once.
-I lived like that happily, started to appreciate Emacs more and more.
+But guess what? I've found myself almost never using it in about a month. And
+when I tried to use it - there always were some rough edges. It didn't work
+accurately, it refused to work sometimes, it needed some variables to be
+set... it was Always Something. So, I turned it off and guess again? I've never
+felt the need for it during my work. Not once.
 
-Eventually, I began advocating Emacs to others. Not very surprisingly, a first
+Then, eventually, I began advocating Emacs to others. Unsurprisingly, a first
 question from almost everybody was about auto-completion. And believe it or not,
-the answer "You don't actually need auto-completion!" wasn't really convincing.
-Almost everybody just stopped listening after that. For good reasons or bad,
-they just wasn't interested, because I was denying something they work with all
-the time.
+the answer "Hey, you know what? You don't actually need auto-completion!" wasn't
+really convincing.  Almost everybody just stopped listening after that. For good
+reasons or bad, they just stopped listening, because I was denying something
+they work with all the time.
 
 And I cannot blame them. I had the exact same first expectations, it took some
 time to figure out the redundancy of auto-completion.
 
-So, I decided to enable the auto-completion once again and to honestly try to
-employ it into my work. I spent some time again, made it work decently, but I
-didn't really notice the gain. Yeah, it was nice and all, but it literally
-didn't make any difference.
+So, I decided to enable auto-completion once again and to try to employ it into
+my work. I spent some time again, made it work decently, but I didn't really
+notice the gain. Yeah, it was nice and all, but it literally didn't make any
+difference.
 
 At the same time to make it work, most of the time you have to install external
-tools, add quite a lot of configuration and you have to maintain everything.
-Once again, it seemed too much for an absolutely useless functionality, so I
-removed it, again.
+tools, add quite a lot of configuration and you have to maintain everything. All
+of this seemed too much for something that doesn't really change anything, so I
+removed it. Again.
 
 Since then I keep changing my mind about auto-completion back and forth. For
 some time I'm convinced that it's absolutely useless. Then I start thinking that
@@ -2575,27 +2576,27 @@ is convincing enough.
 ** Hippie expand
 
 Obviously, you need auto-completion when you need to type a long word or a piece
-of text. You don't need it for short sequences. And there are only 2
+of text - you don't need it for short sequences. And there are only 2
 fundamentally different cases:
 
-- You know the text you want to write - you just don't want to type every
+- You KNOW the text you want to write - you just don't want to type every
   character. E.g. you want to call a function named "doEverythingRight"; you
   remember its name (or at least the beginning); and you want to start typing
   it - enter a few characters (like, "doEv") and then hit a button to complete
   the whole thing.
-- You DON'T know the text you want to write - you want to choose between
+- You DON'T KNOW the text you want to write - you want to choose between
   candidates. E.g. you entered =reader.= and you expect the reader object to
   have a method that skips some characters while reading. You don't know its
   name - it might be "skip", "seek", "jump" or something else. But you want to
-  see the list of all public methods of the reader and maybe find something
+  see the list of all public methods of the =reader= and maybe find something
   there.
 
 The first case is rather simple. You don't actually need any sophisticated and
 precise auto-completion for that. A simple heuristic, like - trying to complete
 using words in all opened buffers will suffice.
 
-For the case of the "doEverythingRight" function it means, that if you have
-already used this function in some opened buffer - it will be auto-completed by
+For the case of "doEverythingRight" function it means, that if you have already
+used this function in some opened buffer - it will be auto-completed by
 =hippie-expand= (=M-/=).
 
 I guess it's called "hippie", because of its naive, but vast nature - "try every
@@ -2617,8 +2618,8 @@ first time, you can choose other candidates by repeating the command.
 #+END_SRC
 
 The second case is completely different, and I argue that auto-completion is not
-the right tool to solve the problem. Indeed, in that case what you actually need
-is documentation, not completion. The cases when you can guess the function name
+the right tool to solve the problem. What you actually need in that case is
+documentation, not completion. The cases when you can guess the function name
 correctly without the need of any documentation are pretty rare.
 
 So, a more straightforward approach would be to open the documentation of the
@@ -2628,12 +2629,12 @@ reader object and consult it:
   results faster - the very first link has a nice overview of the =ifstream=
   methods.
 - In case if you work on some proprietary code base, when Google can't help
-  you - you can still search through the documentation if you have it, or jump
-  to definition via =find-tag= (=M-.=) and look through the members and/or
+  you - you can still search through the local documentation if you have it, or
+  jump to definition via =find-tag= (=M-.=) and look through the members and/or
   comments. =C-c h= will help you to hide the unnecessary details.
 
 And that's, basically, it. Both use cases can be dealt with using alternative
-and, arguably, superior approaches. In conclusion, I want to talk about the
+and, arguably, superior approaches. In conclusion, I want to mention the
 argument which I hear quite often, and which I find pretty weak.
 
 One might argue that the main reason to use auto-completion is to increase
@@ -2643,30 +2644,30 @@ long for your speed to exceed 50 words per minute, which is 250 characters per
 minute, which is ~4 characters per second. Typing "doEverythingRight" on that
 speed takes you 4 seconds. Typing "seek" takes you under 1 second. Do you want
 to improve it even further? What is reason for that? Do you think it's a
-bottleneck in your work? Are you sure? And do you honestly believe that using
-arrows to choose the correct candidate is actually increasing your speed?
+bottleneck in your work? Are you sure? Do you honestly believe that using arrows
+to choose the correct candidate is actually increasing your speed?
 
 In case, if you're not touch typing, but rather hunt-and-pecking with 2 fingers
-on 5 words per minute speed, then I must tell - auto-completion won't help your
-productivity. Well, it will to some minor extent, but learning to touch type
+on 5 words per minute, then excuse me, but auto-completion won't help your
+productivity. Well, it will, to some minor extent, but learning to touch type
 will improve it by 2 orders of magnitude compared to auto-completion.
 
 So, auto-completion is the wrong tool again. You have to learn to touch type
-instead of using auto-completion to increase your speed (and accuracy). It is
-not as hard as many people think. You can teach a monkey to touch type in
-something like 40 hours with the keyboard. Is it really too much?
+instead of using auto-completion to increase your speed (and accuracy). It's not
+as hard as many people think. You can teach a monkey to touch type in something
+like 40 hours with the keyboard. Is it really too much?
 
 ** Snippets
 
-First case from the previous section, when you know the text you want to write
-and just don't want to type every character, has an important sub-case. What if
-the text you want to write is quite long or crypto-looking? You definitely don't
-want to remember those kind of things and =hippie-expand= won't help you, since
-it completes only words.
+First case from the previous section, when you know the text you want to write,
+but don't want to type every character, has an important sub-case. What if the
+text is quite long or crypto-looking? You definitely don't want to remember
+those kind of things and =hippie-expand= won't help you, since it completes only
+words.
 
-There are multiple options in Emacs for this. Unfortunately, I couldn't find the
-one, that fits me entirely, but I'm kind of pleased with a combo of =abbrev= and
-=yasnippet= packages.
+There are multiple options to approach this problem in Emacs. Unfortunately, I
+couldn't find a single one, that fits me entirely, but I'm kind of pleased with
+a combo of =abbrev= and =yasnippet= packages.
 
 *** Yasnippet
 
@@ -2675,19 +2676,18 @@ complex. It provides great possibilities to make the snippets really smart.
 
 The only thing is that I don't like when the tools try to be smarter than me -
 it hurts my self-esteem. So all my snippets are mostly dumb with almost no
-interactivity. And the good thing is that yasnippet doesn't stand in my way. It
-doesn't require me to use the fancy snippets, rather it provides an option to do
-so.
+interactivity. The good thing is that yasnippet doesn't stand in my way. It
+doesn't require me to use fancy snippets, rather it provides an option to do so.
 
-There's not much more to tell about it. Yasnippet is really great at its job. It
-had rough edges and big starting times previously, but now I find it to be in
-quite good shape.
+And, honestly, there's not much more to tell about it. Yasnippet is really great
+at its job. It had rough edges and big starting times previously, but now I find
+it to be in quite good shape.
 
 The advice I can give you about using it - like configuring Emacs, it's better
 to start with zero snippets and add new ones as you go. You can look through
 other people's snippets for good ideas, but there's little use in a pack with a
 thousand of snippets. You won't find the time to study those snippets and they
-may not suite your way of writing the code.
+may not suit your way of writing code.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "yasnippet-autoloads"
@@ -2714,24 +2714,24 @@ may not suite your way of writing the code.
 *** Abbreviations
 
 One particular place where =yasnippet= doesn't really work well is minibuffer. I
-don't know if it's just me, or it's not supposed to work there. But anyway, I
-use minibuffer to issue shell commands (with =M-&=) quite often, and the
-=abbrev= package comes to the rescue.
+don't know if it's just me, or it isn't supposed to work there. But anyway, I
+use minibuffer to issue shell commands (with =M-&=) quite often, and =abbrev=
+package comes to the rescue.
 
 There are commands that I use rarely enough to forget their actual spelling, but
 often enough to be annoyed every time I have to look them up somewhere. As a
-simplest example, I always forget how to use the =ln= command to create a
-symbolic link. Where do you have to put =-s=? Where is the target path and where
-is the link name? I know, it's ridiculous, but I was making mistakes every time
-I used it.
+simplest example, I always forget how to use =ln= command to create a symbolic
+link. Where do you have to put =-s=? Where is the target path and where is the
+link name? I know, it's ridiculous, but I was making mistakes every time I used
+it.
 
 Now, I simply print =ln=, hit =M-/= for =hippie-expand=, it becomes =ln -s
 target link= and I'm happy.
 
-The abbreviations are listed in =.abbrev_defs= file and, basically, all of those
-are commands, which do something simple, but are represented by a random-looking
-symbols sequence. My rule of thumb is to use abbreviations for common shell
-commands and =yasnippet= for everything else.
+The abbreviations are listed in =.abbrev_defs= file and, basically, all of them
+are commands, that do something simple, but are represented by a random-looking
+sequence of characters. My rule of thumb is to use abbreviations for common
+shell commands and =yasnippet= for everything else.
 
 #+BEGIN_SRC emacs-lisp
   (when (require 'abbrev nil t)
@@ -2766,7 +2766,7 @@ headings and indenting the text according to the heading level.
   (setq-default org-support-shift-select (quote always))
 #+END_SRC
 
-When I use "C-c '" to edit the source blocks, my finger muscles keep using the
+When I use "C-c '" to edit source blocks, my finger muscles keep using the
 familiar key bindings. So, it's better for those to do what I mean.
 
 #+BEGIN_SRC emacs-lisp
@@ -2800,17 +2800,17 @@ with the latter being my backend of choice.
 
 I'm not really a great user of different tools for planning and organizing. It's
 really a shame, because if you think about it, those are absolutely necessary to
-actually get things done. So, I'm not losing hope that someday I will make my
+actually get things done. And I'm not losing hope that someday I will make my
 life and work more organized.
 
 One step towards this goal for me is to make the tools as simple and unobtrusive
 as possible. Maintaining a list of highly structured org-files every day will
 never work for me.
 
-Instead, when I face a lot of problems I can't keep in my head, I put everything
-into a single org-file and maintain it until the fire is extinguished. The
-following function to create an agenda of the current buffer comes in pretty
-handy.
+Instead, when I face a lot of problems I cannot keep in my head at once, I put
+everything into a single .org file and maintain it until the fire is
+extinguished. The following function to create an agenda of the current buffer
+comes in pretty handy.
 
 #+BEGIN_SRC emacs-lisp
   (define-key org-mode-map (kbd "C-c a")
@@ -2827,9 +2827,9 @@ reveal.js. Originally, you were supposed to write the content in HTML, but now
 you can use a lot of popular lightweight markups, like Org or Markdown.
 
 To start working on a presentation using Org, you should simply create a folder
-and execute =M-x org-reveal-init= (it is not a stock function, the definition is
-provided below). It will clone a reveal.js repository and create a template.org
-file.
+and execute =M-x org-reveal-init= (notice in the definition below, that it
+relies on the presence of "revealjs" snippet). It will clone a reveal.js
+repository and create a template.org file.
 
 To export the presentation itself you can use either =C-c C-e R R= or =C-c C-c=
 in any part of the buffer, where it doesn't have any special meaning.
@@ -2869,8 +2869,8 @@ in any part of the buffer, where it doesn't have any special meaning.
 ** Permanent table of contents
 
 Org has a built-in way to generate a table of contents when exporting. However,
-sometimes you need a table of contents in the raw org file. For example, when
-you use it as a readme file in a GitHub repository.
+sometimes you need a table of contents in the org file itself. For example, when
+you use it as readme in a GitHub repository.
 
 I wrote a simple package serving this need.
 
@@ -2909,9 +2909,15 @@ wider set of languages may be a good idea. If Emacs understands the syntax of
 the language - we can try expanding.
 
 For example, if we have a statement, like =object.getHash();= and the cursor is
-at the beginning of it, then we can expand to something like =object=,
-=object.=, =object.getHash=, =object.getHash()=, =object.getHash();=. It does
-sound kind of neat, right? But in practice - it's not all roses.
+at the beginning of it, then we can expand to something like,
+
+- =object=
+- =object.=
+- =object.getHash=
+- =object.getHash()
+- =object.getHash();=
+
+It does sound neat, right? But in practice - it's not all roses.
 
 There are at least 2 issues spoiling the party. First, the syntax of Lisp-like
 languages is very simple. Basically, you're editing an Abstract Syntax Tree
@@ -2920,20 +2926,21 @@ syntax of C-like languages (especially, C++) is significantly more complex. So,
 it makes writing precise "expansion rules" unreasonable. =expand-region= relies
 on the built-in Emacs parsers most of the time. But those parsers are forced to
 resort to imprecise heuristics too. This leads to very awkward expansions
-sometimes. Not always, but often enough for me to feel uncomfortable.
+sometimes. Not always, but often enough to feel uncomfortable.
 
 In my experience, dots (sentences) and empty lines (paragraphs) were causing
 most of the confusion. So, I dropped the rules, relying on those symbols to make
 =expand-region= dumber, but more predictable.
 
-The second reason, why it doesn't work very well for non-lisp languages, is kind
-of fundamental to the design of this feature. In short, what does it mean to
-"expand the region"? It means that we try to mark some region around point using
-different rules, like "mark everything inside quotes", "mark everything inside
-quotes, including the quotes", "mark everything inside parenthesis", "mark a
-statement" and etc. We choose the "best" rule for currently the marked region
-and use it as a next expansion. The "best" rule must contain the original
-region, and expand it "as little as possible".
+The second reason, why it doesn't work very well beyond lisp family, is
+fundamental to the design of this feature. In short, what does it mean to
+"expand the region"? It means that we try to mark some bigger region around the
+currently selected one (or around the point if no region is selected yet). For
+this we use different rules, like "mark everything inside quotes", "mark
+everything inside quotes, including the quotes", "mark everything inside
+parenthesis", "mark a statement" and etc. We choose the "best" rule for the
+currently marked region and use it as a next expansion. The "best" rule must
+contain the original region, and expand it "as little as possible".
 
 Now, consider the =object.getHash();= example again. Assuming that =getHash= is
 already selected, try to define, which expansion is better - =object.getHash= or
@@ -2941,7 +2948,7 @@ already selected, try to define, which expansion is better - =object.getHash= or
 second expansion, and if you choose the second one, you won't ever get the first
 one.
 
-Such situations are impossible in LISPs, because nesting is strictly ordered
+Such situations are impossible in lisps, because nesting is strictly ordered
 there. But in other languages, a sensible expansion can expand to the left,
 while another sensible expansion will expand to the right. There's no way to
 have both within the design of =expand-region=.
@@ -3052,16 +3059,16 @@ due to code indexing or something, tons of menus and options without good and
 unified documentation, etc.
 
 After I started using Emacs, it really became obvious that all this bloat is, in
-fact, a bloat - not comprehensiveness or rich functionality, but bloat.
+fact, bloat - not comprehensiveness or rich functionality, but bloat. Because
+most of the common IDE features are pretty heavy and complex in implementation,
+yet, they don't have real use.
 
-That's because most of the common IDE features are pretty complex in
-implementation, but have no real use. You may ask, why do they want to implement
-all these features, then? Because the features are "good looking", i.e. the
-concept is easy to explain, the usage is "intuitive", they solve a complex task
-in a simple way.
+You may ask, why do they want to implement these features, then? Simply because
+the features are "good looking", i.e. the concept is easy to explain, the usage
+is "intuitive", they claim solve a complex task in a simple way.
 
-But almost every such feature falls short when it's faced with a real-life
-problem. Because of the implementation complexity and lack of the "fine-tuning"
+But almost every such feature falls short when it's faced with real-life
+problems, because of the implementation complexity and lack of "fine-tuning"
 mechanisms. In other words, they build a huge, complex machine and provide a
 single big red button on the front with the label "Solve the problem!". In order
 to sell it to you, they showcase a problem, hit the button, the machine solves
@@ -3070,36 +3077,39 @@ it works as well - you are in total awe.
 
 But then you fetch an Android source tree, push the button - the machine doesn't
 respond. You try again - no luck. And the worst part is that you have nothing
-else, but the big red button, which doesn't work. So, your options are to press
-the button with different fingers, with your legs. You can try punching the
-button or asking your mother to press it, because, you know, she may have a good
-luck.
+else, but the big red button, which doesn't work. So, your options are:
+
+- try to press the button with a different finger
+- try pressing with your leg
+- try punching the button
+- invite your mother to press it, because, you know, she may have a good luck
 
 In other words, such features are mostly pure marketing. And I wouldn't mind
 them if they were free. Heck, Emacs has a robot psychiatrist and a tower of
-hanoi, which I don't mind at all, since it costs me nothing else than a couple
+Hanoi, which I don't mind at all, since it costs me nothing more than a couple
 of kilobytes.
 
-Emacs has a different approach to solving complex problems. It doesn't pretend
-that complex problems are easy. On the contrary, it shows you the steps, that
-must be taken to solve it and what are the possible ways and their trade-offs.
+Emacs, on the contrary, has a different approach to solving complex problems. It
+doesn't pretend that complex problems are easy. Instead, it shows you the steps,
+that must be taken to solve it and what are the possible ways and their
+trade-offs.
 
 The problem we're going to talk about now is "jump to definition". Unlike,
-"intellectual" [[#auto-completion][Auto-completion]], which I find practically useless, jumping to
-definition is, actually, quite handy.
+"intellectual" auto-completion, which I find practically useless, jumping to
+definition is quite handy.
 
-The common IDE solution is to index the code in background with some heuristics.
-It works mostly reasonable, but there are at least 3 issues.
+The common IDE solution is to index the code in background using some
+heuristics. It works mostly reasonable, but there are at least 3 issues.
 
-First, you have to have IDE "project" files to be able to use it. This is not a
-critical problem, but it's still an issue. Your team may use different IDEs, so
-you have to either maintain multiple project files, or use some kind of
-generator program (like, CMake). Besides, if you're working on a third party
+First, you have to have IDE "project files" to be able to use it. This may or
+may not be a critical problem, but it's definitely an issue. Your team may use
+different IDEs, so you have to either maintain multiple project files, or use
+some kind of generator program (like, CMake). If you're working on a third party
 project, which uses a different IDE, or simply uses Makefiles, you have to
 create the project files by yourself.
 
-Secondly, with code bases, like the Android OS tree, there is no grave to hold
-its body down. I mean, there is no IDE to load it at once.
+Secondly, with code bases, like, for example, the Android OS tree, there is no
+grave to hold its body down. I mean, there is no IDE to load it at once.
 
 Third, I'm not aware of IDEs, that can be easily used to code on a remote
 machine via =ssh=.
@@ -3109,10 +3119,11 @@ like =ctags=, to generate the index of the source code. The index has an
 information about all function and type definitions in the sources. In case of
 =ctags= and similar programs, the index is also called "tags file". Because most
 often it's just a single file with the name =TAGS=. Essentially, it consists of
-records, like "definition string + source file + line in the file". However, the
-actual binary representation may be different.
+records, like "definition string + source file + byte offset in the
+file". However, the actual binary representation may vary.
 
-To generate the index you can use =M-x update-tags-file= (=C-x C-u=).
+To generate the index using =ctags= you can use =M-x update-tags-file= (=C-x
+C-u=), which is provided below.
 
 This function will look for a tags file in the parent directories, and will
 suggest an execution command to update the existing tags file, or to generate a
@@ -3130,15 +3141,15 @@ back.
 
 If you jumped not to the definition you wanted, you can provide a universal
 argument, like, =C-u M-.=, to jump to the next candidate. Personally, when I
-can't get to the desired definition after several attempts, I resort to =M-x
+can't reach the desired definition after several attempts, I resort to =M-x
 tags-apropos= (=C-x C-l=). It gives you a list of all tags matching the provided
 regexp.
 
 You can load multiple tags files at once. For example, one for a library and
 another one for an application using the library. If you start getting a lot of
 matches in unrelated projects, you can call =M-x tags-reset-tags-tables= (=C-x
-C-t=) to forget about all of the loaded tags tables. And load only the relevant
-ones after that.
+C-t=) to forget about all of the loaded tags tables. And reload only the
+relevant ones after that.
 
 As you can see, the hard problem of indexing is not solved inside Emacs, but is
 delegated to specialized third-party software (=ctags= in that case). It is also
@@ -3146,27 +3157,27 @@ noteworthy, that it works offline, i.e. the index generation step is explicit -
 it's not a background process.
 
 As for the scaling issue, I've used =ctags= to index the aforementioned Android
-source tree. The snapshot I used was about 10 Gb. Obviously, there was binary
+source tree. The snapshot I used was about 10 Gb. Obviously, there were binary
 and other "non-source" files there, but still.
 
 The indexing process took something like 15 minutes, which may seem like a lot,
 but I doubt that you'll be doing this every day. The resulting tags file was
-about 1 Gb, which is not small as well, but it took roughly 2 seconds to jump to
-a definition. So, it's absolutely usable.
+about 1 Gb, which is not small as well, but it was taking roughly 2 seconds to
+jump to a definition, i.e. absolutely usable.
 
 Also, mind, that I carried out this experiment for academic purposes only. In
 practice, you won't need an index of the whole tree. Most likely, you will work
-on some sub-project and you can index only the code you're working on.
+on some sub-project and you can index only the code you're working with.
 
-As an epilogue, I would like to note that this way of solving problems is very
-Emacs-y. Despite everybody is talking about how you do EVERYTHING in Emacs, it's
-not quite accurate. Often enough, Emacs simply provides an interface to external
-programs - it doesn't fiddle around with git blobs, but provides a nice
-interface via =magit=.
+As an epilogue, I would like to note once again, that this way of solving
+problems is very Emacs-y. Despite everybody is talking about how you do
+EVERYTHING inside Emacs, it's not quite accurate. Often enough, Emacs simply
+provides an interface to external programs, e.g. it doesn't fiddle around with
+git blobs, but provides a nice interface via =magit=.
 
-And this approach has a lot of positive outcomes. The complex task is delegated
-to a specialized software, you can choose among different backends and you can
-still access it via unified Emacs-ish interface.
+This approach has a lot of positive outcomes. The complex task is delegated to a
+specialized software, you can choose among different backends and you can still
+access it via "unified" Emacs-ish interface.
 
 #+BEGIN_SRC emacs-lisp
   (defun parent-directory (dir)
@@ -3226,12 +3237,13 @@ It takes a while (about 2 seconds) for my Emacs configuration to initialize. So
 if some external tool will use it as a default editor - I will have to wait
 those 2 seconds every time.
 
-To overcome this, I start an Emacs "server" mode. After that, =emacsclient= can
-be used instead of =emacs= as an editor. It will look for a running server and
-delegate editing to the already initialized (server) instance.
+To overcome this, I start an Emacs "server" mode during initialization. After
+that, =emacsclient= can be used instead of =emacs= as an editor. It will look
+for a running server and delegate editing to the already initialized (server)
+instance.
 
 I guess, it has way more potential than this, but I don't really need it for my
-work flow.
+workflow.
 
 #+BEGIN_SRC emacs-lisp
   (require 'server)
@@ -3261,8 +3273,8 @@ uses tabs by default. Since consistency is more important than brilliance (at
 least in the case of whitespaces), you'll have to stick with that for this
 project.
 
-To override this, I create a file with the name =.dir-locals.el= in the root of
-this project. And expand the =dirlocals= snippet:
+To override my default settings, I create a file with the name =.dir-locals.el=
+in the root of the project, and expand the =dirlocals= snippet:
 
 #+BEGIN_EXAMPLE
   ((d-mode . ((indent-tabs-mode . t)
@@ -3299,7 +3311,7 @@ should suffer.
 
 In case you want to inspect the whitespace in the code, you can make it visible,
 by turning the =whitespace-mode= on. It also has a =whitespace-cleanup=
-function, which is more invasive, than simple trailing whitespace removal. So, I
+function, which is more invasive, than simple trailing whitespace removal. I
 call it manually when needed.
 
 #+BEGIN_SRC emacs-lisp
@@ -3315,11 +3327,11 @@ To leave only one space around point, you can use a handy =M-\= binding.
 * User-friendliness
 
 There are several settings in my configuration, that I don't really use myself.
-But I found that lack of thereof spoils first impression for people, that try
-this config out. And I want this configuration to provide more or less intuitive
-behavior out-of-the-box to not scare these people. I don't go as far as enabling
-CUA mode, because it would hurt the overall productivity. But I try to gather
-low-hanging fruits at least.
+But I found that lack of thereof spoils first impression for people that try
+this config out. So, I include some settings that make the experience more
+"intuitive" for ordinary people to not scare them away. I don't go as far as
+enabling CUA mode, because it would hurt the overall productivity. But I try at
+least to gather low-hanging fruits.
 
 ** Dired mouse
 
@@ -3343,7 +3355,7 @@ it undo as well.
   (global-set-key (kbd "C-z") 'undo)
 #+END_SRC
 
-One thing about undo is that, as I've said, I use =C-/= myself, but it's not
+Another thing about undo is that, as I've said, I use =C-/= myself, but it's not
 representable with an ASCII control code, so it can't be sent to terminals.
 Mapping it to a "traditional" UNIX undo sequence =C-_= is a cute way around.
 
@@ -3378,22 +3390,22 @@ to =revert-buffer= for updating buffer contents to the latest state.
 
 * Regional settings
 
-I live in Nizhniy Novgorod (formerly, Gorkiy), which is a third largest city
+I live in Nizhniy Novgorod (formerly, Gorkiy), which is a third largest city in
 Russia. Obviously, I speak Russian, so I need to specify it as a default second
 language.
 
 If you try to use your system-level bindings for this, you'll find that
 bindings, like, =C-f= stop working. Because =f= is replaced with an alternative
-character, which is not recognized by Emacs.
+(russian) character, which is not recognized by Emacs.
 
-So, you should change the input method inside Emacs - not on the system-level.
-The default binding is =C-\=.
+The solution is to change the input method inside Emacs - not on the
+system-level. The default binding for this is =C-\=.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default default-input-method "russian-computer")
 #+END_SRC
 
-Also, we regard Monday as a first week day.
+Also, we regard Monday as a first week day, not Sunday.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default calendar-week-start-day 1)
@@ -3410,8 +3422,8 @@ expect the scrolling to happen line-by-line in that case.
 #+END_SRC
 
 Another thing is that, when you try to move the point past the beginning or the
-of the buffer - it will report an error. However, I find that moving cursor to
-the extreme position before reporting an error is more convenient.
+end of the buffer - it will report an error. However, I find that moving cursor
+to the extreme position before reporting an error is more convenient.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default scroll-error-top-bottom t)
@@ -3429,7 +3441,7 @@ common basis, but maybe one day I will.
 A lot of the time scrolling and moving the cursor come close together. For
 example, you can scroll the screen using =C-p= and =C-n=, when the cursor is
 near the border. Or you can move the cursor using =C-v= and =M-v= to scroll by
-pages. Moving the cursor by paragraph is something in between those 2 options.
+screens. Moving the cursor by paragraph is something in between those 2 options.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-M-p") 'backward-paragraph)
@@ -3491,13 +3503,12 @@ this?!".
 Emacs creates some auxiliary files for operation. Some examples include:
 
 - Lock files (symbolic links starting with =.#=). Those files are created when
-  the buffer goes to the "modified" state and denote this fact everybody else.
-  I.e. if the lock file exists it may not be safe for other applications to
-  modify it.
+  the buffer becomes modified. Presence of the lock file denotes to other
+  applications that it may not be safe to modify it.
 
-- Auto-save files (start and end with =#=). If the buffer stays in a modified
-  state for some time (1 minute or something), Emacs dumps its contents to an
-  auto-save file.
+- Auto-save files (starting and ending with =#=). If the buffer stays in a
+  modified state for some time (1 minute or something), Emacs dumps its contents
+  to an auto-save file.
 
 - Backup files (end with =~=) - second-to-last saved version. It's possible to
   save those in a separate directory, so they don't create litter.
