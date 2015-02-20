@@ -1336,23 +1336,23 @@ mode-local bindings, so global bindings are used instead.
 * Shell commands
 
 Most of the time, I use one of two ways to issue a shell command - =M-&= or =C-c
-C-c=. The differences between those is not that big, but quite important:
+C-c=. The differences are not that big, but quite important:
 
 - There can exist only one compile buffer at a given moment. So, if a
   compilation is in progress, =compile= execution will ask you if you want to
   terminate the ongoing thing. On the contrary, you can have arbitrarily many
   asynchronous shell commands at any time.
 - Compile buffer is read-only and async-shell buffers are editable.
-- =compile-mode= colors and parses the output to be able to jump to source code.
-  =shell-mode= doesn't do anything fancy.
+- =compile-mode= colors the output and parses it to be able to jump to source
+  code. =shell-mode= doesn't do anything fancy.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default async-shell-command-buffer (quote new-buffer))
 #+END_SRC
 * Get full path
 
-Quite often you need a full path to some file, and there's a plenty of ways to
-get it.
+Quite often you need a full path to some file, and there's plenty of ways to get
+it.
 
 - First, obviously, you can press =C-x C-f= and find your file there.
 - Then, in Dired you can press =w= to get only the name or =C-0 w= to get the
@@ -1366,15 +1366,15 @@ get it.
         (message (buffer-file-name))
         (kill-new (buffer-file-name))))
   #+END_SRC
-- And the last, but not least, if you have a short path around point, you can
-  use =C-x /= to expand it to a full path. I use this quite often in conjunction
+- And last, but not least, if you have a short path around point, you can use
+  =C-x /= to expand it to a full path. I use this quite often in conjunction
   with buffer-local =compile-command= setting. If I have a script that I want to
   run using =compile=, I do the following:
-  - open the script (say, "build-and-run.bash") and press =C-c C-c=
-  - then write "cd ."
-  - press =C-x /= to expand the dot (say, "cd /home/sergei/project/build")
-  - append script execution - "cd /home/sergei/project/build && bash
-    build-and-run.bash"
+  - open the script (say, =build-and-run.bash=) and press =C-c C-c=
+  - write =cd .=
+  - press =C-x /= to expand the dot (say, =cd /home/sergei/project/build=)
+  - append script execution - =cd /home/sergei/project/build && bash
+    build-and-run.bash=
 
   Now I can switch to another buffer, press =M-p= after =C-c C-c= and use the
   same compile command, because the path is absolute.
@@ -1435,8 +1435,8 @@ in silence.
 #+END_SRC
 * Ediff
 
-In the pre-magit era I had to provide the ediff interface as an external tool to
-the version control systems. It wasn't the most clean experience, but it worked.
+In the pre-magit era I had to provide ediff interface as an external tool to
+version control systems. It wasn't the cleanest experience, but it worked.
 
 Fortunately, now we don't have to resort to hacks like this - we can simply
 press =e= in magit buffer - both to see the diff and resolve conflicts.
@@ -1460,9 +1460,8 @@ configuration after ediff session.
   (setq-default ediff-suspend-hook (quote (ediff-default-suspend-function ediff-restore-window-configuration)))
 #+END_SRC
 
-Then, I don't want ediff to create other frames. Everything should stay in the
-same frame I'm working in. And splitting should be horizontal (i.e.
-side-by-side).
+Ediff shouldn't create other frames. Everything should stay in the same frame
+I'm working in. And splitting should be horizontal (i.e. side-by-side).
 
 #+BEGIN_SRC emacs-lisp
   (setq-default ediff-window-setup-function (quote ediff-setup-windows-plain))
@@ -1479,7 +1478,7 @@ refined by chars, not words.
 #+END_SRC
 
 The last thing is that the default colors are not very pretty, so I replaced
-them with something that looks like the kdiff3 default theme, because it was my
+them with something that looks like kdiff3 default theme, because it was my
 previous favorite diff viewing tool.
 
 #+BEGIN_SRC emacs-lisp
@@ -1503,32 +1502,32 @@ previous favorite diff viewing tool.
 * Diff
 
 I would really love to have only color-theme-related configuration in that
-section. But there's something completely wrong with the default behavior of
+section. But there's something awfully broken with the default behavior of
 diff-mode.
 
 The darn thing changes the headers of the patch upon saving. It does it by
 default, without asking and even if it cannot fix them properly. I guess, this
-feature was so useful in the stone age that everybody was taking it as a given.
-And, probably, everybody always kept the patches in the directories where they
+feature was so useful back then, that everybody was taking it as a given. And,
+probably, everybody was always keeping the patches in the directories where they
 apply.
 
 Well, believe it or not, but sometimes I do put patches in the directories,
 where they don't apply. For example, patches generated by =git diff= usually
 don't apply no matter where you put them (because of the =a/=, =b/= prefixes).
 
-I don't need Emacs to ruin the headers when I edit such patches. Luckily,
+I don't need Emacs to ruin the headers when I edit those patches. Luckily,
 there's a variable =diff-update-on-the-fly= that turns this behavior on and off.
 Unluckily, it doesn't work. It seemed to work one day, so maybe it's a
 regression. But it clearly doesn't work in Emacs 24.4.
 
-So, I need to perform surgery on the =diff-mode= and override its
-=diff-write-contents-hooks= to do nothing.
+So, I had no other choice, rather than performing surgery on =diff-mode=
+overriding its =diff-write-contents-hooks= to do nothing.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default diff-update-on-the-fly nil)
 
   (defun diff-write-contents-hooks ()
-    "PLEASE, DO NOTHING WITH MY DIFFS!!!!"
+    "PLEASE, DO NOTHING TO MY DIFFS!!!!"
     nil)
 
   (set-face-attribute 'diff-added nil :background nil :foreground "green")
@@ -1542,39 +1541,34 @@ So, I need to perform surgery on the =diff-mode= and override its
 * Ido selection
 
 As software evolution goes, certain designs tend to become some kind of a
-standard. They turn out to be such a huge success, that, basically, everybody
-employ it. And when sometimes you see a different solution - you feel awkward,
-at least.
+standard. They turn out to be such a success, that, basically, everybody employ
+it. And when sometimes you see a different solution - you feel awkward, at
+least.
 
 Like, for example, it's not that easy to find a modern widespread editor without
-"tabs", i.e. some kind of bookmarks at the top. Also, every desktop browser,
-that I know of, uses this "tabs" design to allow switching among different
-pages.
+"tabs", i.e. some kind of bookmarks at the top. And every desktop browser (that
+I know of) uses this "tabs" design to allow switching between different pages.
 
-Windows and buffers system of Emacs serves the same purpose as "tabs". And the
-more I use it, the more I realize, that it's a way better design.
+"Buffers and windows" system of Emacs serves the same purpose as "tabs"
+system. But from my point of view, it's a much better design.
 
-But I was feeling awkward using it at first. =ido= really made this awkwardness
-feel pleasant. Now I'll give it away only when you pry it from my cold, dead
-hands.
+Admittedly, I felt awkward using it at first. However, =ido= made this
+awkwardness feel pleasant. Now I'll give it away only when you pry it from my
+cold, dead hands.
 
-For me, it works great as-is with flexible matching enabled. Personally, I don't
-see the point of =ido-flx= and relatives. I simply don't get what problems those
-packages are trying to solve. Also, I like the vanilla "horizontal" ido more,
-not the "vertical" modification.
+For me, it works great as is. I don't see a point of =ido-flx= and relatives,
+and I like vanilla "horizontal" ido more than "vertical" modification. So, the
+only interesting thing I can tell about my =ido= setup is that buffer switching
+is bound to =C-TAB=.
 
-So, the only interesting thing I can tell about my =ido= setup is that buffer
-switching is bound to =C-TAB=. The idea came from desktop browsers. One thing
-about it - it's a shorter and easier alternative to =C-x b=. And the other
-thing, which was a nice surprise to me, but may be a controversy to others - it
-is not representable by an ASCII sequence, so it won't work in a terminal.
+Obviously, the idea came from desktop browsers. The main reason I use it - it's
+a shorter and more convenient alternative to =C-x b=. But there's one more thing
+about it, which was a nice surprise to me - =C-TAB= is not representable by an
+ASCII sequence, so it won't work in a terminal.
 
-You may ask why is this a good thing? Because if I use terminal, I use it inside
-Emacs via =ansi-term= most of the time. If the sequence would've been ASCII one,
-then it would be sent to terminal and Emacs command wouldn't be executed.
-
-=C-x b= (which is an ASCII sequence) also works in =term=, because =C-x= is
-handled specially in =term-mode=. But it's not as convenient as =C-TAB=.
+You may ask how is this a good thing? Well, because if I use terminal, I use it
+inside Emacs via =ansi-term= most of the time. If the sequence would've been
+ASCII one, then it Emacs would send it to terminal instead of executing =ido=.
 
 #+BEGIN_SRC emacs-lisp
   (when (require 'ido nil t)
@@ -1589,7 +1583,8 @@ handled specially in =term-mode=. But it's not as convenient as =C-TAB=.
 There are some modes, like, =ido-ubiquitous=, which enable =ido= in almost every
 "completing situation". But I find that =ido= doesn't really shine in a lot of
 other situations, so I prefer using it only for buffers, files and =M-x=
-completions. For the latter I use =smex=, because it does things right.
+completions. For the latter I use =smex=, because it feels natural, while some
+other solutions I tried don't.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "smex-autoloads"
@@ -1603,10 +1598,10 @@ completions. For the latter I use =smex=, because it does things right.
 
 * Buffer list
 
-Not a lot of people know this, but the trend to add "i"s to words to make them
-look iCool was popular in Emacs long before Apple had came about. Behold another
-precedent: Ibuffer. Frankly, I don't use it much, but it's kind of nice to have
-when you need it.
+Not a lot of people know about this, but the trend to add "i"s to words to make
+them look iCool was popular in Emacs long before Apple had came about. Behold:
+ibuffer. Frankly, I don't use it much, but it's nice to have it when you do need
+it.
 
 #+BEGIN_SRC emacs-lisp
   (require 'ibuffer nil t)
@@ -1635,10 +1630,10 @@ when you need it.
 
 Googling today became so common, that the corresponding word became an official
 English word according to the Oxford dictionary. Now, we take it to another
-level, and add an Emacs keybinding to google even faster!
+level, and add an Emacs keybinding to google!
 
 If the region is selected when you press =C-c g=, it will google it. Otherwise,
-it will query for the text to be googled.
+it will query the text to be googled.
 
 Similarly, you can use =C-c l= to lingvo something (translate from Russian to
 English or vice versa) and =C-c u= to Urban Dictionary something.
@@ -1676,15 +1671,14 @@ function:
 
 I can more or less understand why you need an alternative to the first option.
 But why do you need all 2-3-4, which are about the same? Especially, given those
-bindings are quite good - brief and convenient. Something you have a shortage of
-in Emacs.
+bindings are quite attractive - brief and convenient. Something you have a
+shortage of in Emacs.
 
-I believe, it's obvious, that we should bind 2 of those to something else. We
-only have to find an appropriate functionality. And the =window-numbering= mode
-author has a brilliant idea in mind.
+I believe, it's obvious, that 2 of those should be bound to something else. We
+only have to find an appropriate functionality.
 
 Previously, I used =C-x o= binding to switch windows. And it works fine, when
-you have only 2 of those. Admittedly, it's the case for me 95% of the time. The
+you have only 2 of them. Admittedly, it's the case for me 95% of the time. The
 remaining 5% weren't very pleasant, but I thought, that it's something I can
 live with.
 
@@ -1692,14 +1686,14 @@ Then I came across the =window-numbering= mode which made a lot of sense to me.
 Using =M-<number>= to switch windows is a perfect match!
 
 At first, I didn't use it that often, because of the habit. But every time I was
-in the "5% zone" I immediately remembered about =window-numbering= and used it
-happily. Having this mode around for quite some time, I find myself using it
-more and more often.
+in the "5% zone" I was immediately rescued by =window-numbering= mode. Now,
+having it around for quite some time, I find myself using it more and more
+often.
 
 In fact, this mode makes so much sense to me, that when I advertise Emacs to
-others, I present =window-numbering= way of windows switching as default. And I
-haven't yet seen anybody to have any issues with that. (That said, probably, it
-won't work on terminal emulators).
+others, I present =window-numbering= way of windows switching as a default
+one. And I haven't yet seen anybody to have issues with that. (That said, most
+likely, it won't work if you try it on a terminal emulator).
 
 The last thing I should mention is that =M-0= takes you to minibuffer by
 default, which is also very handy.
@@ -1717,7 +1711,7 @@ A very nice mode.
          (message "WARNING: window-numbering-mode not found"))))
 #+END_SRC
 
-** Messing windows around
+** Handy functions
 
 As I've said, I use 2 buffers almost all the time. And I have 2 handy functions
 for that case.
@@ -1773,7 +1767,7 @@ for that case.
 
    Note, this function can be used not only for swapping 2 buffers, but also for
    "dragging" the current buffer to some other window, when there's more than 2
-   of those. Similar to how you can use consecutive invocations of
+   of them. Similar to how you can use consecutive invocations of
    =transpose-words= to "drag" the word forward.
 * Embedded lisp evaluation
 
@@ -1781,33 +1775,32 @@ One particularly unusual thing about Emacs for somebody coming from a "common"
 development environment is that you always have an executable language right
 under your cursor.
 
-It is difficult to acknowledge this properly until you get used to the elisp
-language. But once you're at the level, where you can write a small elisp
-function, you will find yourself using it more and more often in a variety of
-cases.
+It is difficult to acknowledge this properly until you get used to elisp. But
+once you're at the level, where you can write a small function, you will find
+yourself using it more and more often in a variety of cases.
 
-Emacs has a built-in binding =C-x C-e=, which evaluates the elisp form on the
-left from the cursor (i.e. previous form). The default functionality prints the
+Emacs has a built-in binding =C-x C-e=, which evaluates elisp form on the left
+from the cursor (i.e. previous form). The default functionality prints the
 result to the echo area, leaving the form as is. But quite often it is pretty
 useful to write some small form in non-elisp buffer, evaluate it and paste the
 result into the buffer instead of the form.
 
 E.g. you're writing a technical article, and at some point you need a value for
-a quarter of Pi. Probably, a lot of people know several digits of the Pi value.
-That's how many I know by heart - =3.14159265358=. Probably, a lot of people
+a quarter of Pi. Probably, a lot of people know several digits of Pi.
+=3.14159265358= - that's how many I know by heart. Probably, a lot of people
 also know some digits of half-Pi and twice-Pi. For me, it's just 3 digits in
 both cases - =1.57= and =6.28=. But do a lot of people remember what is the
 quarter of Pi? I can't name a single digit (except for the leading zero) without
 performing an evaluation.
 
-But why bother at all, when you can write =(/ 3.1415 4)=, hit =C-x C-e= and it
-will be replaced with =0.785375=. Of course, you can also write =(/ float-pi
-4)=. You can also apply any other functions you might need.
+But why bother, when you can write =(/ 3.1415 4)=, hit =C-x C-e= and it will be
+replaced with =0.785375=. Of course, you can also write =(/ float-pi 4)=. You
+can also apply any other function you might need.
 
 And, obviously, you can use not only mathematical functions, but any of the
-variety of different elisp functions. At the time of writing I have as much as
-=18272= functions available. Not all of them are particularly useful for that
-kind of usage, but still it gives you the perspective.
+variety of elisp functions. At the time of writing I have as much as =18272=
+functions available. Not all of them are particularly useful for that kind of
+usage, but still it gives you the perspective.
 
 The examples from my daily job include:
 
@@ -1816,12 +1809,13 @@ The examples from my daily job include:
 3. Add leading zeros: =(format "%04d" 4)=
 
 If you want the form to stay in place and simply print the result to the echo
-area, then you should select it with a region before pressing =C-x C-e=.
+area (the "old" behavior), then you should select it in a region before pressing
+=C-x C-e=.
 
 You can also evaluate the region in debugging mode - use the universal argument
 for that - =C-u C-x C-e=. If there's a function definition inside the selected
 region, then successive calls to that function will also happen in debug mode.
-To cancel this behavior, simply evaluate the respective functions without a
+To cancel this behavior, simply evaluate the respective function without a
 universal argument. This is similar to =C-M-x= / =C-u C-M-x= behavior in
 =emacs-lisp-mode=.
 
@@ -1852,8 +1846,8 @@ universal argument. This is similar to =C-M-x= / =C-u C-M-x= behavior in
 There was a period of my work, when I was implementing a computer vision
 algorithm. To test and improve it, I had to generate a 3D scene and experiment
 with different camera positions and fields of view. For example, I had to figure
-out something like: "Do we get a good quality if we use four 55 degree cameras
-and place them like that?"
+out something like: "Do we get good quality if we use four 55 degree cameras and
+place them like that?"
 
 After I generated the images of a 3D scene, I had to process those. And as you
 may know, for a computer vision application, the most common representation of
@@ -1864,19 +1858,19 @@ following form:
 |  0 | fy | py |
 |  0 |  0 | 1  |
 
-where fx and fy are the /focal lengths/ in x and y dimensions. This matrix is
-used to convert image coordinates to camera world coordinates and visa-versa.
+where =fx= and =fy= are the /focal lengths/ in x and y dimensions. This matrix
+is used to convert image coordinates to camera world coordinates and vice-versa.
 
 Focal length can be unambiguously evaluated given the field-of-view of the
 camera: focal = tan^{-1}(fov / 2). And, of course, you can make a conversion in
 the opposite direction: fov = 2 atan(focal^{-1}).
 
 This is not quantum physics, by all means. But I used this formulas rare enough,
-that I had to look them up every time I needed those, and often enough to be
-annoyed by this. Add to the annoyance, that after I found the formula, I had to
-perform something like 5 operations in =calc= to evaluate it.
+that I had to look them up every time I needed those. And at the same time often
+enough to be annoyed by this. Add to the annoyance, that after I found the
+formula, I had to perform something like 5 operations in =calc= to evaluate it.
 
-And at some point it struck me - I'm using Emacs, a text editor with a primary
+But at some point it struck me - I'm using Emacs, a text editor with a primary
 goal to allow me to build the best working environment for myself. Just for me,
 you know? It's not that some guy or a big company is sitting somewhere trying to
 think of everything I might need. It cannot ever work like that. Because how
@@ -1887,23 +1881,23 @@ ones.
 And maybe not even formulas, but something else. Like, just now, while I was
 writing this, a colleague of mine asked me "How you can take 2 videos and stack
 them vertically?". I wrote =ffmpeg-top-bottom= and hit =M-/=, it expanded to a
-command found in my =.abbrev_defs= file and I sent it to her.
+command from my =.abbrev_defs= file and I sent it to her.
 
 She remembered, that I had already sent her this command previously, but she
 couldn't find it anywhere. I smiled about it and told her that she can ask me as
 many times as needed, because I always have it at hand.
 
-Anyway, long story short. That time I was thinking of focal lengths was the time
+Anyway, long story short. That day I was thinking of focal lengths was the day
 when I really appreciated the "extensibility" part of Emacs. I wasn't too
 thrilled about it when I just started using the editor. I was always, like,
 "Somebody else must have already built a perfect environment. I should simply
-find it and use it".
+find it and use it". As you can guess, I've never found this "perfect
+environment".
 
-Needless to say, I'm still looking for this "perfect environment". But at that
-day, I have put the following functions to my init file and moved on
+But at that day, I have put the following functions to my init file and moved on
 enlightened. From that moment, when I need a conversion I just write something
 like =(fov2focal (deg2rad 55))= and hit =C-x C-e=. Yeah. At that day, I became a
-bit closer to a perfect working environment.
+bit closer to my perfect working environment.
 
 #+BEGIN_SRC emacs-lisp
   (defun deg2rad (x)
