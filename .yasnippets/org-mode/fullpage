@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: fullpage
+# key: fullpage
+# --
+#+LATEX_HEADER: \usepackage[cm]{fullpage}
