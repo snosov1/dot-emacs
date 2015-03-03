@@ -1333,6 +1333,13 @@ mode-local bindings, so global bindings are used instead.
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
 #+END_SRC
+*** Makefiles
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'make-mode nil t)
+    (define-key makefile-mode-map (kbd "\C-c\C-c") nil))
+#+END_SRC
+
 * Shell commands
 
 Most of the time, I use one of two ways to issue a shell command - =M-&= or =C-c
