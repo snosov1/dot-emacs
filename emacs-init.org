@@ -1676,12 +1676,12 @@ function:
 3. =M-<argument> <command>=
 4. =C-M-<argument> <command>=
 
-I can more or less understand why you need an alternative to the first option.
-But why do you need all 2-3-4, which are about the same? Especially, given those
-bindings are quite attractive - brief and convenient. Something you have a
-shortage of in Emacs.
+I can understand why you need an alternative to the first option. But why do you
+need all 2/3/4, which are about the same? Especially, given those bindings are
+quite attractive - brief and convenient - something you have a shortage of in
+Emacs.
 
-I believe, it's obvious, that 2 of those should be bound to something else. We
+I believe it's obvious that 2 of those should be bound to something else. We
 only have to find an appropriate functionality.
 
 Previously, I used =C-x o= binding to switch windows. And it works fine, when
@@ -1700,7 +1700,7 @@ often.
 In fact, this mode makes so much sense to me, that when I advertise Emacs to
 others, I present =window-numbering= way of windows switching as a default
 one. And I haven't yet seen anybody to have issues with that. (That said, most
-likely, it won't work if you try it on a terminal emulator).
+likely, it won't work if you try it in a terminal emulator).
 
 The last thing I should mention is that =M-0= takes you to minibuffer by
 default, which is also very handy.
@@ -1711,10 +1711,7 @@ A very nice mode.
   (eval-after-load "window-numbering-autoloads"
     '(progn
        (if (require 'window-numbering nil t)
-           (progn
-             (window-numbering-mode 1)
-             (add-hook 'minibuffer-setup-hook
-                       'window-numbering-update))
+           (window-numbering-mode 1)
          (message "WARNING: window-numbering-mode not found"))))
 #+END_SRC
 
