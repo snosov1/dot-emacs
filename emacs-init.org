@@ -1021,7 +1021,7 @@ this whole topic isn't worth so many words.
          (message "WARNING: dummyparens not found"))))
 #+END_SRC
 
-For the opposite functionality - removing parenthesis in pair - I use the =C-H=
+For the opposite functionality - removing parenthesis in pair - I use =C-H=
 binding, backed by the =paredit= mode. The mode has far more features and,
 actually, provides a somewhat revolutionary way to edit Abstract Syntax Trees
 (AST) directly. But I don't write a lot of Lisp and I even don't write a lot of
@@ -2648,7 +2648,7 @@ what is your current typing speed? If you're touch typing then it won't take
 long for your speed to exceed 50 words per minute, which is 250 characters per
 minute, which is ~4 characters per second. Typing "doEverythingRight" on that
 speed takes you 4 seconds. Typing "seek" takes you under 1 second. Do you want
-to improve it even further? What is reason for that? Do you think it's a
+to improve it even further? What is the reason for that? Do you think it's a
 bottleneck in your work? Are you sure? Do you honestly believe that using arrows
 to choose the correct candidate is actually increasing your speed?
 

@@ -18,8 +18,6 @@
     (package-install package))
  (cl-remove-if 'package-installed-p
                '(
-                 auto-complete
-                 ac-dcd
                  async
                  browse-kill-ring
                  cmake-mode
@@ -28,7 +26,6 @@
                  dos
                  dummyparens
                  expand-region
-                 flycheck
                  smex
                  string-edit
                  window-numbering
