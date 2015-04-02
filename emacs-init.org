@@ -1678,9 +1678,9 @@ function:
 4. =C-M-<argument> <command>=
 
 I can understand why you need an alternative to the first option. But why do you
-need all 2/3/4, which are about the same? Especially, given those bindings are
-quite attractive - brief and convenient - something you have a shortage of in
-Emacs.
+need all of 2, 3 and 4, which are about the same? Especially, given those
+bindings are quite attractive - brief and convenient - something you have a
+shortage of.
 
 I believe it's obvious that 2 of those should be bound to something else. We
 only have to find an appropriate functionality.
