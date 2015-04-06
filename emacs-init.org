@@ -1718,8 +1718,8 @@ A very nice mode.
 
 ** Handy functions
 
-As I've said, I use 2 buffers almost all the time. And I have 2 handy functions
-for that case.
+As I've said, I use 2 buffers almost all the time. And I have a few handy
+functions for that case.
 
 1. Toggle window split
 
@@ -1774,6 +1774,22 @@ for that case.
    "dragging" the current buffer to some other window, when there's more than 2
    of them. Similar to how you can use consecutive invocations of
    =transpose-words= to "drag" the word forward.
+
+3. Duplicate selected window
+
+   #+BEGIN_SRC emacs-lisp
+     (define-key global-map (kbd "\C-x d")
+       (defun duplicate-selected-window ()
+         "Display current buffer in the adjacent window. If selected
+     window is the only one, split the frame vertically beforehand."
+         (interactive)
+         (when (<= (length (window-list)) 1)
+           (split-window-right))
+         (let ((buf (current-buffer)))
+           (other-window 1)
+           (set-window-buffer nil buf))))
+   #+END_SRC
+
 * Embedded lisp evaluation
 
 One particularly unusual thing about Emacs for somebody coming from a "common"
