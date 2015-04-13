@@ -35,6 +35,8 @@
         kmacro-end-or-call-macro
         markdown-cycle
         markdown-exdent-or-delete
+        move-text-up
+        nxml-electric-slash
         open-line-indent
         org-backward-sentence
         org-beginning-of-line

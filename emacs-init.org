@@ -344,6 +344,36 @@ hand.
   (require 'subr-x nil t)
 #+END_SRC
 
+** Comment and copy
+
+Oftentimes, I want to change something in a code block, but still have the
+original version around. So, before performing the modifications, I copy the
+block, comment it out and yank.
+
+The best key phrase I came up with for this was:
+
+1. =M-w= to copy the selected region
+2. =C-x C-x= to select the same region again
+3. =M-;= to comment it
+4. =C-y= to yank
+
+Quite a bit of work, I must say. So, now I use =C-u M-;= to call
+=comment-region-as-kill= (akin to =copy-region-as-kill=), which does all 1, 2
+and 3 at once.
+
+#+BEGIN_SRC emacs-lisp
+  (defun comment-region-as-kill (beg end)
+    (copy-region-as-kill beg end)
+    (comment-region beg end))
+
+  (define-key global-map (kbd "M-;")
+    (defun comment-dwim-or-comment-region-as-kill (arg)
+      (interactive "*P")
+      (if (equal current-prefix-arg '(4))
+          (comment-region-as-kill (region-beginning) (region-end))
+        (comment-dwim arg))))
+#+END_SRC
+
 * "Smarter" alternatives to built-in functionality
 
 The following functions try to be smarter about what they do, while closely
@@ -1772,7 +1802,7 @@ functions for that case.
 
    Note, this function can be used not only for swapping 2 buffers, but also for
    "dragging" the current buffer to some other window, when there's more than 2
-   of them. Similar to how you can use consecutive invocations of
+   of them. This is similar to how you can use consecutive invocations of
    =transpose-words= to "drag" the word forward.
 
 3. Duplicate selected window

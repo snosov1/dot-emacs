@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: if universal argument is provided
+# key: ifu
+# --
+(if (equal current-prefix-arg '(4))
+    $0)
