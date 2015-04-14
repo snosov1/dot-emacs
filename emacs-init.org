@@ -1456,6 +1456,8 @@ in silence.
              (require 'gitconfig-mode nil t)
              (require 'gitattributes-mode nil t)
 
+             (setq magit-last-seen-setup-instructions "1.4.0")
+
              (setq
               magit-revert-item-confirm nil
               magit-diff-refine-hunk t)
@@ -2005,9 +2007,9 @@ mark across buffers. It's not fantastic, but works reasonably well, since the
 chances that you'll have a mark at every "interesting" position are quite good.
 
 The only thing is that often there are a lot of duplicate marks in the ring and
-it's tedious to pop those by one. So, I have a simple wrapper on =C-M-\= - it
-works as =C-u C-SPC=, but ignores duplicate marks. If you provide it a universal
-argument, it works as =C-x C-SPC= in that case.
+it's tedious to pop those by one. So, I have a simple wrapper bound to =C-M-\= -
+it works as =C-u C-SPC=, but ignores duplicate marks. If you provide it a
+universal argument, it works as =C-x C-SPC= in that case.
 
 #+BEGIN_SRC emacs-lisp
   (define-key global-map (kbd "C-M-\\")
@@ -2019,6 +2021,11 @@ argument, it works as =C-x C-SPC= in that case.
         (delete-dups mark-ring)
         (set-mark-command '(4)))))
 #+END_SRC
+
+For a similar functionality, you may also find =goto-chg= package useful, which
+seems to be pretty popular. However, personally, I'm happy with the mark-based
+solution presented above.
+
 * Multiple cursors
 
 "Multiple cursors" is a kind of feature that doesn't sound like a very good idea
