@@ -2664,6 +2664,7 @@ first time, you can choose other candidates by repeating the command.
 
 #+BEGIN_SRC emacs-lisp
   (require 'hippie-exp)
+
   (setq-default hippie-expand-try-functions-list
                 (quote
                  (try-complete-file-name-partially
@@ -2672,6 +2673,9 @@ first time, you can choose other candidates by repeating the command.
                   try-expand-dabbrev
                   try-expand-dabbrev-all-buffers
                   try-expand-dabbrev-from-kill)))
+
+  (add-to-list 'hippie-expand-ignore-buffers 'image-mode)
+
   (global-set-key (kbd "M-/") 'hippie-expand)
 #+END_SRC
 
