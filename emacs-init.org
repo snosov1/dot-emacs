@@ -2940,11 +2940,11 @@ In 2 words, you simply add a =:TOC:= tag to a heading and it will be updated
 with the current table of contents before each save.
 
 #+BEGIN_SRC emacs-lisp
-  (eval-after-load "org-toc-autoloads"
+  (eval-after-load "toc-org-autoloads"
     '(progn
-       (if (require 'org-toc nil t)
-           (add-hook 'org-mode-hook 'org-toc-enable)
-         (message "WARNING: org-toc not found"))))
+       (if (require 'toc-org nil t)
+           (add-hook 'org-mode-hook 'toc-org-enable)
+         (message "WARNING: toc-org not found"))))
 #+END_SRC
 * Expand region
 

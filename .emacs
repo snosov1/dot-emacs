@@ -34,7 +34,7 @@
                  multiple-cursors
                  org
                  ox-reveal
-                 org-toc
+                 toc-org
                  paredit
                  gitconfig-mode
                  gitignore-mode
