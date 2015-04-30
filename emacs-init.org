@@ -695,25 +695,6 @@ dired. You can toggle its visibility by pressing =h=:
                       (define-key dired-mode-map (kbd "h") 'dired-details-toggle))))))
 #+END_SRC
 
-** Dired async
-=dired-async= module makes copying, renaming and deletion commands asynchronous.
-It doesn't work flawlessly and even hangs sometimes. But still it's a "nice to
-have" feature. Just don't forget to update the buffers using =g=.
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load "async-autoloads"
-    '(progn
-       (if (require 'dired-async nil t)
-           (progn
-             (set-face-attribute 'dired-async-message nil
-                                 :foreground nil
-                                 :inherit 'mode-line-emphasis)
-             (set-face-attribute 'dired-async-mode-message nil
-                                 :background nil
-                                 :inherit 'highlight))
-         (message "WARNING: dired-async not found"))))
-#+END_SRC
-
 ** Jumping back and forth
 =beginning-of-buffer= and =end-of-buffer= commands should move the point to
 better positions:

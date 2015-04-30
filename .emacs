@@ -18,7 +18,6 @@
     (package-install package))
  (cl-remove-if 'package-installed-p
                '(
-                 async
                  browse-kill-ring
                  cmake-mode
                  d-mode
