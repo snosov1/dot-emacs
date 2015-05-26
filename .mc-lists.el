@@ -27,6 +27,7 @@
         eval-dispatch
         fixup-whitespace
         forward-sexp
+        hippie-expand-ido
         increment-decimal-number-at-point
         indent-for-tab-command
         isearch-abort
@@ -64,6 +65,7 @@
         sp-wrap-cancel
         transpose-words
         upcase-dispatch
+        wdired-downcase-word
         wrap-region-trigger
         yas-expand
         zap-up-to-char
@@ -76,6 +78,7 @@
         dired-details-hide
         dired-toggle-read-only
         edebug-next-mode
+        ediff-next-difference
         find-tag
         ido-find-file
         ido-switch-buffer

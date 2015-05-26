@@ -32,7 +32,7 @@
 - C-x C-o, M-\
 - hexl-mode
 - M-|
-- registers
+- Регистры
 - редактирование в диред
 - grep, wgrep
 - calc
