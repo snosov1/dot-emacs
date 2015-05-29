@@ -2932,7 +2932,7 @@ with the current table of contents before each save.
 =expand-region= increases the selected region by semantic units. For example,
 you have the following code - =(setq alphabet-start "abc def")=.
 
-With the cursor before the =c= letter, pressing *C-=* marks the entire word
+With the cursor before the =c= letter, pressing =C-== marks the entire word
 =abc=, successive pressing expands to the contents of the quotes =abc def=, then
 it marks the quotes, and so on:
 
@@ -2942,14 +2942,14 @@ it marks the quotes, and so on:
   (setq alphabet-start "abc def")
 #+END_EXAMPLE
 
-It is a very nice package, I use quite a lot with great pleasure. But I think
-the author was carried away a little bit with the implementation.
+It's a very nice package, I use quite a lot with great pleasure. But I think the
+author was carried away a little bit with the implementation.
 
 My guess is that editing of "lispy" (i.e. Lots of Irritating Stupid Parenthesis)
 code was the primary motivation for the package. And it works almost flawlessly
 in that use case. But, apparently, the author thought, that applying it to a
-wider set of languages may be a good idea. If Emacs understands the syntax of
-the language - we can try expanding.
+wider set of languages may be a good idea. Like, if Emacs understands the syntax
+of the language - we can try expanding.
 
 For example, if we have a statement, like =object.getHash();= and the cursor is
 at the beginning of it, then we can expand to something like,
@@ -2967,23 +2967,23 @@ languages is very simple. Basically, you're editing an Abstract Syntax Tree
 (AST) directly, using parenthesis to denote node boundaries and nesting. But the
 syntax of C-like languages (especially, C++) is significantly more complex. So,
 it makes writing precise "expansion rules" unreasonable. =expand-region= relies
-on the built-in Emacs parsers most of the time. But those parsers are forced to
-resort to imprecise heuristics too. This leads to very awkward expansions
+on the built-in Emacs parsers most of the time. And those parsers are forced to
+resort to imprecise heuristics. This leads to very awkward expansions
 sometimes. Not always, but often enough to feel uncomfortable.
 
 In my experience, dots (sentences) and empty lines (paragraphs) were causing
 most of the confusion. So, I dropped the rules, relying on those symbols to make
 =expand-region= dumber, but more predictable.
 
-The second reason, why it doesn't work very well beyond lisp family, is
-fundamental to the design of this feature. In short, what does it mean to
-"expand the region"? It means that we try to mark some bigger region around the
-currently selected one (or around the point if no region is selected yet). For
-this we use different rules, like "mark everything inside quotes", "mark
-everything inside quotes, including the quotes", "mark everything inside
-parenthesis", "mark a statement" and etc. We choose the "best" rule for the
-currently marked region and use it as a next expansion. The "best" rule must
-contain the original region, and expand it "as little as possible".
+The second reason why it doesn't work very well beyond lisp family is
+fundamental to the design of this feature. Here's how expanding logic works. We
+try to mark some bigger region that contains the currently selected one (or
+simply contains the point if no region is selected yet). For this, we use
+different rules, like "mark everything inside quotes", "mark everything inside
+quotes, including the quotes", "mark everything inside parenthesis", "mark a
+statement" and etc. We choose the "best" rule for the currently marked region
+and use it as a next expansion. The "best" rule must contain the original
+region, and expand it "as little as possible".
 
 Now, consider the =object.getHash();= example again. Assuming that =getHash= is
 already selected, try to define, which expansion is better - =object.getHash= or
@@ -2998,12 +2998,12 @@ have both within the design of =expand-region=.
 
 Currently, it will always choose the region, that expands as little as possible
 to the left. I tried different heuristics, but neither was significantly better,
-because of the fundamental fact - sometimes you need a "left" expansion, and
-sometimes you need a "right" one.
+because of the fundamental fact - sometimes you need the "left" expansion, and
+sometimes you need the "right" one.
 
 I use =expand-region= everywhere for quite some time already. And now, when my
 habits regarding it are established, I find myself using it only in "lisp"-alike
-situations - marking words, strings (quotes) and parenthesis.
+situations - marking words, strings (quotes) and parenthesis/braces/brackets.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "expand-region-autoloads"
@@ -3076,8 +3076,8 @@ situations - marking words, strings (quotes) and parenthesis.
 
 The following function puts quotes around the word at point. I added it to my
 config even before =expand-region= was implemented. In theory, =expand-region=
-should have made this function obsolete. But it never really happened. I got
-used to it so much, that my fingers simply refuse to accept the 2 characters
+should have made this function obsolete. But it never really happened for me. I
+got used to it so much, that my fingers simply refuse to accept the 2 characters
 =expand-region= alternative.
 
 #+BEGIN_SRC emacs-lisp
