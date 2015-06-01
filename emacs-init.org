@@ -1076,7 +1076,8 @@ convenient at the same time. Truly, great stuff.
 
   ;; those patterns are used by dmd compiler
   (setq-default compilation-error-regexp-alist
-                (append '(("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
+                (append '(("^[^@]*?@\\(.*?\\)(\\([0-9]+\\)):" 1 2 nil 2)
+                          ("^\\(.*?\\)(\\([0-9]+\\)): Warning:" 1 2 nil 1)
                           ("^\\(.*?\\)(\\([0-9]+\\)): Error:" 1 2 nil 2))
                         compilation-error-regexp-alist))
 #+END_SRC
