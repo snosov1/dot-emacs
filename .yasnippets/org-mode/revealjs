@@ -31,22 +31,12 @@
 #+END_NOTES
 
 * Fragment attributes
-#+ATTR_REVEAL: :frag grow
-- grow
 
-#+ATTR_REVEAL: :frag fade-out
+#+ATTR_REVEAL: :frag (grow fade-out roll-in current-visible shrink highlight-current-blue highlight-green)
+- grow
 - fade-out
-#+ATTR_REVEAL: :frag roll-in
 - roll-in
-#+ATTR_REVEAL: :frag current-visible
 - current-visible
-#+ATTR_REVEAL: :frag shrink
 - shrink
-#+ATTR_REVEAL: :frag highlight-current-blue
 - highlight-current-blue
-#+ATTR_REVEAL: :frag highlight-green
 - highlight-green
-#+ATTR_REVEAL: :frag highlight-red
-- highlight-red
-#+ATTR_REVEAL: :frag highlight-blue
-- highlight-blue
