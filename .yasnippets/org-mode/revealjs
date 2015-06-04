@@ -9,7 +9,7 @@
 
 #+OPTIONS: toc:nil num:nil ^:nil reveal_mathjax:t
 #+REVEAL_ROOT: ./reveal.js
-#+REVEAL_THEME: default
+#+REVEAL_THEME: league
 
 * Image
 

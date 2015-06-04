@@ -2728,8 +2728,8 @@ at its job. It had rough edges and big starting times previously, but now I find
 it to be in quite good shape.
 
 The advice I can give you about using it - like configuring Emacs, it's better
-to start with zero snippets and add new ones as you go. You can look through
-other people's snippets for good ideas, but there's little use in a pack with a
+to start with zero snippets and add ones as you go. You can look through other
+people's snippets for good ideas, but there's little use in a pack with a
 thousand of snippets. You won't find the time to study those snippets and they
 may not suit your way of writing code.
 
