@@ -6,11 +6,11 @@
 This is a little novel for casual reading about a text editor. Incidentally, it
 also works as an Emacs 24.4 configuration file.
 
-Every section talks about some aspect of my day-to-day Emacs usage. They are
-more or less independent from each other, so you can read them selectively.
+Every section talks about some aspect of my day-to-day Emacs usage. The sections
+are more or less independent from each other, so you can read them selectively.
 
-Hopefully, you will find something useful here and, maybe, you will tell me
-about better ways to do something in Emacs.
+Hopefully, you will find something useful here and, maybe, you will share your
+insights into better ways to use Emacs with me.
 
 * Contents                                                   :noexport:TOC_1:
  - [[#foreword][Foreword]]
@@ -177,9 +177,9 @@ functionality in that regard:
 
 ** Backspace
 
-Emacs has 2 bindings with slightly different meaning that duplicate =Enter=:
-=C-j= and =C-m=. That's a good thing, because =Enter= is a frequently used, but
-a pretty distant key.
+Emacs has 2 bindings with slightly different meaning that work pretty much like
+=Enter= - =C-j= and =C-m=. That's a good thing, because =Enter= is a frequently
+used, but pretty distant key.
 
 And you may wonder - what about =Backspace=? Why doesn't it have a better
 binding as well?
@@ -187,16 +187,16 @@ binding as well?
 I will tell you why. Because somebody stole it from us.
 
 If you open a terminal emulator right now - most likely, you will find that
-=C-h= acts as =Backspace=. It's a beautiful ancient tradition, Emacs doesn't
+=C-h= acts as =Backspace=. It's a beautiful ancient tradition Emacs doesn't
 follow. Personally, I'm sure that it's a result of some kind of sabotage in the
 very beginning of Emacs history. Don't believe me? Want evidence? You can check
 everything yourself!
 
-Clone an Emacs git repository and checkout the revision number
+Clone Emacs git repository and checkout the revision number
 =d7cc518448c8af66db86a842bbd0372e7e13a95a=.
 
 You'll find yourself in a distant 1988. That's a first time known by Emacs
-revision history, when a =C-h= binding was mentioned.
+revision history, when =C-h= binding was mentioned.
 
 Open the file =lisp/emulation/vip.el= and go to line 217. You will find the
 following, very suspicious code there:
@@ -219,16 +219,17 @@ following, very suspicious code there:
 
 Pay attention to the first 2 lines of the code and to the very last one.
 
-You see now? Those darn villains sabotaged Emacs, when they understood that
-everything was finished for them. And they came up with their evil plan.
-
 Don't know about you, but it's enough evidence for me to be totally confident,
-that it was a planned Vi fans demarche against Emacs. I can even assume, that
-FBI and CIA were also involved. Which is the most likely reason, why Mr.
-Stallman is so opposed to them. Besides, what a disgusting, smug name for a
-mode - VIP.
+that it was a planned Vi fans demarche against Emacs. Those darn villains
+sabotaged Emacs, when they understood that everything was finished for
+them. They came up with and executed their evil plan.
 
-So I urge you - it's the time to fight and restore justice! Time to take back
+I can even assume, that FBI and CIA were also involved in this. Which is the
+most likely reason, why Mr. Stallman is so opposed to them.
+
+And what a disgusting, smug name for a mode - VIP.
+
+So I urge you! It's the time to fight and restore justice! Time to take back
 what rightly belongs to us!
 
 #+BEGIN_SRC emacs-lisp
