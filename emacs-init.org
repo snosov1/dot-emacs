@@ -105,9 +105,7 @@ brightest child:
 Basically, DejaVu Sans Mono is a "font done right" for technical work.
 
 #+BEGIN_SRC emacs-lisp
-  (ignore-errors
-    (set-frame-font
-     (car (x-list-fonts "-*-DejaVu Sans Mono-normal-normal-normal-*-*-*-*-*-*-*-iso10646-1"))))
+  (set-face-attribute 'default nil :family "DejaVu Sans Mono")
 #+END_SRC
 
 ** Forbidden fruit
@@ -1734,7 +1732,7 @@ functions for that case.
    #+BEGIN_SRC emacs-lisp
      (define-key global-map (kbd "\C-c f")
        (defun toggle-window-split ()
-         "Switches from a horizontal split to a vertical split and visa versa."
+         "Switches from a horizontal split to a vertical split and vice versa."
          (interactive)
          (if (= (count-windows) 2)
              (let* ((this-win-buffer (window-buffer))
