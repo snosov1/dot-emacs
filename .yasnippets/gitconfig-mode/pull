@@ -2,4 +2,4 @@
 # name: fetch github pull requests
 # key: pull
 # --
-fetch = +refs/pull/*/head:refs/remotes/origin/pull/*
+fetch = +refs/pull/*:refs/remotes/origin/pull/*

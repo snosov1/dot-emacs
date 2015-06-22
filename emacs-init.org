@@ -83,8 +83,7 @@ black.
   (funcall
    (defun configure-theme ()
      "Make Emacs pretty"
-     (load-theme 'tango-dark)
-     (enable-theme 'tango-dark)
+     (load-theme 'tango-dark t)
      ;; make background a little bit darker
      (set-background-color "#1d1f21")
      (setq-default frame-background-mode (quote dark))))
@@ -2469,7 +2468,7 @@ option. If I want to limit it even further, then I provide something like "-name
                     nil)))
              (read-from-minibuffer "git grep: " gg-init-value nil nil 'grep-history))))
     (let ((grep-use-null-device nil))
-      (grep (format "git --no-pager grep %s -e %s -- %s"
+      (grep (format "git --no-pager grep %s -e '%s' -- %s"
                     git-grep-switches
                     re
                     (expand-file-name (vc-git-root default-directory))))))
