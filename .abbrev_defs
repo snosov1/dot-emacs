@@ -171,6 +171,7 @@
     ("ccache" "CC=/usr/lib/ccache/gcc CXX=/usr/lib/ccache/g++" nil 0)
     ("cmake" "cmake -GNinja .." nil 0)
     ("convert-gif" "convert -delay 50 *.jpg out.gif" nil 0)
+    ("convert-crop" "convert in.jpg -crop '745x745+0+70' out.jpg" nil 0)
     ("du" "du -sh * | sort -hr" nil 0)
     ("ffmpeg-from-images" "ffmpeg -i %04d.jpg -b:v 10000k -r 24 -f mp4 out.mp4" nil 0)
     ("ffmpeg-to-images" "ffmpeg -i in.mp4 -f image2 %04d.jpg" nil 0)
