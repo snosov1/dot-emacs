@@ -30,6 +30,10 @@
 -  Press 'b' to fade out everything
 #+END_NOTES
 
+* $\LaTeX$
+
+  $distance = \frac{f_x \cdot baseline}{disparity}$
+
 * Fragment attributes
 
 #+ATTR_REVEAL: :frag (grow fade-out roll-in current-visible shrink highlight-current-blue highlight-green)

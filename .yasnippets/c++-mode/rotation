@@ -1,0 +1,44 @@
+# -*- mode: snippet -*-
+# name: rotation
+# key: rotation
+# --
+//---------------------------------------------------------------------------
+// This function performs an axis/angle rotation. (x,y,z) is any
+// vector on the axis. For greater speed, always use a unit vector
+// (length = 1). In this version, we will assume an arbitrary
+// length and normalize.
+void axis_angle2mat(double x, double y, double z, double theta,
+                    double mat[9])
+{
+    double length;
+    double c,s,t;
+
+    // normalize
+    length = sqrt(x*x + y*y + z*z);
+
+    // too close to 0, can't make a normalized vector
+    if (length < .000001)
+        return;
+
+    x /= length;
+    y /= length;
+    z /= length;
+
+    // do the trig
+    c = cos(theta);
+    s = sin(theta);
+    t = 1 - c;
+
+    // build the rotation matrix
+    mat[0] = t*x*x + c;
+    mat[1] = t*x*y - s*z;
+    mat[2] = t*x*z + s*y;
+
+    mat[3] = t*y*x + s*z;
+    mat[4] = t*y*y + c;
+    mat[5] = t*y*z - s*x;
+
+    mat[6] = t*z*x - s*y;
+    mat[7] = t*z*y + s*x;
+    mat[8] = t*z*z + c;
+}

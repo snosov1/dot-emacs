@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: copy
+# key: copy
+# --
+add_custom_target(copy_public_resources ALL
+  COMMAND "\${CMAKE_COMMAND}" -E copy_directory "\${CMAKE_CURRENT_SOURCE_DIR}/public/" "\${CMAKE_CURRENT_BINARY_DIR}/public/"
+  COMMENT "Copy public resources to runtime output directory")
