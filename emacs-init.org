@@ -640,7 +640,6 @@ applied in other cases as well.
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x f")    'find-file)
   (global-set-key (kbd "\C-x v a") 'vc-annotate)
-  (global-set-key (kbd "\C-x v b") 'vc-annotate)
   (global-set-key (kbd "C-x +")    'text-scale-adjust)
 #+END_SRC
 
@@ -1442,7 +1441,8 @@ in silence.
              (add-to-list 'magit-status-sections-hook 'magit-insert-stashes t)
 
              (global-set-key (kbd "\C-c m")   'magit-status)
-             (global-set-key (kbd "\C-c RET") 'magit-status))
+             (global-set-key (kbd "\C-c RET") 'magit-status)
+             (global-set-key (kbd "\C-x v b") 'magit-blame))
          (message "WARNING: magit not found"))))
 #+END_SRC
 * Ediff
