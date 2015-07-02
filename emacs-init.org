@@ -1435,8 +1435,7 @@ in silence.
               magit-revert-item-confirm nil
               magit-diff-refine-hunk t)
 
-             (set-face-attribute 'magit-item-highlight nil
-                                 :background "black")
+             (define-key magit-mode-map [C-tab] nil)
 
              ;; push stashes to the bottom of the status buffer
              (delete 'magit-insert-stashes magit-status-sections-hook)
@@ -1544,7 +1543,7 @@ overriding its =diff-write-contents-hooks= to do nothing.
     nil)
 
   (set-face-attribute 'diff-added nil :background nil :foreground "green")
-  (set-face-attribute 'diff-refine-added nil :background "#335533")
+  (set-face-attribute 'diff-refine-added nil :background "#338833")
   (set-face-attribute 'diff-file-header nil :background "black" :weight 'bold)
   (set-face-attribute 'diff-header nil :background "black")
   (set-face-attribute 'diff-removed nil :background nil :foreground "tomato")
