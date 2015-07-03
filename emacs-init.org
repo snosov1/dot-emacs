@@ -1435,6 +1435,7 @@ in silence.
               magit-diff-refine-hunk t)
 
              (define-key magit-mode-map [C-tab] nil)
+             (define-key magit-mode-map (kbd "M-w") nil)
 
              ;; push stashes to the bottom of the status buffer
              (delete 'magit-insert-stashes magit-status-sections-hook)
