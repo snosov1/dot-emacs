@@ -61,10 +61,9 @@ if [ -d "dot-emacs" ]; then
     echo "Update Emacs config"
     cd dot-emacs
     git pull
-    emacs --batch --script $dir/dot-emacs/create-links.el
     cd ..
 else
     echo "Install Emacs config"
     git clone https://github.com/snosov1/dot-emacs.git
-    emacs --batch --script $dir/dot-emacs/create-links.el
 fi
+emacs --batch --script $dir/dot-emacs/create-links.el
