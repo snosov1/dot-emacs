@@ -19,6 +19,8 @@ cd $dir
 
 if [ $INSTALL -eq 1 ]; then
     echo "Install git $git_version"
+    sudo apt-get -y build-dep git
+    sudo apt-get -y install libssl-dev
     wget https://github.com/git/git/archive/v$git_version.tar.gz
     tar -xzvf v$git_version.tar.gz
     rm v$git_version.tar.gz

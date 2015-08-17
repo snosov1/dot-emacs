@@ -89,6 +89,7 @@
         mc/align
         mc/dwim
         mc/mark-all-dispatch
+        org-list-repair
         overwrite-mode
         python-shell-send-buffer
         smex
