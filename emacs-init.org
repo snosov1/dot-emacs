@@ -1432,7 +1432,8 @@ in silence.
 
              (setq
               magit-revert-item-confirm nil
-              magit-diff-refine-hunk t)
+              magit-diff-refine-hunk t
+              magit-push-always-verify nil)
 
              (define-key magit-mode-map [C-tab] nil)
              (define-key magit-mode-map (kbd "M-w") nil)
