@@ -2888,7 +2888,7 @@ in any part of the buffer, where it doesn't have any special meaning.
            :group 'ox-reveal)
          (defun org-reveal-init ()
            (interactive)
-           (async-shell-command (concat "git clone " org-reveal-repo))
+           (async-shell-command (concat "git clone --depth 1 " org-reveal-repo))
            (find-file "template.org")
            (insert "revealjs")
            (yas-expand)
