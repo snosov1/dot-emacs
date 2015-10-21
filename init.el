@@ -49,4 +49,4 @@
 (require 'org-install)
 (require 'ob-tangle)
 
-(org-babel-load-file "~/emacs-init.org")
+(org-babel-load-file (concat (file-name-directory load-file-name) "/emacs-init.org"))

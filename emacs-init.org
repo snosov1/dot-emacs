@@ -2174,7 +2174,7 @@ start using other functions - little by little.
                 (mc/execute-command-for-fake-cursor 'mc--align-insert-times cursor))
               (setq cursors-column (cdr cursors-column)))))
 
-         (setq mc/list-file "~/.mc-lists.el")
+         (setq mc/list-file (concat (file-name-directory load-file-name) ".mc-lists.el"))
          (load mc/list-file t) ;; load, but no errors if it does not exist yet please
 
          (global-set-key (kbd "C->")  'mc/mark-next-like-this)
@@ -2730,7 +2730,7 @@ may not suit your way of writing code.
     '(progn
        (if (require 'yasnippet nil t)
            (progn
-             (let ((yas-dir "~/.yasnippets"))
+             (let ((yas-dir (concat (file-name-directory load-file-name) ".yasnippets")))
                (when (file-exists-p yas-dir)
                  (setq yas-snippet-dirs (list yas-dir))))
              (setq-default yas-prompt-functions (quote
@@ -2774,6 +2774,7 @@ shell commands and =yasnippet= for everything else.
     (add-hook 'find-file-hook
               '(lambda()
                  (abbrev-mode -1)))
+    (setq abbrev-file-name (concat (file-name-directory load-file-name) ".abbrev_defs"))
     (setq-default abbrev-mode nil)
     (add-to-list 'auto-mode-alist '("\\.abbrev_defs\\'" . emacs-lisp-mode)))
 #+END_SRC
