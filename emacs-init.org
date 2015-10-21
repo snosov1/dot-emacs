@@ -1538,18 +1538,19 @@ So, I had no other choice, rather than performing surgery on =diff-mode=
 overriding its =diff-write-contents-hooks= to do nothing.
 
 #+BEGIN_SRC emacs-lisp
-  (setq-default diff-update-on-the-fly nil)
+  (eval-after-load 'diff-mode
+    '(progn
+       (setq-default diff-update-on-the-fly nil)
+       (defun diff-write-contents-hooks ()
+         "PLEASE, DO NOTHING TO MY DIFFS!!!!"
+         nil)
 
-  (defun diff-write-contents-hooks ()
-    "PLEASE, DO NOTHING TO MY DIFFS!!!!"
-    nil)
-
-  (set-face-attribute 'diff-added nil :background nil :foreground "green")
-  (set-face-attribute 'diff-refine-added nil :background "#338833")
-  (set-face-attribute 'diff-file-header nil :background "black" :weight 'bold)
-  (set-face-attribute 'diff-header nil :background "black")
-  (set-face-attribute 'diff-removed nil :background nil :foreground "tomato")
-  (set-face-attribute 'diff-refine-removed nil :background "#553333")
+       (set-face-attribute 'diff-added nil :background nil :foreground "green")
+       (set-face-attribute 'diff-refine-added nil :background "#338833")
+       (set-face-attribute 'diff-file-header nil :background "black" :weight 'bold)
+       (set-face-attribute 'diff-header nil :background "black")
+       (set-face-attribute 'diff-removed nil :background nil :foreground "tomato")
+       (set-face-attribute 'diff-refine-removed nil :background "#553333")))
 #+END_SRC
 
 * Ido selection

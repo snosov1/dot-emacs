@@ -10,11 +10,8 @@
 (map-y-or-n-p
  "Package %s is missing. Install? "
  '(lambda (package)
-    ;; for some reason, package-install doesn't work well if you
-    ;; won't call package-refresh-contents beforehand
-    (unless (boundp '--package-contents-refreshed-on-init)
-      (package-refresh-contents)
-      (setq --package-contents-refreshed-on-init 1))
+    (when (not package-archive-contents)
+      (package-refresh-contents))
     (package-install package))
  (cl-remove-if 'package-installed-p
                '(
@@ -49,4 +46,4 @@
 (require 'org-install)
 (require 'ob-tangle)
 
-(org-babel-load-file (concat (file-name-directory load-file-name) "/emacs-init.org"))
+(org-babel-load-file (concat (file-name-directory load-file-name) "emacs-init.org"))

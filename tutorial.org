@@ -72,7 +72,7 @@
 командой:
 
 #+BEGIN_SRC sh
-  sudo apt-get install emacs
+  sudo apt-get install emacs24
 #+END_SRC
 
 Для установки предлагаемой конфигурации:
