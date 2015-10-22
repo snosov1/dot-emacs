@@ -1071,6 +1071,34 @@ convenient at the same time. Truly, great stuff.
   ;; auto-scroll until first error
   (setq-default compilation-scroll-output (quote first-error))
 #+END_SRC
+
+And also, as you may know, =compile-mode= buffers are read-only, so you can't
+really provide it input from the keyboard. In most cases, if the keyboard input
+is necessary, I simply run the programs via =M-&=. But if I compile and run such
+programs by a single command (i.e. =g++ hello.cpp && ./a.out=), I use
+=comint-mode= (=C-u C-c C-c=). In this case, I don't want the experience to be
+much different from plain =compile-mode=.
+
+#+BEGIN_SRC emacs-lisp
+  ;; fontify last line in comint-mode
+  (add-to-list 'compilation-mode-font-lock-keywords
+               '("^Comint \\(finished\\).*"
+                 (1 compilation-info-face)))
+  (add-to-list 'compilation-mode-font-lock-keywords
+               '("^Comint \\(exited abnormally\\|interrupt\\|killed\\|terminated\\|segmentation fault\\)\\(?:.*with code \\([0-9]+\\)\\)?.*"
+                 (1 compilation-error-face)
+                 (2 compilation-error-face nil t)))
+
+  ;; bind common keys to behave similar to plain compile-mode
+  (define-key comint-mode-map "\C-c\C-k" 'kill-compilation)
+  (define-key comint-mode-map "g"
+    (defun comint-g-or-recompile (N)
+      (interactive "p")
+      (if (comint-check-proc (current-buffer))
+          (self-insert-command N)
+        (recompile))))
+#+END_SRC
+
 ** Python
 
 Probably, the most prominent package for Python development is =elpy=. At least
