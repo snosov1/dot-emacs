@@ -1039,7 +1039,7 @@ HTML. So, I don't have a strong need for that kind of editing power.
   (eval-after-load "paredit-autoloads"
     '(progn
        (when (require 'paredit nil t)
-         (global-set-key (kbd "C-H") 'paredit-splice-sexp))))
+         (global-set-key (kbd "C-S-h") 'paredit-splice-sexp))))
 #+END_SRC
 
 Also, it's good to see matching symbols of the pairs. Packages, like
@@ -1094,7 +1094,10 @@ much different from plain =compile-mode=.
   (define-key comint-mode-map "g"
     (defun comint-g-or-recompile (N)
       (interactive "p")
-      (if (comint-check-proc (current-buffer))
+      (if (or
+           (comint-check-proc (current-buffer))
+           ()
+           )
           (self-insert-command N)
         (recompile))))
 #+END_SRC
