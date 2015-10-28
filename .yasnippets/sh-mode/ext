@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: extension of a file
+# key: ext
+# --
+$\{${1:VAR}##*.\}
