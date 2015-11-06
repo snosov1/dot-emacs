@@ -6,7 +6,7 @@ $1::${1:$(simplify-nested-name yas-text)}(const $1 &other)
 {
     (*this) = other;
 }
-$1& $1::operator()(const $1 &other)
+$1& $1::operator=(const $1 &other)
 {
     if (this != &other)
     {
