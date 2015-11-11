@@ -2577,6 +2577,26 @@ collapse every inner block /in that block/ and so on.
                (hs-minor-mode t)
                (define-key c-mode-base-map "\C-ch" 'hs-toggle-hideshow-all)))
 #+END_SRC
+
+It's also convenient to fold the tags in HTML-like languages. In such cases, I
+use toggling of individual blocks with the same binding.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'sgml-mode nil t)
+  (require 'nxml-mode nil t)
+
+  (add-to-list 'hs-special-modes-alist
+               '(nxml-mode
+                 "<!--\\|<[^/>]*[^/]>"
+                 "-->\\|</[^/>]*[^/]>"
+                 "<!--"
+                 sgml-skip-tag-forward
+                 nil))
+
+  (add-hook 'nxml-mode-hook 'hs-minor-mode)
+  (define-key nxml-mode-map (kbd "\C-ch") 'hs-toggle-hiding)
+#+END_SRC
+
 * Auto-completion
 ** Overview
 
