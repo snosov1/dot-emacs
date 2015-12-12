@@ -2302,7 +2302,7 @@ when switching to the terminal buffer.
     "Go to prompt when switched to ansi-term"
     (when (member major-mode '(term-mode))
       (term-line-mode)
-      (end-of-buffer)
+      (goto-char (point-max))
       (end-of-line)
       (term-char-mode)))
 #+END_SRC
