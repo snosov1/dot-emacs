@@ -3750,5 +3750,5 @@ in the minibuffer. But it's an unnecessary limitation.
 #+END_SRC
 
 # Local Variables:
-# compile-command: "emacs -batch -l org -l ob-tangle --eval \"(find-file \\\"/home/sergei/.dev-setup/dot-emacs/emacs-init.org\\\")\" --eval \"(org-babel-tangle nil \\\"/tmp/emacs-init-compile.el\\\")\" --eval \"(batch-byte-compile-file \\\"/tmp/emacs-init-compile.el\\\")\" 2>&1 | sed -n '/Warning\\|Error/p' | xargs -r ls"
+# compile-command: "emacs -batch -l org -l ob-tangle --eval \"(find-file \\\"/home/sergei/.emacs.d/emacs-init.org\\\")\" --eval \"(org-babel-tangle nil \\\"/tmp/emacs-init-compile.el\\\")\" --eval \"(batch-byte-compile-file \\\"/tmp/emacs-init-compile.el\\\")\" 2>&1 | sed -n '/Warning\\|Error/p' | xargs -r ls"
 # End:
