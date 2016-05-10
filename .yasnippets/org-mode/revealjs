@@ -44,3 +44,19 @@
 - shrink
 - highlight-current-blue
 - highlight-green
+
+* Two columns
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+[[https://www.google.com/images/srpr/logo11w.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+That's a really nice image on the left that I find very interesting. I can even
+make up a good amount of text about it not touching the essence and disregarding
+the content of the image completely. So nice it is!
+
+#+REVEAL_HTML: </div>
