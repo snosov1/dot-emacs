@@ -15,7 +15,9 @@
         c-end-of-statement
         c-indent-line-or-region
         capitalize-dispatch
+        comint-delchar-or-maybe-eof
         comment-dwim
+        comment-dwim-or-comment-region-as-kill
         delete-indentation
         dired-jump-to-top
         dired-next-line
@@ -58,7 +60,6 @@
         sgml-slash
         sh-assignment
         smart-beginning-of-line
-        smart-isearch-forward
         sp--self-insert-command
         sp-remove-active-pair-overlay
         sp-self-insert-command
@@ -92,6 +93,8 @@
         org-list-repair
         overwrite-mode
         python-shell-send-buffer
+        smart-isearch-backward
+        smart-isearch-forward
         smex
         toggle-input-method
         universal-argument-minus
