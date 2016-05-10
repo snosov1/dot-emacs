@@ -21,6 +21,7 @@
         markdown-mode
         multiple-cursors
         org
+        org-pomodoro
         ox-reveal
         toc-org
         paredit

@@ -2973,6 +2973,120 @@ with the current table of contents before each save.
            (add-hook 'org-mode-hook 'toc-org-enable)
          (message "WARNING: toc-org not found"))))
 #+END_SRC
+
+** Pomodoro
+
+This section is one of the most important in the whole configuration, but I will
+put it in this modest place where nobody can find it. Here, I will tell you the
+secret of all secrets and answer the question of all questions.
+
+Today there's a lot of words is being said about motivation and
+productivity. The demand for those words is pretty high. More and more people
+nowadays notice that for some reason they don't do the things they consciously
+know they should be doing. They postpone the important things and do whatever
+stupid shit, like, reading "news" or watching funny images on the
+Internet.
+
+And the most staggering (not to say frightening) part is that most of them know
+about it. THEY KNOW THEY'RE DOING STUPID SHIT AND CONTINUE DOING IT!
+
+But what do you think they do "about" it? Do they stop doing stupid shit and
+start doing what they're ought to? Nope, when they feel like they have to change
+something about there lives, they start looking for "solutions" to their
+"problem".
+
+So, as you can guess, a lot of people propose their solutions. They invent
+"techniques" and "methods" for time management and self control. They write and
+sell books about it and give expensive talks, workshops and whatnot.
+
+And I've read and tried a good share of them and I can safely say: "None of the
+time management techniques worth a broken penny if you're not willing to do the
+things on the list." The hardest part of every method is to actually (surprise!)
+do the things you have to do, not to organize them in a fancy fashion. Most of
+the time, you feel inspired only until you get to know the method. After that -
+you're back to doing stupid shit.
+
+Of course, planning and tracking progress is absolutely essential to get things
+done and grow. So, I'm not saying that time management is useless or bad, quite
+the contrary. But you should know full surely - 99.9% of the success will depend
+on whether you will actually do the things you need to do. The impact of the
+particular time management method on the result is diminishingly small.
+
+So, my advice to you - from all the methods you think will work for you - pick
+the simplest one. If you don't know any - pick pomodoro.
+
+Apparently, some Italian guy made it popular. He took a piece of paper and wrote
+down a todo list. Then he took a pomodoro-shaped kitchen timer and set it to 25
+minutes. He worked for 25 minutes straight on the first item and then rested for
+5 minutes (using the same timer again). After that, he set the timer to 25
+minutes again and worked on the second item following with a 5 minutes
+break. After 4 pomodoros (2 hours) he took a longer (20 minutes) break.
+
+Don't know how many pomodoros later, he became rich by selling funny-looking
+kitchen timers with funny names and describing this procedure to other
+people. Some well managed time, eh?
+
+Luckily, you don't need any expensive equipment for this method if you're using
+Emacs. In the beginning of the day you just create a heading in a dedicated org
+file, like:
+
+#+BEGIN_SRC org
+  ,* [2016-01-20 Wed]
+  ,** Emacs configuration
+  ,*** TODO Write an entry about org-pomodoro
+  ,*** TODO Diminish org clock in modeline
+  ,** Organizational
+  ,*** TODO Write weekly report
+#+END_SRC
+
+And hit =<f12>= when the cursor is on the item you plan to do now. It will start
+the timer and notify you when the 25 minutes end. You're supposed to stay
+focused on the task for the whole pomodoro and simply put new things on the list
+if they arise instead of switching to them. After the pomodoro ends, a
+short-break timer will start. If you're done with a task - you should mark it as
+DONE. You should start another pomodoro after the short break ends. You can
+continue with the same task if it's not finished, or switch to another
+task. After 4 pomodoros, take a longer break (20 minutes).
+
+I can pretend that there's more to this technique than it sounds, like:
+- you should try to make each task on the list to be doable during a single
+  pomodoro
+- you can choose different timer periods to suit your personality
+- the tasks break-down and 25 minutes size of pomodoros save you from being
+  overwhelmed
+- checking finished items with DONE instead of deleting them helps your
+  motivation
+- you can track how many time you have spent on each task
+- you can hit =<f12>= in any buffer for a list of recent tasks, so you don't
+  spend time jumping around the todo file
+- etc.
+
+But all of this is just the icing on the cake. The pomodoro technique is so
+simple, that it really shouldn't even have a name. And its simplicity is its
+main beauty. Because of its simplicity, pomodoro is absolutely honest to you.
+
+If it doesn't help your procrastination - it cannot be because of the
+technique. It's just too dead simple to be capable of messing things up. If you
+can't make it work, it means, that you're weak, you're miserable and you deserve
+to fail. Now you know it and you have no excuse.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "org-pomodoro-autoloads"
+    '(progn
+       (if (require 'org-pomodoro nil t)
+           (progn
+             (setq-default org-pomodoro-play-sounds nil)
+             (setq-default org-pomodoro-format "%s")
+             (setq-default org-pomodoro-short-break-format "Break~%s")
+             (setq-default org-pomodoro-keep-killed-pomodoro-time t)
+             (setq-default org-clock-clocked-in-display nil)
+             (defalias 'org-pomodoro-notify
+               (defun notify-title-body (title body)
+                 (notifications-notify :title title :body body)))
+             (global-set-key (kbd "<f12>") 'org-pomodoro))
+         (message "WARNING: org-pomodoro not found"))))
+#+END_SRC
+
 * Expand region
 
 =expand-region= increases the selected region by semantic units. For example,
