@@ -263,6 +263,7 @@
   '(
     ("ccache" "CC=/usr/lib/ccache/gcc CXX=/usr/lib/ccache/g++" nil 0)
     ("cmake" "cmake -GNinja .." nil 0)
+    ("convert-scale" "convert in.jpg -scale 1280x720\! out.jpg" nil 0)
     ("convert-crop" "convert in.jpg -crop '745x745+0+70' out.jpg" nil 0)
     ("convert-gif" "convert -delay 50 *.jpg out.gif" nil 0)
     ("du" "du -sh * | sort -hr" nil 0)
@@ -305,4 +306,3 @@
 (define-abbrev-table 'vc-svn-log-view-mode-abbrev-table '())
 
 (define-abbrev-table 'yaml-mode-abbrev-table '())
-
