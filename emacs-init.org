@@ -16,7 +16,7 @@ insights into better ways to use Emacs with me.
  - [[#foreword][Foreword]]
  - [[#ui-customization][UI customization]]
  - [[#text-manipulation][Text manipulation]]
- - [[#smarter-alternatives-to-built-in-functionality]["Smarter" alternatives to built-in functionality]]
+ - [[#smarter-alternatives-to-built-in-functionality-0]["Smarter" alternatives to built-in functionality]]
  - [[#shortcuts-longcuts-and-backups][Shortcuts, "Longcuts" and Backups]]
  - [[#dired][Dired]]
  - [[#better-buffer-names][Better buffer names]]
@@ -55,6 +55,7 @@ insights into better ways to use Emacs with me.
  - [[#do-thing-at-point][Do thing at point]]
  - [[#auxiliary-files][Auxiliary files]]
  - [[#recursive-minibuffers][Recursive minibuffers]]
+ - [[#debugging][Debugging]]
 
 * UI customization
 ** Lean and mean
@@ -168,8 +169,8 @@ functionality in that regard:
   (global-subword-mode)
   ;; don't remap some commands
   (define-key subword-mode-map (vector 'remap 'transpose-words) nil)
-  (define-key subword-mode-map (vector 'remap 'upcase-word) nil)
-  (define-key subword-mode-map (vector 'remap 'downcase-word) nil)
+  ;; (define-key subword-mode-map (vector 'remap 'upcase-word) nil)
+  ;; (define-key subword-mode-map (vector 'remap 'downcase-word) nil)
 #+END_SRC
 
 ** Backspace
@@ -372,7 +373,7 @@ and 3 at once.
         (comment-dwim arg))))
 #+END_SRC
 
-* "Smarter" alternatives to built-in functionality
+* "Smarter" alternatives to built-in functionality [0%]
 
 The following functions try to be smarter about what they do, while closely
 maintaining the original intent and implementation.
@@ -1826,6 +1827,21 @@ functions for that case.
          (let ((buf (current-buffer)))
            (other-window 1)
            (set-window-buffer nil buf))))
+   #+END_SRC
+
+4. Dedicate current window
+
+   Also, there are cases, when you want
+
+   #+BEGIN_SRC emacs-lisp
+     (define-key global-map (kbd "\C-x \C-d")
+       (defun toggle-current-window-dedication ()
+         "Toggle the dedication of the current window to its current
+     buffer. If the dedication is on, the buffer displayed in the
+     window can't be changed."
+         (interactive)
+         (message "Dedication is %s"
+          (set-window-dedicated-p (get-buffer-window) (not (window-dedicated-p))))))
    #+END_SRC
 
 * Embedded lisp evaluation
@@ -3723,13 +3739,13 @@ Emacs creates some auxiliary files for operation. Some examples include:
 - Lock files (symbolic links starting with =.#=). Those files are created when
   the buffer becomes modified. Presence of the lock file denotes to other
   applications that it may not be safe to modify it.
-
 - Auto-save files (starting and ending with =#=). If the buffer stays in a
   modified state for some time (1 minute or something), Emacs dumps its contents
   to an auto-save file.
+- Backup files (end with =~=) - second-to-last saved version.
 
-- Backup files (end with =~=) - second-to-last saved version. It's possible to
-  save those in a separate directory, so they don't create litter.
+  To create less litter, I prefer to save the backup files in a separate
+  directory.
 
   #+BEGIN_SRC emacs-lisp
     ;; write backup files to own directory
@@ -3748,6 +3764,84 @@ in the minibuffer. But it's an unnecessary limitation.
 #+BEGIN_SRC emacs-lisp
   (setq enable-recursive-minibuffers t)
 #+END_SRC
+
+* Debugging
+
+#+BEGIN_SRC emacs-lisp
+  (require 'gud)
+  (require 'gdb-mi)
+#+END_SRC
+
+- Use =gdb-many-windows= by default
+
+  #+BEGIN_SRC emacs-lisp
+    (gdb-many-windows)
+  #+END_SRC
+
+- Make gdb window dedicated (=(set-window-dedicated-p (get-buffer-window) t)=)
+
+  #+BEGIN_SRC emacs-lisp
+    (defadvice gdb-setup-windows (after gdb--make-dedicated activate)
+      (set-window-dedicated-p (get-buffer-window gud-comint-buffer) t))
+  #+END_SRC
+
+- Use shorter bindings for flow control
+  # look for gud--define-bindings
+  - enter/exit
+  - stepping
+  - start/pause/continue
+  - toggle breakpoints
+
+  - f9
+    - if not run
+         run
+    - else
+         continue
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "<f10>") 'gud-next)
+      (global-set-key (kbd "<f11>") 'gud-step)
+      (global-set-key (kbd "<f8>")
+                      (defun gud-break-set-remove (arg)
+                        (interactive "P")
+                        (if arg
+                            (call-interactively 'gud-remove)
+                          (call-interactively 'gud-break))))
+
+
+      ;; (add-hook 'gud-mode-hook
+      ;;           (defun gud--define-bindings ()
+      ;;              )
+      ;;           )
+    #+END_SRC
+
+
+- Make a nice interface for watching (print/display) expressions
+- Figure out how to 'attach' to a process smoothly
+
+MISC:
+#+BEGIN_EXAMPLE
+  If you ever change the window layout, you can restore the "many windows" layout
+  by typing M-x gdb-restore-windows. To toggle between the many windows layout and
+  a simple layout with just the GUD interaction buffer and a source file, type M-x
+  gdb-many-windows.
+
+  You may also specify additional GDB-related buffers to display, either in the
+  same frame or a different one. Select the buffers you want by typing M-x
+  gdb-display-BUFFERTYPE-buffer or M-x gdb-frame-BUFFERTYPE-buffer, where
+  BUFFERTYPE is the relevant buffer type, such as breakpoints. You can do the same
+  with the menu bar, with the GDB-Windows and GDB-Frames sub-menus of the GUD
+  menu.
+
+  When you finish debugging, kill the GUD interaction buffer with C-x k, which
+  will also kill all the buffers associated with the session. However you need not
+  do this if, after editing and re-compiling your source code within Emacs, you
+  wish to continue debugging. When you restart execution, GDB automatically finds
+  the new executable. Keeping the GUD interaction buffer has the advantage of
+  keeping the shell history as well as GDB's breakpoints. You do need to check
+  that the breakpoints in recently edited source files are still in the right
+  places.
+#+END_EXAMPLE
 
 # Local Variables:
 # compile-command: "emacs -batch -l org -l ob-tangle --eval \"(find-file \\\"/home/sergei/.emacs.d/emacs-init.org\\\")\" --eval \"(org-babel-tangle nil \\\"/tmp/emacs-init-compile.el\\\")\" --eval \"(batch-byte-compile-file \\\"/tmp/emacs-init-compile.el\\\")\" 2>&1 | sed -n '/Warning\\|Error/p' | xargs -r ls"
