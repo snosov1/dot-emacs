@@ -138,14 +138,18 @@ a good thing or not, so I follow the fashion.
 There's a default binding =M-^= which takes the current line and puts it in the
 end of the previous one. I fell in love with it from the first day I came
 across. However, putting the next line in the end of the current one is a much
-better design for the same functionality. So, let's have it as well.
+better design for the same functionality. So, let's have it as well, and make it
+join the region while we're at it.
 
 #+BEGIN_SRC emacs-lisp
   (define-key global-map (kbd "M-j")
     (defun join-following-line ()
-      "Joins the following line"
+      "Joins the following line or the whole selected region"
       (interactive)
-      (join-line -1)))
+      (if (use-region-p)
+          (let ((fill-column (point-max)))
+            (fill-region (region-beginning) (region-end)))
+        (join-line -1))))
 #+END_SRC
 
 ** SubWords
