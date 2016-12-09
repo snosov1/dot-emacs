@@ -32,7 +32,8 @@
         yasnippet
         wgrep
         ))
-(when (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
+
+(when (version-list-<= (list 24 4) (list emacs-major-version emacs-minor-version))
   (add-to-list 'required-packages
                'magit))
 
