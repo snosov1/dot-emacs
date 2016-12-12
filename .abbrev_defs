@@ -278,7 +278,7 @@
     ("ffmpeg-top-bottom" "ffmpeg -i top.mp4 -i bottom.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v]pad=iw:ih*2[bg]; [bg][1:v]overlay=0:h\" out.mp4" nil 0)
     ("ln" "ln -s target link" nil 0)
     ("mencoder-concat" "mencoder -oac copy -ovc copy -idx -o output.mp4 *.mp4" nil 0)
-    ("sshgen" "ssh-keygen -t rsa -C \"your_email@example.com\"" nil 0)
+    ("ssh-keygen" "ssh-keygen -t rsa -C \"your_email@example.com\"" nil 0)
    ))
 
 (define-abbrev-table 'snippet-mode-abbrev-table '())
