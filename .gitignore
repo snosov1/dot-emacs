@@ -2,3 +2,6 @@ backups
 auto-save-list
 url
 elpa
+emacs-init.el
+ido.last
+smex-items
