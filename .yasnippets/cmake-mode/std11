@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: std11
+# key: std11
+# --
+set(CMAKE_CXX_STANDARD 11)
