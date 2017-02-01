@@ -792,7 +792,7 @@ functions.
 So, I ended up with a small function which does what I want in 98.6% of cases.
 You press =z=, and it asks you for an output archive name. If multiple files are
 marked at the moment, it will compress those into a single archive. And,
-surprisingly, it works for directories, too!
+guess what, it works for directories, too!
 
 If I want to untar an archive, I simply use =&= which suggests untaring as a
 first guess.
