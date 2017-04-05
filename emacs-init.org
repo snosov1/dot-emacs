@@ -3352,7 +3352,7 @@ suggest an execution command to update the existing tags file, or to generate a
 new one in the current directory.
 
 Note, that the suggested command uses =-e= flag, which is not available in
-=ctags=, packaged with Emacs - you need to use Exuberant Ctags. Most likely, it
+=ctags= packaged with Emacs - you need to use Exuberant Ctags. Most likely, it
 can be found in your OS repositories (on Ubuntu, try =sudo apt-get install
 ctags=).
 
@@ -3451,6 +3451,17 @@ access it via "unified" Emacs-ish interface.
   (global-set-key "\C-x\C-v" 'visit-tags-table)
   (global-set-key "\C-x\C-l" 'tags-apropos)
   (global-set-key "\C-x\C-t" 'tags-reset-tags-tables)
+#+END_SRC
+
+Apparently, Emacs replaced the =etags= package with =xref= to provide similar
+functionality. I didn't have a chance to dig deeper into it, but so far,
+everything seems to work almost like before. The only personal inconvenience I
+noticed is that pop-mark is now located on =M-,= instead of =M-*= (which kind of
+makes sense). For compatibility reasons, I add the =M-*= alias as well
+
+#+BEGIN_SRC emacs-lisp
+  (when (require 'xref nil t)
+    (global-set-key (kbd "M-*") 'xref-pop-marker-stack))
 #+END_SRC
 
 * Emacs server
