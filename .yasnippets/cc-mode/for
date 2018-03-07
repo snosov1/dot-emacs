@@ -4,7 +4,7 @@
 #
 # my goodness...
 # --
-for (${1:size_t}${1:$(and (> (length yas-text) 0) " ")}${2:i = 0}; ${2:$(string-trim (car (split-string yas-text "=")))} ${3:< N}; ${2:$(concat (string-trim (car (split-string yas-text "="))))}${3:$(if (> (length (split-string yas-text ">")) 1) "--" "++")})
+for (${1:int}${1:$(and (> (length yas-text) 0) " ")}${2:i = 0}; ${2:$(string-trim (car (split-string yas-text "=")))} ${3:< N}; ${2:$(concat (string-trim (car (split-string yas-text "="))))}${3:$(if (> (length (split-string yas-text ">")) 1) "--" "++")})
 {
     $0
 }
