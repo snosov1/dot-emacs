@@ -143,9 +143,9 @@ join the region while we're at it.
 
 #+BEGIN_SRC emacs-lisp
   (define-key global-map (kbd "M-j")
-    (defun join-following-line ()
+    (defun join-following-line (arg)
       "Joins the following line or the whole selected region"
-      (interactive)
+      (interactive "P")
       (if (use-region-p)
           (let ((fill-column (point-max)))
             (fill-region (region-beginning) (region-end)))
@@ -484,37 +484,6 @@ argument to suppress auto indentation.
         (indent-region (region-beginning) (region-end) nil)))
 #+END_SRC
 
-** View mode
-
-Emacs has an odd convention for binding =C-x C-q= to toggle a read-only
-state. It's not ubiquitous, but it's definitely the most common binding. So, I
-try to follow it wherever it makes sense and customize the modes that don't.
-
-However, I find that =view-mode= for most of the buffers provides a better
-alternative to simple read-only toggle. It has some additional navigation
-functions, and also, you can use shorter bindings (omitting the =C-= modifier)
-for common operations.
-
-There's some kind of Vimy flavor to it and, eventually, when I use it, I find
-myself thinking "How can these Vim people live switching between editing and
-viewing modes all the time? The weirdest guys."
-
-#+BEGIN_SRC emacs-lisp
-  (require 'view)
-
-  (global-set-key (kbd "C-x C-q") 'view-mode)
-
-  ;; simpler navigation
-  (define-key view-mode-map "p" 'previous-line)
-  (define-key view-mode-map "n" 'next-line)
-  (define-key view-mode-map "f" 'forward-char)
-  (define-key view-mode-map "b" 'backward-char)
-  (define-key view-mode-map "l" 'recenter-top-bottom)
-  (define-key view-mode-map "e" 'move-end-of-line)
-  (define-key view-mode-map "a" 'smart-beginning-of-line)
-  (define-key view-mode-map "v" 'scroll-up-command)
-#+END_SRC
-
 ** Fill/unfill paragraph
 
 #+BEGIN_SRC emacs-lisp
@@ -573,6 +542,58 @@ To do this, simply select the text and provide a universal argument: =C-u M-q=.
                      (unfill-paragraph))
                  (fill-paragraph 'nil 't))))
          (message "WARNING: unfill not found"))))
+#+END_SRC
+
+** View mode
+
+Emacs has an odd convention for binding =C-x C-q= to toggle a read-only
+state. It's not ubiquitous, but it's definitely the most common binding. So, I
+try to follow it wherever it makes sense and customize the modes that don't.
+
+However, I find that =view-mode= for most of the buffers provides a better
+alternative to simple read-only toggle. It has some additional navigation
+functions, and also, you can use shorter bindings (omitting the =C-= modifier)
+for common operations.
+
+There's some kind of Vimy flavor to it and, eventually, when I use it, I find
+myself thinking "How can these Vim people live switching between editing and
+viewing modes all the time? The weirdest guys."
+
+#+BEGIN_SRC emacs-lisp
+  (require 'view)
+
+  (global-set-key (kbd "C-x C-q") 'view-mode)
+
+  ;; simpler navigation
+  (define-key view-mode-map "p" 'previous-line)
+  (define-key view-mode-map "n" 'next-line)
+  (define-key view-mode-map "f" 'forward-char)
+  (define-key view-mode-map "b" 'backward-char)
+  (define-key view-mode-map "l" 'recenter-top-bottom)
+  (define-key view-mode-map "e" 'move-end-of-line)
+  (define-key view-mode-map "a" 'smart-beginning-of-line)
+  (define-key view-mode-map "v" 'scroll-up-command)
+
+#+END_SRC
+
+I also use view-mode to read articles or other pieces of texts, and I,
+typically, use some "whitespace-only" commands to make it more readable. Even
+though they only insert or remove whitespaces, they are, technically, "write"
+operations. Here I define a couple of functions that escape read-only nature of
+the view mode.
+
+#+BEGIN_SRC emacs-lisp
+  (defmacro view-escape-read-only (fn)
+    `(defun ,(intern (format "view-%s" fn)) (arg)
+       (interactive "P")
+       (view-mode -1)
+       (,(intern (format "%s" fn)) arg)
+       (view-mode 1)))
+
+  (define-key view-mode-map [remap fill-paragraph] (view-escape-read-only fill-paragraph-dispatch))
+  (define-key view-mode-map [remap undo] (view-escape-read-only undo))
+  (define-key view-mode-map [remap open-line] (view-escape-read-only open-line))
+  (define-key view-mode-map [remap join-following-line] (view-escape-read-only join-following-line))
 #+END_SRC
 
 ** Open line
