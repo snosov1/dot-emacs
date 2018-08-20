@@ -13,48 +13,48 @@ Hopefully, you will find something useful here and, maybe, you will share your
 insights into better ways to use Emacs with me.
 
 * Contents                                                   :noexport:TOC_1:
- - [[#foreword][Foreword]]
- - [[#ui-customization][UI customization]]
- - [[#text-manipulation][Text manipulation]]
- - [[#smarter-alternatives-to-built-in-functionality]["Smarter" alternatives to built-in functionality]]
- - [[#shortcuts-longcuts-and-backups][Shortcuts, "Longcuts" and Backups]]
- - [[#dired][Dired]]
- - [[#better-buffer-names][Better buffer names]]
- - [[#spell-checking][Spell-checking]]
- - [[#fighting-escape-sequences-in-strings][Fighting escape sequences in strings]]
- - [[#parenthesis-for-dummies][Parenthesis for Dummies]]
- - [[#programming-languages][Programming languages]]
- - [[#shell-commands][Shell commands]]
- - [[#get-full-path][Get full path]]
- - [[#magit][Magit]]
- - [[#ediff][Ediff]]
- - [[#diff][Diff]]
- - [[#ido-selection][Ido selection]]
- - [[#buffer-list][Buffer list]]
- - [[#using-external-websites][Using external websites]]
- - [[#window-management][Window management]]
- - [[#embedded-lisp-evaluation][Embedded lisp evaluation]]
- - [[#field-applications][Field applications]]
- - [[#browse-kill-ring][Browse kill ring]]
- - [[#navigate-to-previous-position][Navigate to previous position]]
- - [[#multiple-cursors][Multiple cursors]]
- - [[#sudo-edit][Sudo edit]]
- - [[#terminal-emulator-and-ssh][Terminal emulator and SSH]]
- - [[#grepping][Grepping]]
- - [[#hideshow-blocks][Hide/show blocks]]
- - [[#auto-completion][Auto-completion]]
- - [[#org][Org]]
- - [[#expand-region][Expand region]]
- - [[#jump-to-definition][Jump to definition]]
- - [[#emacs-server][Emacs server]]
- - [[#whitespaces][Whitespaces]]
- - [[#user-friendliness][User-friendliness]]
- - [[#regional-settings][Regional settings]]
- - [[#scrolling][Scrolling]]
- - [[#line-wrap][Line wrap]]
- - [[#do-thing-at-point][Do thing at point]]
- - [[#auxiliary-files][Auxiliary files]]
- - [[#recursive-minibuffers][Recursive minibuffers]]
+- [[#foreword][Foreword]]
+- [[#ui-customization][UI customization]]
+- [[#text-manipulation][Text manipulation]]
+- [[#smarter-alternatives-to-built-in-functionality]["Smarter" alternatives to built-in functionality]]
+- [[#shortcuts-longcuts-and-backups][Shortcuts, "Longcuts" and Backups]]
+- [[#dired][Dired]]
+- [[#better-buffer-names][Better buffer names]]
+- [[#spell-checking][Spell-checking]]
+- [[#fighting-escape-sequences-in-strings][Fighting escape sequences in strings]]
+- [[#parenthesis-for-dummies][Parenthesis for Dummies]]
+- [[#programming-languages][Programming languages]]
+- [[#shell-commands][Shell commands]]
+- [[#get-full-path][Get full path]]
+- [[#magit][Magit]]
+- [[#ediff][Ediff]]
+- [[#diff][Diff]]
+- [[#ido-selection][Ido selection]]
+- [[#buffer-list][Buffer list]]
+- [[#using-external-websites][Using external websites]]
+- [[#window-management][Window management]]
+- [[#embedded-lisp-evaluation][Embedded lisp evaluation]]
+- [[#field-applications][Field applications]]
+- [[#browse-kill-ring][Browse kill ring]]
+- [[#navigate-to-previous-position][Navigate to previous position]]
+- [[#multiple-cursors][Multiple cursors]]
+- [[#sudo-edit][Sudo edit]]
+- [[#terminal-emulator-and-ssh][Terminal emulator and SSH]]
+- [[#grepping][Grepping]]
+- [[#hideshow-blocks][Hide/show blocks]]
+- [[#auto-completion][Auto-completion]]
+- [[#org][Org]]
+- [[#expand-region][Expand region]]
+- [[#jump-to-definition][Jump to definition]]
+- [[#emacs-server][Emacs server]]
+- [[#whitespaces][Whitespaces]]
+- [[#user-friendliness][User-friendliness]]
+- [[#regional-settings][Regional settings]]
+- [[#scrolling][Scrolling]]
+- [[#line-wrap][Line wrap]]
+- [[#do-thing-at-point][Do thing at point]]
+- [[#auxiliary-files][Auxiliary files]]
+- [[#recursive-minibuffers][Recursive minibuffers]]
 
 * UI customization
 ** Lean and mean
@@ -282,49 +282,13 @@ easier to kill and yank it. But if you simply need to shuffle lines around a
 bit, then =M-n= and =M-p= bindings are a natural way to do this.
 
 #+BEGIN_SRC emacs-lisp
-  (defun move-text-internal (arg)
-    (cond
-     ((and mark-active transient-mark-mode)
-      (if (> (point) (mark))
-          (exchange-point-and-mark))
-      (let ((column (current-column))
-            (text (delete-and-extract-region (point) (mark))))
-        (forward-line arg)
-        (move-to-column column t)
-        (set-mark (point))
-        (insert text)
-        (exchange-point-and-mark)
-        (setq deactivate-mark nil)))
-     (t
-      (let ((column (current-column)))
-        (beginning-of-line)
-        (when (or (> arg 0) (not (bobp)))
-          (forward-line)
-          (when (or (< arg 0) (not (eobp)))
-            (transpose-lines arg)
-            ;; Account for changes to transpose-lines in Emacs 24.3
-            (when (and (eval-when-compile
-                         (not (version-list-<
-                               (version-to-list emacs-version)
-                               '(24 3 50 0))))
-                       (< arg 0))
-              (forward-line -1)))
-          (forward-line -1))
-        (move-to-column column t)))))
-
-  (define-key global-map (kbd "M-p")
-    (defun move-text-up (arg)
-      "Move region (transient-mark-mode active) or current line arg
-  lines up."
-      (interactive "*p")
-      (move-text-internal (- arg))))
-
-  (define-key global-map (kbd "M-n")
-    (defun move-text-down (arg)
-      "Move region (transient-mark-mode active) or current line arg
-  lines down."
-      (interactive "*p")
-      (move-text-internal arg)))
+  (eval-after-load "move-text-autoloads"
+    '(progn
+       (if (require 'move-text nil t)
+           (progn
+             (define-key global-map (kbd "M-n") 'move-text-down)
+             (define-key global-map (kbd "M-p") 'move-text-up))
+         (message "WARNING: move-text not found"))))
 #+END_SRC
 ** (Non-) electric indentation
 

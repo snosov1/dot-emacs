@@ -19,6 +19,7 @@
         string-edit
         window-numbering
         markdown-mode
+        move-text
         multiple-cursors
         org
         org-pomodoro
