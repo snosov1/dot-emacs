@@ -3091,8 +3091,8 @@ it marks the quotes, and so on:
   (setq alphabet-start "abc def")
 #+END_EXAMPLE
 
-It's a very nice package, I use quite a lot with great pleasure. But I think the
-author was carried away a little bit with the implementation.
+It's a very nice package that I use quite a lot with great pleasure. But I think
+the author was a little bit carried away with the implementation.
 
 My guess is that editing of "lispy" (i.e. Lots of Irritating Stupid Parenthesis)
 code was the primary motivation for the package. And it works almost flawlessly
@@ -3101,12 +3101,12 @@ wider set of languages may be a good idea. Like, if Emacs understands the syntax
 of the language - we can try expanding.
 
 For example, if we have a statement, like =object.getHash();= and the cursor is
-at the beginning of it, then we can expand to something like,
+at the beginning of it, then we can expand to something, like,
 
 - =object=
 - =object.=
 - =object.getHash=
-- =object.getHash()
+- =object.getHash()=
 - =object.getHash();=
 
 It does sound neat, right? But in practice - it's not all roses.
@@ -3241,7 +3241,7 @@ situations - marking words, strings (quotes) and parenthesis/braces/brackets.
 The following function puts quotes around the word at point. I added it to my
 config even before =expand-region= was implemented. In theory, =expand-region=
 should have made this function obsolete. But it never really happened for me. I
-got used to it so much, that my fingers simply refuse to accept the 2 characters
+got used to it so much, that my fingers simply refuse to accept the "two-chords"
 =expand-region= alternative.
 
 #+BEGIN_SRC emacs-lisp
