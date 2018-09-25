@@ -12,7 +12,8 @@ are more or less independent from each other, so you can read them selectively.
 Hopefully, you will find something useful here and, maybe, you will share your
 insights into better ways to use Emacs with me.
 
-* Contents                                                   :noexport:TOC_1:
+* Contents                                                   :noexport:TOC_1:quote:
+#+BEGIN_QUOTE
 - [[#foreword][Foreword]]
 - [[#ui-customization][UI customization]]
 - [[#text-manipulation][Text manipulation]]
@@ -55,6 +56,7 @@ insights into better ways to use Emacs with me.
 - [[#do-thing-at-point][Do thing at point]]
 - [[#auxiliary-files][Auxiliary files]]
 - [[#recursive-minibuffers][Recursive minibuffers]]
+#+END_QUOTE
 
 * UI customization
 ** Lean and mean
