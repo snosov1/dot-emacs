@@ -2967,41 +2967,48 @@ with the current table of contents before each save.
 
 ** Pomodoro
 
-This section is one of the most important in the whole configuration, but I will
-put it in this modest place where nobody can find it. Here, I will tell you the
-secret of all secrets and answer the question of all questions.
+It's one of the most important sections in the whole configuration, that I've
+hidden in this inconspicuous place where nobody will look. In this section I
+will tell you the secret of all secrets and answer the question of all
+questions.
 
-Today there's a lot of words is being said about motivation and
-productivity. The demand for those words is pretty high. More and more people
-nowadays notice that for some reason they don't do the things they consciously
+Nowadays, there's a lot of words being said about motivation and
+productivity. The demand for these words is pretty high. The increasing number
+of people notice that for some reason they don't do the things they consciously
 know they should be doing. They postpone the important things and do whatever
-stupid shit, like, reading "news" or watching funny images on the
-Internet.
+stupid shit, like, reading "news" or watching funny images on the Internet
+instead.
 
 And the most staggering (not to say frightening) part is that most of them know
 about it. THEY KNOW THEY'RE DOING STUPID SHIT AND CONTINUE DOING IT!
 
-But what do you think they do "about" it? Do they stop doing stupid shit and
-start doing what they're ought to? Nope, when they feel like they have to change
-something about there lives, they start looking for "solutions" to their
-"problem".
+In the moments of realization they even feel bad about it. They want to change
+something in their lives. What do they try? Do they try to stop doing stupid
+shit and start doing what they're ought to? Nope. When they feel like they have
+to change something about there lives, they start looking for "solutions" to
+their "problem".
 
-So, as you can guess, a lot of people propose their solutions. They invent
-"techniques" and "methods" for time management and self control. They write and
-sell books about it and give expensive talks, workshops and whatnot.
+Unsurprisingly, a lot of people propose their solutions. They invent
+"techniques" and "methodologies" for time management and self control. They
+write books on it, host expensive workshops and whatnot.
 
-And I've read and tried a good share of them and I can safely say: "None of the
-time management techniques worth a broken penny if you're not willing to do the
+Personally, I've read and tried a good share of them and I can safely say: "None
+of the time management techniques worth a broken penny if you're not doing the
 things on the list." The hardest part of every method is to actually (surprise!)
-do the things you have to do, not to organize them in a fancy fashion. Most of
-the time, you feel inspired only until you get to know the method. After that -
-you're back to doing stupid shit.
+do the things you have to do, not to organize them in a fancy
+fashion.
+
+You can feel inspired when you discover a new method to streamline your
+life. But this feeling doesn't last long. Once you get to know the method and
+start actually using it, count to three - and find yourself doing stupid shit
+again.
 
 Of course, planning and tracking progress is absolutely essential to get things
-done and grow. So, I'm not saying that time management is useless or bad, quite
-the contrary. But you should know full surely - 99.9% of the success will depend
-on whether you will actually do the things you need to do. The impact of the
-particular time management method on the result is diminishingly small.
+done and improve yourself. So, I'm not saying that time management is useless or
+bad, quite the contrary. But you should know full surely - 99.9% of the success
+will depend on whether you will actually do the things you need to do. The
+impact of the particular time management method on the result is diminishingly
+small.
 
 So, my advice to you - from all the methods you think will work for you - pick
 the simplest one. If you don't know any - pick pomodoro.
@@ -3014,12 +3021,12 @@ minutes again and worked on the second item following with a 5 minutes
 break. After 4 pomodoros (2 hours) he took a longer (20 minutes) break.
 
 Don't know how many pomodoros later, he became rich by selling funny-looking
-kitchen timers with funny names and describing this procedure to other
-people. Some well managed time, eh?
+kitchen timers to people and describing this procedure. Some well managed time,
+eh?
 
-Luckily, you don't need any expensive equipment for this method if you're using
-Emacs. In the beginning of the day you just create a heading in a dedicated org
-file, like:
+Luckily, you don't need any expensive pomodoro-shaped equipment for this method
+if you're using Emacs. In the beginning of the day you just create a heading in
+a dedicated org file, like:
 
 #+BEGIN_SRC org
   ,* [2016-01-20 Wed]
@@ -3030,10 +3037,10 @@ file, like:
   ,*** TODO Write weekly report
 #+END_SRC
 
-And hit =<f12>= when the cursor is on the item you plan to do now. It will start
-the timer and notify you when the 25 minutes end. You're supposed to stay
-focused on the task for the whole pomodoro and simply put new things on the list
-if they arise instead of switching to them. After the pomodoro ends, a
+After that, you hit =<f12>= when the cursor is on the item you plan to do
+now. It will start the timer and notify you when 25 minutes end. You're supposed
+to stay focused on the task for the whole pomodoro and simply put new things on
+the list if they arise instead of switching to them. After the pomodoro ends, a
 short-break timer will start. If you're done with a task - you should mark it as
 DONE. You should start another pomodoro after the short break ends. You can
 continue with the same task if it's not finished, or switch to another
@@ -3043,7 +3050,7 @@ I can pretend that there's more to this technique than it sounds, like:
 - you should try to make each task on the list to be doable during a single
   pomodoro
 - you can choose different timer periods to suit your personality
-- the tasks break-down and 25 minutes size of pomodoros save you from being
+- the tasks break-down and 25 minute size of pomodoros save you from being
   overwhelmed
 - checking finished items with DONE instead of deleting them helps your
   motivation
@@ -3054,12 +3061,12 @@ I can pretend that there's more to this technique than it sounds, like:
 
 But all of this is just the icing on the cake. The pomodoro technique is so
 simple, that it really shouldn't even have a name. And its simplicity is its
-main beauty. Because of its simplicity, pomodoro is absolutely honest to you.
-
-If it doesn't help your procrastination - it cannot be because of the
-technique. It's just too dead simple to be capable of messing things up. If you
-can't make it work, it means, that you're weak, you're miserable and you deserve
-to fail. Now you know it and you have no excuse.
+main beauty. Because of its simplicity, pomodoro is completely honest to
+you. Like a mirror - it will show you who you are precisely. Without judging and
+without mercy. If it doesn't help your procrastination - it cannot be because of
+the technique. It's just too dead simple to be capable of messing things up. So,
+if you can't make it work, it means, that you're weak, you're miserable and you
+deserve to fail. Now you know it and you have no excuse.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "org-pomodoro-autoloads"
