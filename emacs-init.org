@@ -2972,20 +2972,19 @@ hidden in this inconspicuous place where nobody will look. In this section I
 will tell you the secret of all secrets and answer the question of all
 questions.
 
-Nowadays, there's a lot of words being said about motivation and
-productivity. The demand for these words is pretty high. The increasing number
-of people notice that for some reason they don't do the things they consciously
-know they should be doing. They postpone the important things and do whatever
-stupid shit, like, reading "news" or watching funny images on the Internet
-instead.
+Nowadays, there's a lot of talk about motivation and productivity. The demand is
+pretty high. The increasing number of people notice that for some reason they
+don't do the things they consciously know they should be doing. They postpone
+the important things and do whatever stupid shit, like, reading "news" or
+watching funny videos on the Internet instead.
 
 And the most staggering (not to say frightening) part is that most of them know
 about it. THEY KNOW THEY'RE DOING STUPID SHIT AND CONTINUE DOING IT!
 
 In the moments of realization they even feel bad about it. They want to change
-something in their lives. What do they try? Do they try to stop doing stupid
+something in their lives. And what do they try? Do they try to stop doing stupid
 shit and start doing what they're ought to? Nope. When they feel like they have
-to change something about there lives, they start looking for "solutions" to
+to change something about their lives, they start looking for "solutions" to
 their "problem".
 
 Unsurprisingly, a lot of people propose their solutions. They invent
@@ -2995,8 +2994,7 @@ write books on it, host expensive workshops and whatnot.
 Personally, I've read and tried a good share of them and I can safely say: "None
 of the time management techniques worth a broken penny if you're not doing the
 things on the list." The hardest part of every method is to actually (surprise!)
-do the things you have to do, not to organize them in a fancy
-fashion.
+do the things you have to do, not to organize them in a fancy fashion.
 
 You can feel inspired when you discover a new method to streamline your
 life. But this feeling doesn't last long. Once you get to know the method and
@@ -3007,8 +3005,7 @@ Of course, planning and tracking progress is absolutely essential to get things
 done and improve yourself. So, I'm not saying that time management is useless or
 bad, quite the contrary. But you should know full surely - 99.9% of the success
 will depend on whether you will actually do the things you need to do. The
-impact of the particular time management method on the result is diminishingly
-small.
+impact of the particular time management method is diminishingly small.
 
 So, my advice to you - from all the methods you think will work for you - pick
 the simplest one. If you don't know any - pick pomodoro.
@@ -3016,12 +3013,12 @@ the simplest one. If you don't know any - pick pomodoro.
 Apparently, some Italian guy made it popular. He took a piece of paper and wrote
 down a todo list. Then he took a pomodoro-shaped kitchen timer and set it to 25
 minutes. He worked for 25 minutes straight on the first item and then rested for
-5 minutes (using the same timer again). After that, he set the timer to 25
-minutes again and worked on the second item following with a 5 minutes
-break. After 4 pomodoros (2 hours) he took a longer (20 minutes) break.
+5 minutes (using the same timer). After that, he set it to 25 minutes again and
+worked on the second item following with a 5 minutes break. After 4 pomodoros (2
+hours) he took a longer (20 minutes) break.
 
 Don't know how many pomodoros later, he became rich by selling funny-looking
-kitchen timers to people and describing this procedure. Some well managed time,
+kitchen timers to people and describing this procedure. Some well-managed time,
 eh?
 
 Luckily, you don't need any expensive pomodoro-shaped equipment for this method
@@ -3061,12 +3058,12 @@ I can pretend that there's more to this technique than it sounds, like:
 
 But all of this is just the icing on the cake. The pomodoro technique is so
 simple, that it really shouldn't even have a name. And its simplicity is its
-main beauty. Because of its simplicity, pomodoro is completely honest to
-you. Like a mirror - it will show you who you are precisely. Without judging and
+main beauty. Due to its simplicity, pomodoro is completely honest with you. Like
+a mirror - it will show you just who you are, precisely. Without judging and
 without mercy. If it doesn't help your procrastination - it cannot be because of
 the technique. It's just too dead simple to be capable of messing things up. So,
-if you can't make it work, it means, that you're weak, you're miserable and you
-deserve to fail. Now you know it and you have no excuse.
+if you can't make it work, it means, that you're weak and you deserve to
+fail. Now you know it and you have no excuse.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "org-pomodoro-autoloads"
