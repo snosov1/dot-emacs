@@ -267,6 +267,7 @@
     ("convert-scale" "convert in.jpg -scale 1280x720\! out.jpg" nil 0)
     ("convert-crop" "convert in.jpg -crop '745x745+0+70' out.jpg" nil 0)
     ("convert-gif" "convert -delay 50 *.jpg out.gif" nil 0)
+    ("convert-side-by-side" "convert image1.png image2.png +append output.png" nil 0)
     ("du" "du -sh * | sort -hr" nil 0)
     ("ffmpeg-add-audio" "ffmpeg -i video.avi -i audio.mp3 -codec copy -shortest output.avi" nil 0)
     ("ffmpeg-crop" "ffmpeg -i in.mp4 -b:v 10000k -r 24 -filter_complex \"[0:v:0]crop=w=100:h=100:x=12:y=34\" out.mp4" nil 0)
