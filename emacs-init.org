@@ -951,7 +951,7 @@ be one really hard.
 The thing is, I wanted a really simple auto-pairing functionality with only 2
 requirements:
 
-- after I press =(=, =[=, " or ={= it should behave like if I pressed the key of
+- after I press =(=, =[=, " or ={= it should behave as if I pressed the key of
   the corresponding closing pair immediately
 - if the region is selected, when I press an opening symbol, it should be
   wrapped
@@ -973,22 +973,22 @@ with it:
   line among other things. So, if you're using =autopair=, you're losing this
   behavior.
 - The other thing is that =autopair= is doing a lot of fancy stuff
-  out-of-the-box, so I constantly had to fight my way through to make it as
-  unobtrusive as possible.
+  out-of-the-box, so I constantly had to fight my way to make it as unobtrusive
+  as possible.
 
-Probably, after fighting long enough, I could make =autopair= work as I wanted
-it to. But why fight so hard, if I knew I could implement the desired
-functionality with much smaller effort?
+Probably, after fighting long enough, I could make =autopair= work as I
+wanted. But why fight so hard, if I knew I could implement the desired
+functionality with a much smaller effort?
 
 Before I went on with =dummyparens=, my last try was =smartparens=. The
-description was thoughtful and sensible. But when I tried it... The thing was
-putting overlays on braces, had some notion of state and printed messages to the
-echo area - all of this for a pair of braces.
+description was thoughtful and sensible. But when I tried it... Oh, my God. The
+thing was putting overlays on braces, had some notion of state and printed
+messages to the echo area - all of this for a pair of braces.
 
 It was the point when I exclaimed "That does it! I'm writing my own auto-pairing
-mode! With blackjack and wrapping!"
+mode! With no obtrusion and wrapping!"
 
-The key moments of the mode are:
+The key points of the mode are:
 - It's under 100 lines of code.
 - When you press an opening pair key, it issues the exact same command as if the
   mode was off. Then it "presses" the closing pair key (i.e. issues the exact
@@ -996,10 +996,10 @@ The key moments of the mode are:
 - If the region is selected - it is wrapped.
 - Optionally, it runs a "post-handler" hook, which can be any function you want.
   Personally, I have a single hook, enabled for curly braces (={=). It indents
-  the just wrapped region - very convenient for the C-family languages.
+  the just wrapped region - very convenient for languages from the C-family .
 
 I could easily fit these 100 lines of code in the configuration file. But I want
-to believe, that I'm not mad. That somebody else might find this functionality
+to believe, that I'm not crazy. That somebody else might find this functionality
 useful as well.
 
 P.S. I have found more or less decent built-in solution after using
@@ -1009,8 +1009,8 @@ short the same way =autopair= does. It doesn't exactly "press" the keys, but
 rather uses =self-insert-command=, which is not correct in general case. Also,
 it has an annoying half of a second delay after inserting the closing pair. And
 it doesn't have the shiny auto-indentation functionality for ={=, which I became
-addicted to over the years! And also... forget it, simply use =dummyparens= -
-this whole topic isn't worth so many words.
+addicted to over the years, and also... forget it, simply use =dummyparens= -
+this whole subject isn't worth so many words.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "dummyparens-autoloads"
@@ -1711,11 +1711,11 @@ need all of 2, 3 and 4, which are about the same? Especially, given those
 bindings are quite attractive - brief and convenient - something you have a
 shortage of.
 
-I believe it's obvious that 2 of those should be bound to something else. We
+I believe, it's obvious that 2 of those should be bound to something else. We
 only have to find an appropriate functionality.
 
 Previously, I used =C-x o= binding to switch windows. And it works fine, when
-you have only 2 of them. Admittedly, it's the case for me 95% of the time. The
+you have only 2 of them. Admittedly, for me, it's the case 95% of the time. The
 remaining 5% weren't very pleasant, but I thought, that it's something I can
 live with.
 
@@ -1893,15 +1893,14 @@ universal argument. This is similar to =C-M-x= / =C-u C-M-x= behavior in
 
 * Field applications
 
-There was a period of my work, when I was implementing a computer vision
-algorithm. To test and improve it, I had to generate a 3D scene and experiment
-with different camera positions and fields of view. For example, I had to figure
-out something like: "Do we get good quality if we use four 55 degree cameras and
-place them like that?"
+Once, I was working on a panorama stitching algorithm. To test and improve it, I
+had to generate a 3D scene to experiment with different camera positions and
+fields of view. For example, I had to figure out something like: "Do we get good
+quality if we use four 55 degree cameras and place them like that?"
 
 After I generated the images of a 3D scene, I had to process those. And as you
 may know, for a computer vision application, the most common representation of
-the camera intrinsic parameters is /camera matrix/. It's a 3x3 matrix of the
+camera intrinsic parameters is a /camera matrix/. It's a 3x3 matrix of the
 following form:
 
 | fx |  0 | px |
@@ -1909,24 +1908,25 @@ following form:
 |  0 |  0 | 1  |
 
 where =fx= and =fy= are the /focal lengths/ in x and y dimensions. This matrix
-is used to convert image coordinates to camera world coordinates and vice-versa.
+is used to convert image coordinates to camera (world) coordinates and
+vice-versa.
 
 Focal length can be unambiguously evaluated given the field-of-view of the
 camera: focal = tan^{-1}(fov / 2). And, of course, you can make a conversion in
 the opposite direction: fov = 2 atan(focal^{-1}).
 
-This is not quantum physics, by all means. But I used this formulas rare enough,
-that I had to look them up every time I needed those. And at the same time often
-enough to be annoyed by this. Add to the annoyance, that after I found the
-formula, I had to perform something like 5 operations in =calc= to evaluate it.
+This is not quantum physics, by all means. But I used these formulas rare enough
+to look them up every time and often enough to be annoyed by this. Add to the
+annoyance, that after I found the formula, I had to perform something like 5
+operations in =calc= to evaluate it.
 
-But at some point it struck me - I'm using Emacs, a text editor with a primary
+And at some point it struck me - I'm using Emacs, a text editor with a primary
 goal to allow me to build the best working environment for myself. Just for me,
-you know? It's not that some guy or a big company is sitting somewhere trying to
-think of everything I might need. It cannot ever work like that. Because how
-should they know that I need those formulas? If I was working in some other
-place - I wouldn't need those formulas. Or, more likely, I would need some other
-ones.
+you know? It's not like some guy or a big company is trying to think of
+everything I might need. It cannot ever work like that. Because how should they
+know that I need those formulas? If I was working in some other place - I
+wouldn't need those formulas, probably, ever. And, more likely, I would need
+some other formulas.
 
 And maybe not even formulas, but something else. Like, just now, while I was
 writing this, a colleague of mine asked me "How you can take 2 videos and stack
@@ -1937,17 +1937,19 @@ She remembered, that I had already sent her this command previously, but she
 couldn't find it anywhere. I smiled about it and told her that she can ask me as
 many times as needed, because I always have it at hand.
 
-Anyway, long story short. That day I was thinking of focal lengths was the day
+Anyway, long story short. The day I was thinking of focal lengths was the day
 when I really appreciated the "extensibility" part of Emacs. I wasn't too
-thrilled about it when I just started using the editor. I was always, like,
-"Somebody else must have already built a perfect environment. I should simply
-find it and use it". As you can guess, I've never found this "perfect
-environment".
+thrilled about it when I just started using the editor. I was always, like, "Why
+would I bother learning how to program a text editor and then, actually, spend
+time programming it?" or "Somebody else must have already built a perfect
+environment. I should simply find it and use it". As you can guess, I've never
+found this "perfect environment".
 
-But at that day, I have put the following functions to my init file and moved on
+But at that day, I've put the following functions to my init file and moved on
 enlightened. From that moment, when I need a conversion I just write something
-like =(fov2focal (deg2rad 55))= and hit =C-x C-e=. Yeah. At that day, I became a
-bit closer to my perfect working environment.
+like =(fov2focal (deg2rad 55))= and hit =C-x C-e=.
+
+Yeah. At that day, I became a bit closer to my perfect working environment.
 
 #+BEGIN_SRC emacs-lisp
   (defun deg2rad (x)
