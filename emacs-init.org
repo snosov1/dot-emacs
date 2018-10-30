@@ -996,7 +996,7 @@ The key points of the mode are:
 - If the region is selected - it is wrapped.
 - Optionally, it runs a "post-handler" hook, which can be any function you want.
   Personally, I have a single hook, enabled for curly braces (={=). It indents
-  the just wrapped region - very convenient for languages from the C-family .
+  the just wrapped region - very convenient for languages from the C-family.
 
 I could easily fit these 100 lines of code in the configuration file. But I want
 to believe, that I'm not crazy. That somebody else might find this functionality
@@ -1009,8 +1009,8 @@ short the same way =autopair= does. It doesn't exactly "press" the keys, but
 rather uses =self-insert-command=, which is not correct in general case. Also,
 it has an annoying half of a second delay after inserting the closing pair. And
 it doesn't have the shiny auto-indentation functionality for ={=, which I became
-addicted to over the years, and also... forget it, simply use =dummyparens= -
-this whole subject isn't worth so many words.
+addicted to over the years, and also... Aargh! Forget it! Simply use
+=dummyparens= - this whole subject isn't worth that many words.
 
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "dummyparens-autoloads"
