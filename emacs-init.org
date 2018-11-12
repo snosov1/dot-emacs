@@ -2963,7 +2963,7 @@ with the current table of contents before each save.
   (eval-after-load "toc-org-autoloads"
     '(progn
        (if (require 'toc-org nil t)
-           (add-hook 'org-mode-hook 'toc-org-enable)
+           (add-hook 'org-mode-hook 'toc-org-mode)
          (message "WARNING: toc-org not found"))))
 #+END_SRC
 
