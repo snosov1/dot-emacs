@@ -444,7 +444,7 @@ argument to suppress auto indentation.
     (if (and (not current-prefix-arg)
              (member major-mode '(sh-mode
                                   emacs-lisp-mode lisp-mode
-                                  c-mode c++-mode objc-mode d-mode java-mode cuda-mode
+                                  c-mode c++-mode objc-mode d-mode java-mode cuda-mode js-mode
                                   LaTeX-mode TeX-mode
                                   xml-mode html-mode css-mode)))
         (indent-region (region-beginning) (region-end) nil)))
