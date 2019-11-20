@@ -669,18 +669,15 @@ files in =view-mode= and =j= - to jump back to dired.
 #+END_SRC
 
 ** Dired details
-=dired-details= module helps you to hide a lot of unnecessary information inside
-dired. You can toggle its visibility by pressing =h=:
+There used to be a =dired-details= module hiding unnecessary information inside
+dired. Now this functionality comes built-in. You can toggle the visibility with
+=(=.
+
+In =dired-details= days, I made it look fancier and used =h= as a shortcut. But,
+I guess, if the default isn't broken, you should stick to it.
 
 #+BEGIN_SRC emacs-lisp
-  (eval-after-load "dired-details-autoloads"
-    '(progn
-       (when (require 'dired-details nil t)
-         (add-hook 'dired-mode-hook
-                   '(lambda ()
-                      (dired-details-install)
-                      (setq dired-details-hidden-string "--- ")
-                      (define-key dired-mode-map (kbd "h") 'dired-details-toggle))))))
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 #+END_SRC
 
 ** Jumping back and forth
@@ -701,11 +698,6 @@ better positions:
       (interactive)
       (goto-char (point-min))
       (dired-next-line 1)
-      ;; skip another line depending on hidden/shown state of dired-details
-      (with-no-warnings
-        (when (or (not (boundp 'dired-details-state))
-                  (equal dired-details-state 'shown))
-          (dired-next-line 1)))
       (if (looking-at "\\.") ;; top-level directories don't have a
           ;; .. entry
           (dired-next-line 1))))
@@ -1316,18 +1308,6 @@ mode-local bindings, so global bindings are used instead.
                (append '(("CMakeLists\\.txt\\'" . cmake-mode)
                          ("CMakeCache\\.txt\\'" . cmake-mode)
                          ("\\.cmake\\'" . cmake-mode))
-                       auto-mode-alist)))))
-#+END_SRC
-
-*** DOS
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load "dos-autoloads"
-    '(progn
-       (when (require 'dos nil t)
-         (setq auto-mode-alist
-               (append '(("\\.cmd\\'" . dos-mode)
-                         ("\\.bat\\'" . dos-mode))
                        auto-mode-alist)))))
 #+END_SRC
 

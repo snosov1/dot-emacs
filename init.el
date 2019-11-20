@@ -11,8 +11,6 @@
         browse-kill-ring
         cmake-mode
         d-mode
-        dired-details
-        dos
         dummyparens
         expand-region
         smex
@@ -23,7 +21,6 @@
         multiple-cursors
         org
         org-pomodoro
-        ox-reveal
         toc-org
         paredit
         gitconfig-mode
@@ -37,6 +34,9 @@
 (when (version-list-<= (list 24 4) (list emacs-major-version emacs-minor-version))
   (add-to-list 'required-packages
                'magit))
+(when (version-list-<= (list 8 3 0) (version-to-list (org-version)))
+  (add-to-list 'required-packages
+               'ox-reveal))
 
 ;; install external packages
 (require 'cl-lib)
