@@ -1,7 +1,6 @@
 ;; initialization
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")
-                         ))
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (setq package-enable-at-startup nil)
 (package-initialize)
 
@@ -23,8 +22,6 @@
         org-pomodoro
         toc-org
         paredit
-        gitconfig-mode
-        gitignore-mode
         unfill
         yaml-mode
         yasnippet
@@ -32,11 +29,11 @@
         ))
 
 (when (version-list-<= (list 24 4) (list emacs-major-version emacs-minor-version))
-  (add-to-list 'required-packages
-               'magit))
-(when (version-list-<= (list 8 3 0) (version-to-list (org-version)))
-  (add-to-list 'required-packages
-               'ox-reveal))
+ (add-to-list 'required-packages
+              'magit))
+;; (when (version-list-<= (list 8 3 0) (version-to-list (org-version)))
+;;  (add-to-list 'required-packages
+;;               'ox-reveal))
 
 ;; install external packages
 (require 'cl-lib)
