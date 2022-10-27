@@ -28,13 +28,6 @@
         wgrep
         ))
 
-(when (version-list-<= (list 24 4) (list emacs-major-version emacs-minor-version))
- (add-to-list 'required-packages
-              'magit))
-;; (when (version-list-<= (list 8 3 0) (version-to-list (org-version)))
-;;  (add-to-list 'required-packages
-;;               'ox-reveal))
-
 ;; install external packages
 (require 'cl-lib)
 (map-y-or-n-p
