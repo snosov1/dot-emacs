@@ -16,9 +16,9 @@
         string-edit
         window-numbering
         markdown-mode
+        magit
         move-text
         multiple-cursors
-        org
         org-pomodoro
         toc-org
         paredit
@@ -41,7 +41,6 @@
 
 (setq vc-follow-symlinks t)
 
-(require 'org-install)
 (require 'ob-tangle)
 
 (org-babel-load-file (concat (file-name-directory load-file-name) "emacs-init.org"))

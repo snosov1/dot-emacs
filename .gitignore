@@ -1,5 +1,6 @@
 backups
 auto-save-list
+eln-cache
 url
 elpa
 emacs-init.el
