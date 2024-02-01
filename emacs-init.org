@@ -1034,6 +1034,26 @@ precisely what the doctor ordered.
 #+END_SRC
 
 * Programming languages
+** Eglot
+
+I'm just starting to use =eglot= and it seems promising. Will be tinkering it to
+my needs here.
+
+#+BEGIN_SRC emacs-lisp
+  ;; (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
+  (use-package eglot
+    :custom-face
+    (eglot-mode-line ((nil (:inherit nil :weight normal)))))
+#+END_SRC
+
+** Eldoc
+
+#+BEGIN_SRC emacs-lisp
+  (use-package eldoc
+    :custom
+    (eldoc-echo-area-use-multiline-p nil))
+#+END_SRC
+
 ** Compile
 
 All I really need for programming is =C-c C-c= to issue =compile= command and
