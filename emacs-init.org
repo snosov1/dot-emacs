@@ -1287,6 +1287,10 @@ makes it possible.
 Nothing special, really. Here, I mostly specify mode extensions and disable the
 mode-local bindings, so global bindings are used instead.
 
+#+BEGIN_SRC emacs-lisp
+  (global-eldoc-mode -1)
+#+END_SRC
+
 *** YAML
 
 #+BEGIN_SRC emacs-lisp
@@ -2510,63 +2514,27 @@ a file. For elisp, you can use something, like =M-x occur= and search for
 fashion. But it's not that easy to do so for the C-family languages. That's
 where =hideshow= module can help.
 
-=hideshow= has plenty of decent functions for collapsing code blocks. For
-example, =hs-hide-all=, which is supposed to solve the aforementioned
-problem. But it doesn't really work very well beyond the C language
-itself. Consider, for example, a C++ file which defines all the symbols inside a
-namespace, or a Java file with a class definition. Those files have just a
-single top-level entry, which is not very informative.
+=hs-hide-level= works like this - if you're at the top level of a C file,
+then it will leave only function definitions. If you're inside a function, it
+will collapse every inner block /in that function/. If you're inside a block,
+that's inside a function, it will collapse every inner block /in that block/ and
+so on.
 
-So, I came up with this little function, that serves pretty much every need I
-have regarding the hiding functionality. It's bound to =C-c h= in C-derived
-modes.
-
-First of all, it's a toggling function - so, on one execution it collapses
-blocks and on the next one it expands them. For collapsing, it uses every
-top-level block inside the current one.
-
-E.g. if you're at the top level of a C file, then it will leave only function
-definitions. If you're inside a function, it will collapse every inner block /in
-that function/. If you're inside a block, that's inside a function, it will
-collapse every inner block /in that block/ and so on.
+After you've found a block to work on - you can use =hs-toggle-hiding= to make
+it visible and hide it again after you're done.
 
 #+BEGIN_SRC emacs-lisp
-  (defvar hs-hide-all-toggle-state nil "Current state of hideshow for toggling all.")
-  (make-variable-buffer-local 'hs-hide-all-toggle-state)
   (require 'hideshow nil t)
-  (defun hs-toggle-hideshow-all (arg)
-    "Toggle hideshow all. Prefix arg is the level of hiding."
-    (interactive "P")
-    (if (not arg)
-        (setq arg 1))
-    (setq hs-hide-all-toggle-state (not hs-hide-all-toggle-state))
-    (if hs-hide-all-toggle-state
-        (hs-hide-level arg)
-      (hs-show-all)))
 
-  (add-hook 'c-mode-common-hook
-            '(lambda ()
-               (hs-minor-mode t)
-               (define-key c-mode-base-map "\C-ch" 'hs-toggle-hideshow-all)))
-#+END_SRC
+  (defun hs-enable ()
+    (hs-minor-mode t)
+    (define-key hs-minor-mode-map "\C-chh" 'hs-toggle-hiding)
+    (define-key hs-minor-mode-map "\C-chl" 'hs-hide-level)
+    (define-key hs-minor-mode-map "\C-cha" 'hs-show-all))
 
-It's also convenient to fold the tags in HTML-like languages. In such cases, I
-use toggling of individual blocks with the same binding.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'sgml-mode nil t)
-  (require 'nxml-mode nil t)
-
-  (add-to-list 'hs-special-modes-alist
-               '(nxml-mode
-                 "<!--\\|<[^/>]*[^/]>"
-                 "-->\\|</[^/>]*[^/]>"
-                 "<!--"
-                 sgml-skip-tag-forward
-                 nil))
-
-  (add-hook 'nxml-mode-hook 'hs-minor-mode)
-  (define-key nxml-mode-map (kbd "\C-ch") 'hs-toggle-hiding)
+  (add-hook 'c-mode-common-hook 'hs-enable)
+  (add-hook 'python-mode-hook 'hs-enable)
+  (add-hook 'python-ts-mode-hook 'hs-enable)
 #+END_SRC
 
 * Auto-completion
