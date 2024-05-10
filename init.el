@@ -13,7 +13,7 @@
         dummyparens
         expand-region
         smex
-        string-edit
+        string-edit-at-point
         window-numbering
         markdown-mode
         magit

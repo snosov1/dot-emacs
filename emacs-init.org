@@ -35,6 +35,7 @@ insights into better ways to use Emacs with me.
 - [[#using-external-websites][Using external websites]]
 - [[#window-management][Window management]]
 - [[#embedded-lisp-evaluation][Embedded lisp evaluation]]
+- [[#interactive-lisp-evaluation][Interactive lisp evaluation]]
 - [[#field-applications][Field applications]]
 - [[#browse-kill-ring][Browse kill ring]]
 - [[#navigate-to-previous-position][Navigate to previous position]]
@@ -69,10 +70,22 @@ UI elements, like scroll-bar, tool-bar and the ring-bell.
   (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
   (setq inhibit-startup-message t)
 
-  (setq-default initial-major-mode (quote emacs-lisp-mode))
+  (setq-default initial-major-mode (quote lisp-interaction-mode))
   (setq-default initial-scratch-message nil)
 
   (setq ring-bell-function 'ignore) ;; shut up the bell
+#+END_SRC
+
+"When we diminish a mode, we are saying we want it to continue doing its work
+for us, but we no longer want to be reminded of it. It becomes a night worker,
+like a janitor; it becomes an invisible man; it remains a component, perhaps an
+important one, sometimes an indispensable one, of the mechanism that maintains
+the day-people's world, but its place in their thoughts is diminished, usually
+to nothing. As we grow old we diminish more and more such thoughts, such people,
+usually to nothing." -- Will Mengarini
+
+#+BEGIN_SRC emacs-lisp
+  (use-package diminish :ensure t)
 #+END_SRC
 
 ** Dark tango
@@ -921,13 +934,13 @@ escape sequences, breaking one level of nesting.
 To finish editing, press =C-c C-c=. To abort, press =C-c C-k=.
 
 #+BEGIN_SRC emacs-lisp
-  (eval-after-load "string-edit-autoloads"
+  (eval-after-load "string-edit-at-point-autoloads"
     '(progn
-       (if (require 'string-edit nil t)
+       (if (require 'string-edit-at-point nil t)
            (progn
              (global-set-key "\C-ce" 'string-edit-at-point)
-             (define-key string-edit-mode-map (vector 'remap 'kill-this-buffer) 'string-edit-abort))
-         (message "WARNING: string-edit not found"))))
+             (define-key string-edit-at-point-mode-map (vector 'remap 'kill-this-buffer) 'string-edit-abort))
+         (message "WARNING: string-edit-at-point not found"))))
 #+END_SRC
 
 As a side note, for the particular case of editing regular expressions, you can
@@ -1050,6 +1063,7 @@ my needs here.
 
 #+BEGIN_SRC emacs-lisp
   (use-package eldoc
+    :diminish eldoc-mode
     :custom
     (eldoc-echo-area-use-multiline-p nil))
 #+END_SRC
@@ -1894,6 +1908,19 @@ universal argument. This is similar to =C-M-x= / =C-u C-M-x= behavior in
   (global-set-key (kbd "\C-x\C-e")    'eval-dispatch)
 #+END_SRC
 
+* Interactive lisp evaluation
+
+As Emacs has shown us throughout time, editing text buffers is a very powerful
+and versatile user interface. So, let's stick to it as much as possible. In this
+case, an interactive elisp session shouldn't feel much different from simple
+editing. The only difference that we introduce - =C-m= evals and prints a
+previous sexp instead of just introducing a newline.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key lisp-interaction-mode-map (kbd "C-j") 'electric-newline-and-maybe-indent)
+  (define-key lisp-interaction-mode-map (kbd "C-m") 'eval-print-last-sexp)
+#+END_SRC
+
 * Field applications
 
 Once, I was working on a panorama stitching algorithm. To test and improve it, I
@@ -1950,19 +1977,11 @@ found this "perfect environment".
 
 But at that day, I've put the following functions to my init file and moved on
 enlightened. From that moment, when I need a conversion I just write something
-like =(fov2focal (deg2rad 55))= and hit =C-x C-e=.
+like =(fov2focal (degrees-to-radians 55))= and hit =C-x C-e=.
 
 Yeah. At that day, I became a bit closer to my perfect working environment.
 
 #+BEGIN_SRC emacs-lisp
-  (defun deg2rad (x)
-    "Converts degrees to radians"
-    (/ (* x float-pi) 180.0))
-
-  (defun rad2deg (x)
-    "Converts radians to degrees"
-    (/ (* x 180.0) float-pi))
-
   (defun fov2focal (fov)
     "Evaluates dimensionless focal length given fov in radians"
     (/ 1.0 (tan (/ fov 2.0))))
