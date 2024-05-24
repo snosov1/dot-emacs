@@ -429,18 +429,13 @@ default behavior of =beginning-of-line= (=C-a=). In cases, when you actually
 want to go to the very beginning of the line, you should hit =C-a= one more
 time.
 
-#+BEGIN_SRC emacs-lisp
-  (define-key global-map [remap move-beginning-of-line]
-    (defun smart-beginning-of-line ()
-      "Move point to first non-whitespace character or beginning-of-line.
+Same thing goes for the end of line, where you, probably, want to jump to the
+end of code line that might have a comment.
 
-    Move point to the first non-whitespace character on this line.
-    If point was already at that position, move point to beginning of line."
-      (interactive)
-      (let ((oldpos (point)))
-        (back-to-indentation)
-        (and (= oldpos (point))
-             (beginning-of-line)))))
+#+BEGIN_SRC emacs-lisp
+  (use-package mwim
+    :bind (([remap move-beginning-of-line] . mwim-beginning-of-code-or-line)
+           ([remap move-end-of-line] . mwim-end)))
 #+END_SRC
 
 ** Auto-indent after yank
@@ -1055,6 +1050,8 @@ my needs here.
 #+BEGIN_SRC emacs-lisp
   ;; (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
   (use-package eglot
+    :custom
+    (eglot-report-progress nil)
     :custom-face
     (eglot-mode-line ((nil (:inherit nil :weight normal)))))
 #+END_SRC

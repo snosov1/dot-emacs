@@ -19,6 +19,7 @@
         magit
         move-text
         multiple-cursors
+        mwim
         org-pomodoro
         toc-org
         paredit
