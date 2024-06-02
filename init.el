@@ -22,6 +22,7 @@
         mwim
         org-pomodoro
         toc-org
+        treesit-auto
         paredit
         unfill
         yaml-mode

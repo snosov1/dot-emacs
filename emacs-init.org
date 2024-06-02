@@ -435,7 +435,7 @@ end of code line that might have a comment.
 #+BEGIN_SRC emacs-lisp
   (use-package mwim
     :bind (([remap move-beginning-of-line] . mwim-beginning-of-code-or-line)
-           ([remap move-end-of-line] . mwim-end)))
+           ([remap move-end-of-line] . mwim-end-of-line-or-code)))
 #+END_SRC
 
 ** Auto-indent after yank
@@ -1063,6 +1063,14 @@ my needs here.
     :diminish eldoc-mode
     :custom
     (eldoc-echo-area-use-multiline-p nil))
+#+END_SRC
+
+** Treesitter
+
+#+BEGIN_SRC emacs-lisp
+  (use-package treesit-auto
+    :config
+    (global-treesit-auto-mode))
 #+END_SRC
 
 ** Compile
