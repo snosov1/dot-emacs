@@ -4,7 +4,7 @@
 * Foreword
 
 This is a little novel for casual reading about a text editor. Incidentally, it
-also works as an Emacs 24.4 configuration file.
+also works as an Emacs 29.1 configuration file.
 
 Every section talks about some aspect of my day-to-day Emacs usage. The sections
 are more or less independent from each other, so you can read them selectively.
@@ -304,6 +304,31 @@ bit, then =M-n= and =M-p= bindings are a natural way to do this.
              (define-key global-map (kbd "M-p") 'move-text-up))
          (message "WARNING: move-text not found"))))
 #+END_SRC
+
+** Duplicate line
+
+After many years of hiatus, I'm adding a novel (to me) text editing function -
+duplicate line. I've discovered it on a stream recording of yet another
+recreational programming session with Mr. Tsoding. Somehow, it was one of the
+crucial functionalities for him. As for me - I'd never used or even thought
+about such thing. It looks useful, though - but I'll have to see.
+
+At least for now I can say that it was useful by
+
+1. making me realize that 3 really neat keybindings =C-,=, =C-.= and =C-;= were
+   used for some flyspell bullshit that I've barely used.
+2. making me swipe some dust off my config (and my brain) and refactor a config
+   section (flyspell) to use-package
+3. making me bump the minimum version of Emacs to 29.1
+4. and making me think how I'd use the 2 other neat bindings I now have
+   available
+
+Let's see if anything good comes out of it.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-,") 'duplicate-dwim)
+#+END_SRC
+
 ** (Non-) electric indentation
 
 I got used to the fact, that =C-j= inserts a newline and indents, and that =C-m=
