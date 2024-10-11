@@ -880,8 +880,7 @@ which checks spelling only in strings and comments.
 By default, only the words under the cursor are checked for correctness. So, if
 you want to spell check the whole buffer (or region), hit =C-x M-$=. When the
 cursor is under the red-highlighted word, you can press =M-$= to look for
-alternative spellings. To go to the next error, hit "C-,". To auto-correct the
-next word, hit =C-.=.
+alternative spellings.
 
 I edit texts in both Russian and English and I have to spell-check both of the
 languages. To toggle between the dictionaries I use =C-c M-$=. If you want to
@@ -889,28 +888,31 @@ toggle (cycle, actually) between (through) other languages, you can customize
 the =ispell-common-dictionaries= variable.
 
 #+BEGIN_SRC emacs-lisp
-  (require 'flyspell)
-  (add-hook 'text-mode-hook 'flyspell-mode)
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
-  (defcustom ispell-common-dictionaries
-    '("en" "ru")
-    "List of dictionaries for common use"
-    :group 'ispell)
-
-  (setq-default ispell-dictionary (car ispell-common-dictionaries))
-
-  (define-key flyspell-mode-map (kbd "C-c M-$")
-    (defun ispell-next-dictionary()
-      "Cycle through dictionaries in `ispell-common-dictionaries'"
+  (use-package flyspell
+    :ensure t
+    :hook ((text-mode . flyspell-mode)
+           (prog-mode . flyspell-prog-mode))
+    :custom
+    (ispell-common-dictionaries '("en" "ru")
+                                "List of dictionaries for common use")
+    (setq-default ispell-dictionary (car ispell-common-dictionaries))
+    :bind (:map flyspell-mode-map
+                ("C-c M-$" . ispell-next-dictionary)
+                ("C-x M-$" . flyspell-buffer-or-region)
+                ("C-," . nil)
+                ("C-." . nil)
+                ("C-;" . nil))
+    :config
+    (defun ispell-next-dictionary ()
+      "Cycle through dictionaries in `ispell-common-dictionaries'."
       (interactive)
       (let* ((dic ispell-current-dictionary)
              (next (cadr (member dic ispell-common-dictionaries)))
              (change (if next next (car ispell-common-dictionaries))))
-        (ispell-change-dictionary change))))
+        (ispell-change-dictionary change)))
 
-  (define-key flyspell-mode-map (kbd "C-x M-$")
     (defun flyspell-buffer-or-region ()
+      "Check spelling in the buffer or the region."
       (interactive)
       (if (region-active-p)
           (flyspell-region (region-beginning) (region-end))
