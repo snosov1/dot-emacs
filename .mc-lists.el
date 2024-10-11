@@ -39,6 +39,7 @@
         markdown-cycle
         markdown-exdent-or-delete
         move-text-up
+        mwim-end-of-line-or-code
         nxml-electric-slash
         open-line-indent
         org-backward-sentence
@@ -68,6 +69,7 @@
         upcase-dispatch
         wdired-downcase-word
         wrap-region-trigger
+        yaml-electric-backspace
         yas-expand
         zap-up-to-char
         ))

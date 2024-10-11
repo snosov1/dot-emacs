@@ -1144,10 +1144,13 @@ But if I'm to pick one for Python, it will, obviously, be =ipython=.
          python-shell-prompt-regexp "In \\[[0-9]+\\]: "
          python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "))
 
-    (add-hook 'python-mode-hook
-              '(lambda ()
-                 (define-key python-mode-map (kbd "\C-c\C-c") 'compile)
-                 (define-key python-mode-map (kbd "\C-c\C-e") 'python-shell-send-buffer))))
+    (dolist (mode '("python" "python-ts"))
+      (let ((mode-hook (intern-soft (concat mode "-mode-hook") ))
+            (mode-map (intern-soft (concat mode "-mode-map") )))
+        (add-hook 'mode-hook
+         '(lambda ()
+            (define-key mode-map (kbd "\C-c\C-c") 'compile)
+            (define-key mode-map (kbd "\C-c\C-e") 'python-shell-send-buffer))))))
 #+END_SRC
 
 ** Markdown
@@ -1319,6 +1322,7 @@ makes it possible.
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
+  (setq auto-revert-verbose nil)
 #+END_SRC
 
 ** Miscellaneous
