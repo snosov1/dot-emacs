@@ -1175,9 +1175,9 @@ But if I'm to pick one for Python, it will, obviously, be =ipython=.
       (let ((mode-hook (intern-soft (concat mode "-mode-hook") ))
             (mode-map (intern-soft (concat mode "-mode-map") )))
         (add-hook 'mode-hook
-         '(lambda ()
-            (define-key mode-map (kbd "\C-c\C-c") 'compile)
-            (define-key mode-map (kbd "\C-c\C-e") 'python-shell-send-buffer))))))
+                  #'(lambda ()
+                      (define-key mode-map (kbd "\C-c\C-c") 'compile)
+                      (define-key mode-map (kbd "\C-c\C-e") 'python-shell-send-buffer))))))
 #+END_SRC
 
 ** Markdown
@@ -1259,9 +1259,9 @@ I don't feel like dropping it after spending so much effort.
        (when (require 'd-mode nil t)
          (when (fboundp 'd-lineup-cascaded-calls)
            (add-hook 'd-mode-hook
-                     '(lambda ()
-                        (add-to-list 'c-offsets-alist '(arglist-cont-nonempty . d-lineup-cascaded-calls))
-                        (add-to-list 'c-offsets-alist '(statement-cont . d-lineup-cascaded-calls)))))
+                     #'(lambda ()
+                         (add-to-list 'c-offsets-alist '(arglist-cont-nonempty . d-lineup-cascaded-calls))
+                         (add-to-list 'c-offsets-alist '(statement-cont . d-lineup-cascaded-calls)))))
          (setq auto-mode-alist
                (append '(("\\.d\\'" . d-mode)
                          ("\\.di\\'" . d-mode))
@@ -1286,18 +1286,18 @@ There are just a couple of minor things about C and C++:
   (add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
   (add-to-list 'auto-mode-alist '("\\.cuh\\'" . c++-mode))
   (add-hook 'c-mode-common-hook
-            '(lambda ()
-               (define-key c-mode-base-map "\C-c\C-o"
-                 'ff-find-other-file)
-               (define-key c-mode-base-map (kbd "C-c .")
-                 'c-guess-buffer)
+            #'(lambda ()
+                (define-key c-mode-base-map "\C-c\C-o"
+                            'ff-find-other-file)
+                (define-key c-mode-base-map (kbd "C-c .")
+                            'c-guess-buffer)
 
-               (define-key c-mode-base-map "\C-c\C-c"    nil)
-               (define-key c-mode-base-map (kbd "C-M-h") nil)
-               (define-key c-mode-base-map (kbd "M-j")   nil)
+                (define-key c-mode-base-map "\C-c\C-c"    nil)
+                (define-key c-mode-base-map (kbd "C-M-h") nil)
+                (define-key c-mode-base-map (kbd "M-j")   nil)
 
-               ;; set //-style comments for c-mode
-               (setq comment-start "//" comment-end "")))
+                ;; set //-style comments for c-mode
+                (setq comment-start "//" comment-end "")))
 
   (setq-default c-basic-offset 4)
   (setq-default c-default-style (quote ((c-mode . "bsd") (c++-mode . "bsd") (d-mode . "bsd") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
@@ -1620,11 +1620,11 @@ overriding its =diff-write-contents-hooks= to do nothing.
          "PLEASE, DO NOTHING TO MY DIFFS!!!!"
          nil)
 
-       (set-face-attribute 'diff-added nil :background nil :foreground "green")
+       (set-face-attribute 'diff-added nil :background "unspecified" :foreground "green")
        (set-face-attribute 'diff-refine-added nil :background "#338833")
        (set-face-attribute 'diff-file-header nil :background "black" :weight 'bold)
        (set-face-attribute 'diff-header nil :background "black")
-       (set-face-attribute 'diff-removed nil :background nil :foreground "tomato")
+       (set-face-attribute 'diff-removed nil :background "unspecified" :foreground "tomato")
        (set-face-attribute 'diff-refine-removed nil :background "#553333")))
 #+END_SRC
 
@@ -1710,8 +1710,8 @@ it.
                          ("emacs" (name . "^\\*Messages\\*$"))
                          ("shell commands" (name . "^\\*.*Shell Command\\*"))))))
   (add-hook 'ibuffer-mode-hook
-            (lambda ()
-              (ibuffer-switch-to-saved-filter-groups "default")))
+            #'(lambda ()
+                (ibuffer-switch-to-saved-filter-groups "default")))
 
   (global-set-key (kbd "\C-x \C-b") 'ibuffer)
 #+END_SRC
@@ -2576,9 +2576,9 @@ buffer, provided by =wgrep= package.
        (when (require 'wgrep nil t)
          (setq wgrep-enable-key "\C-x\C-q")
          (add-hook 'grep-mode-hook
-                   '(lambda ()
-                      (define-key grep-mode-map "\C-c\C-c"
-                        'wgrep-save-all-buffers))))))
+                   #'(lambda ()
+                       (define-key grep-mode-map "\C-c\C-c"
+                                   'wgrep-save-all-buffers))))))
 #+END_SRC
 
 * Hide/show blocks
@@ -2809,8 +2809,8 @@ may not suit your way of writing code.
              (yas-global-mode 1)
 
              (add-hook 'term-mode-hook
-                       '(lambda ()
-                          (yas-minor-mode -1))))
+                       #'(lambda ()
+                           (yas-minor-mode -1))))
          (message "WARNING: yasnippet not found"))))
 #+END_SRC
 
@@ -2839,8 +2839,8 @@ shell commands and =yasnippet= for everything else.
 #+BEGIN_SRC emacs-lisp
   (when (require 'abbrev nil t)
     (add-hook 'find-file-hook
-              '(lambda()
-                 (abbrev-mode -1)))
+              #'(lambda()
+                  (abbrev-mode -1)))
     (setq abbrev-file-name (concat (file-name-directory load-file-name) ".abbrev_defs"))
     (setq-default abbrev-mode nil)
     (add-to-list 'auto-mode-alist '("\\.abbrev_defs\\'" . emacs-lisp-mode)))
@@ -3198,14 +3198,14 @@ situations - marking words, strings (quotes) and parenthesis/braces/brackets.
                  er/mark-defun))
 
          (add-hook 'text-mode-hook
-                   '(lambda ()
-                      (setq-local er/try-expand-list (remove 'er/mark-text-sentence er/try-expand-list))
-                      (setq-local er/try-expand-list (remove 'er/mark-text-paragraph er/try-expand-list)))
+                   #'(lambda ()
+                       (setq-local er/try-expand-list (remove 'er/mark-text-sentence er/try-expand-list))
+                       (setq-local er/try-expand-list (remove 'er/mark-text-paragraph er/try-expand-list)))
                    t)
          (add-hook 'org-mode-hook
-                   '(lambda ()
-                      (setq-local er/try-expand-list (remove 'er/mark-sentence er/try-expand-list))
-                      (setq-local er/try-expand-list (remove 'er/mark-text-sentence er/try-expand-list)))
+                   #'(lambda ()
+                       (setq-local er/try-expand-list (remove 'er/mark-sentence er/try-expand-list))
+                       (setq-local er/try-expand-list (remove 'er/mark-text-sentence er/try-expand-list)))
                    t)
 
          (defun er/add-cc-mode-expansions ()

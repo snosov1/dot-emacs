@@ -39,6 +39,7 @@
         markdown-cycle
         markdown-exdent-or-delete
         move-text-up
+        mwim-beginning-of-code-or-line
         mwim-end-of-line-or-code
         nxml-electric-slash
         open-line-indent
