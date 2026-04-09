@@ -1150,6 +1150,12 @@ much different from plain =compile-mode=.
         (recompile))))
 #+END_SRC
 
+Handling colored output is nice to have
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ansi-color)
+  (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+#+END_SRC
 ** Python
 
 Probably, the most prominent package for Python development is =elpy=. At least
