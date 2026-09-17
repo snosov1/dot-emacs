@@ -118,7 +118,7 @@ brightest child:
 Basically, DejaVu Sans Mono is a "font done right" for technical work.
 
 #+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil :family "DejaVu Sans Mono")
+  (set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 160)
 #+END_SRC
 
 ** Forbidden fruit
@@ -619,7 +619,7 @@ If I want to kill a buffer, it's always the current one. So, there's no need to
 ask for a name.
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "\C-x k") 'kill-this-buffer)
+  (global-set-key (kbd "\C-x k") 'kill-current-buffer)
 #+END_SRC
 
 When Emacs asks a question, sometimes you have to type "yes" and sometimes it's
