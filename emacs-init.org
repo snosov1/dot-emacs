@@ -752,13 +752,10 @@ better positions:
      dired-recursive-deletes (quote always))
   #+END_SRC
 
-- Group directories first:
+- Make sizes human-readable:
 
   #+BEGIN_SRC emacs-lisp
-    (setq dired-listing-switches
-          (concat "-alh"
-                  (when (not (equal window-system 'w32))
-                    " --group-directories-first")))
+    (setq dired-listing-switches "-alh")
   #+END_SRC
 
 ** Wdired
