@@ -118,7 +118,7 @@ brightest child:
 Basically, DejaVu Sans Mono is a "font done right" for technical work.
 
 #+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 160)
+  (set-face-attribute 'default nil :family "DejaVu Sans Mono")
 #+END_SRC
 
 ** Forbidden fruit
