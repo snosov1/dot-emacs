@@ -2873,6 +2873,14 @@ headings and indenting the text according to the heading level.
   (setq-default org-support-shift-select (quote always))
 #+END_SRC
 
+Source blocks are greyed out by default (=org-block= inherits the =shadow=
+face), which makes the code hard to read. Instead, keep the normal text color
+and put the code on a band a shade darker than the background.
+
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'org-block nil :inherit nil :background "#17191b")
+#+END_SRC
+
 When I use "C-c '" to edit source blocks, my finger muscles keep using the
 familiar key bindings. So, it's better for those to do what I mean.
 

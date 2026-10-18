@@ -71,6 +71,7 @@
         wdired-downcase-word
         wrap-region-trigger
         yaml-electric-backspace
+        yaml-electric-dash-and-dot
         yas-expand
         zap-up-to-char
         ))
